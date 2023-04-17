@@ -1,6 +1,7 @@
 # vp4jl
 
 [![Github Actions Status](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/workflows/Build/badge.svg)](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/actions/workflows/build.yml)
+
 The JupyterLab extension providing node based visual programming environment
 
 This extension is composed of a Python package named `vp4jl`
