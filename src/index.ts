@@ -23,6 +23,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
           `The vp4jl server extension appears to be missing.\n${reason}`
         );
       });
+
+    app.docRegistry.addFileType({
+      name: 'vp4jl',
+      displayName: 'visual programming for jupyterlab',
+      mimeTypes: ['text/json', 'application/json'],
+      extensions: ['.vp4jl'],
+      fileFormat: 'json',
+      contentType: 'file'
+    });
   }
 };
 
