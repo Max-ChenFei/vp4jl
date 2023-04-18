@@ -2,7 +2,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-import { VP4JLModelFactory } from './model-factory';
+import { VPModelFactory } from './model-factory';
 import { requestAPI } from './handler';
 
 /**
@@ -24,7 +24,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         );
       });
 
-    app.docRegistry.addModelFactory(new VP4JLModelFactory());
+    app.docRegistry.addModelFactory(new VPModelFactory());
     app.docRegistry.addFileType({
       name: 'vp4jl',
       displayName: 'visual programming for jupyterlab',
