@@ -1,7 +1,8 @@
 import React from 'react';
 import { ReactWidget } from '@jupyterlab/apputils';
 import { DocumentRegistry, DocumentWidget } from '@jupyterlab/docregistry';
-
+import { VPEditor } from 'visual-programming-editor2';
+import 'visual-programming-editor2/dist/style.css';
 /**
  * A visual programming widget that contains the main view of the DocumentWidget.
  */
@@ -13,12 +14,7 @@ export class VPWidget extends ReactWidget {
   }
 
   render(): JSX.Element {
-    return (
-      <div>
-        <h1>Visual Programming for JupyterLab</h1>
-        <p>VP4JL is a visual programming environment for JupyterLab.</p>
-      </div>
-    );
+    return <VPEditor />;
   }
 }
 
