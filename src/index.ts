@@ -5,6 +5,8 @@ import {
 import { VPModelFactory, VP_MODEL_FACTORY } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
+import { LoadLibrary } from 'visual-programming-editor2';
+import lib_example from './VPLibraryExample.json';
 
 /**
  * Initialization data for the vp4jl extension.
@@ -26,6 +28,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
           `The vp4jl server extension appears to be missing.\n${reason}`
         );
       });
+
+    // move to the server side
+    LoadLibrary(lib_example);
 
     const widgetFactory = new VPWidgetFactory({
       name: VP_WIDGET_FACTORY,
