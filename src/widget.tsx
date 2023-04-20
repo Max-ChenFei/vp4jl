@@ -14,15 +14,23 @@ export class VPWidget extends ReactWidget {
     this._context = context;
     this._content = undefined;
     this._context.ready.then(() => {
-      // this._context.model.value.changed.connect(this._onValueChanged, this);
-      console.log(this._context.model.value.text);
       this._content = JSON.parse(this._context.model.value.text);
       this.update();
     });
   }
 
+  private _onContentChanged(newContent: string) {
+    if (this._context.model.value.text === newContent) return;
+    this._context.model.value.text = newContent;
+  }
+
   render(): JSX.Element {
-    return <VPEditor graph={this._content} />;
+    return (
+      <VPEditor
+        content={this._content}
+        onContentChange={newContent => this._onContentChanged(newContent)}
+      />
+    );
   }
 }
 
