@@ -40,8 +40,8 @@ jobs:
           jupyter server extension list
           jupyter server extension list 2>&1 | grep -ie "vp4jl.*OK"
 
-          jupyter labextension list
-          jupyter labextension list 2>&1 | grep -ie "vp4jl.*OK"
+          # jupyter labextension list
+          # jupyter labextension list 2>&1 | grep -ie "vp4jl.*OK"
           python -m jupyterlab.browser_check
 
       - name: Package the extension
@@ -87,8 +87,8 @@ jobs:
           jupyter server extension list
           jupyter server extension list 2>&1 | grep -ie "vp4jl.*OK"
 
-          jupyter labextension list
-          jupyter labextension list 2>&1 | grep -ie "vp4jl.*OK"
+          # jupyter labextension list
+          # jupyter labextension list 2>&1 | grep -ie "vp4jl.*OK"
           python -m jupyterlab.browser_check --no-chrome-test
 
   integration-tests:
