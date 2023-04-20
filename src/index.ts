@@ -17,7 +17,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
   activate: (app: JupyterFrontEnd) => {
     console.log('JupyterLab extension vp4jl is activated!');
     const VP_FILE_TYPE = 'vp4jl';
-    const VP_WIDGET_FACTORY = 'VPEditor';
+    const VP_WIDGET_FACTORY = 'VP Editor';
 
     requestAPI<any>('get_example')
       .then(data => {
@@ -42,7 +42,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.docRegistry.addModelFactory(new VPModelFactory());
     app.docRegistry.addFileType({
       name: VP_FILE_TYPE,
-      displayName: 'visual programming for jupyterlab',
+      displayName: 'VP File',
       mimeTypes: ['text/json', 'application/json'],
       extensions: ['.vp4jl'],
       fileFormat: 'text',
