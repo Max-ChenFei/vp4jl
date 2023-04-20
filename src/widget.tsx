@@ -20,8 +20,9 @@ export class VPWidget extends ReactWidget {
   }
 
   private _onContentChanged(newContent: string) {
-    if (this._context.model.value.text === newContent) return;
-    this._context.model.value.text = newContent;
+    if (this._context.model.value.text !== newContent) {
+      this._context.model.value.text = newContent;
+    }
   }
 
   render(): JSX.Element {
