@@ -1,13 +1,11 @@
 import { TextModelFactory } from '@jupyterlab/docregistry';
-import { Contents } from '@jupyterlab/services';
 
 // ICodeModel is used internally for the document model representation.
 
-export class VP4JLModelFactory extends TextModelFactory {
+export const VP_MODEL_FACTORY = 'vp4jl_model_factory';
+
+export class VPModelFactory extends TextModelFactory {
   get name(): string {
-    return 'vp4jl';
-  }
-  get fileFormat(): Contents.FileFormat {
-    return 'json';
+    return VP_MODEL_FACTORY;
   }
 }

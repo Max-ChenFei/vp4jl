@@ -2,7 +2,8 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-import { VP4JLModelFactory } from './model-factory';
+import { VPModelFactory, VP_MODEL_FACTORY } from './model-factory';
+import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
 
 /**
@@ -13,6 +14,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   activate: (app: JupyterFrontEnd) => {
     console.log('JupyterLab extension vp4jl is activated!');
+    const VP_FILE_TYPE = 'vp4jl';
+    const VP_WIDGET_FACTORY = 'VPEditor';
 
     requestAPI<any>('get_example')
       .then(data => {
@@ -24,13 +27,20 @@ const plugin: JupyterFrontEndPlugin<void> = {
         );
       });
 
-    app.docRegistry.addModelFactory(new VP4JLModelFactory());
+    const widgetFactory = new VPWidgetFactory({
+      name: VP_WIDGET_FACTORY,
+      modelName: VP_MODEL_FACTORY,
+      fileTypes: [VP_FILE_TYPE],
+      defaultFor: [VP_FILE_TYPE]
+    });
+    app.docRegistry.addWidgetFactory(widgetFactory);
+    app.docRegistry.addModelFactory(new VPModelFactory());
     app.docRegistry.addFileType({
-      name: 'vp4jl',
+      name: VP_FILE_TYPE,
       displayName: 'visual programming for jupyterlab',
       mimeTypes: ['text/json', 'application/json'],
       extensions: ['.vp4jl'],
-      fileFormat: 'json',
+      fileFormat: 'text',
       contentType: 'file'
     });
   }
