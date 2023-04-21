@@ -9,6 +9,7 @@ import 'visual-programming-editor2/dist/style.css';
 export class VPWidget extends ReactWidget {
   private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
   private _content: SerializedGraph | undefined;
+  private _editor_activated = false;
   constructor(context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>) {
     super();
     this._context = context;
@@ -17,6 +18,16 @@ export class VPWidget extends ReactWidget {
       this._content = JSON.parse(this._context.model.value.text);
       this.update();
     });
+  }
+
+  activate(): void {
+    this._editor_activated = true;
+    this.update();
+  }
+
+  deactivate(): void {
+    this._editor_activated = false;
+    this.update();
   }
 
   private _onContentChanged(newContent: string) {
@@ -30,6 +41,7 @@ export class VPWidget extends ReactWidget {
       <VPEditor
         content={this._content}
         onContentChange={newContent => this._onContentChanged(newContent)}
+        activated={this._editor_activated}
       />
     );
   }

@@ -8587,10 +8587,10 @@ validate.io-number@^1.0.3:
   resolved "https://registry.yarnpkg.com/validate.io-number/-/validate.io-number-1.0.3.tgz#f63ffeda248bf28a67a8d48e0e3b461a1665baf8"
   integrity sha512-kRAyotcbNaSYoDnXvb4MHg/0a1egJdLwS6oJ38TJY7aw9n93Fl/3blIXdyYvPOp55CNxywooG/3BcrwNrBpcSg==
 
-visual-programming-editor2@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/visual-programming-editor2/-/visual-programming-editor2-0.1.6.tgz#8a226513a9497e5c6f5380242b781f3a7de169bb"
-  integrity sha512-gf/eols4SdRAaFG7uukZ81uNVEjnmdEw+/JpYf7rR0dZM5ag0JWzWowLdr+iHT9XkFpD5L5Fdih1RbLugeNVdg==
+visual-programming-editor2@^0.1.11:
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/visual-programming-editor2/-/visual-programming-editor2-0.1.11.tgz#d645d2d5616ac7d3aef7cad1d7983170339be997"
+  integrity sha512-V79HF9/zCKZ7mNBxCleT2014smW/EvLTcIVIrThgAFwIfbw3O4NXR9+onKeTs1NrF66/KHw25ARUbGd/i+VEPQ==
   dependencies:
     "@emotion/react" "^11.10.6"
     "@emotion/styled" "^11.10.6"
