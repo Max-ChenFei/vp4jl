@@ -1,4 +1,5 @@
 import {
+  ILabShell,
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
@@ -7,6 +8,7 @@ import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
 import { LoadLibrary } from 'visual-programming-editor2';
 import lib_example from './VPLibraryExample.json';
+import { VPDocWidget } from './widget';
 
 /**
  * Initialization data for the vp4jl extension.
@@ -14,7 +16,8 @@ import lib_example from './VPLibraryExample.json';
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:plugin',
   autoStart: true,
-  activate: (app: JupyterFrontEnd) => {
+  requires: [ILabShell],
+  activate: (app: JupyterFrontEnd, labShell: ILabShell) => {
     console.log('JupyterLab extension vp4jl is activated!');
     const VP_FILE_TYPE = 'vp4jl';
     const VP_WIDGET_FACTORY = 'VP Editor';
@@ -29,6 +32,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
         );
       });
 
+    labShell.currentChanged.connect((_, args) => {
+      if (args.oldValue instanceof VPDocWidget) {
+        args.oldValue.content.deactivate();
+      }
+    });
     // move to the server side
     LoadLibrary(lib_example);
 
