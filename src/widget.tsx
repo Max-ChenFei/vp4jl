@@ -9,7 +9,7 @@ import 'visual-programming-editor2/dist/style.css';
 export class VPWidget extends ReactWidget {
   private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
   private _content: SerializedGraph | undefined;
-  private _editor_activated: boolean = false;
+  private _editor_activated = false;
   constructor(context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>) {
     super();
     this._context = context;
