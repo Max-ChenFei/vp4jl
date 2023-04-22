@@ -62,7 +62,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reactflow": "^11.7.0",
-    "visual-programming-editor2": "^0.1.11",
+    "visual-programming-editor2": "^0.1.14",
     "yjs": "^13.5.53"
   },
   "devDependencies": {
