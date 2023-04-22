@@ -21,13 +21,17 @@ export class VPWidget extends ReactWidget {
   }
 
   activate(): void {
-    this._editor_activated = true;
-    this.update();
+    if (!this._editor_activated) {
+      this._editor_activated = true;
+      this.update();
+    }
   }
 
   deactivate(): void {
-    this._editor_activated = false;
-    this.update();
+    if (this._editor_activated) {
+      this._editor_activated = false;
+      this.update();
+    }
   }
 
   private _onContentChanged(newContent: string) {
