@@ -24,6 +24,8 @@ export class VPWidgetFactory extends ABCWidgetFactory<
     w.disposed.connect(w => {
       this.onWidgetDisposed(w);
     });
+    window.requestAnimationFrame(this._addEventListenerToTab.bind(this));
+
     return w;
   }
 
@@ -84,6 +86,15 @@ export class VPWidgetFactory extends ABCWidgetFactory<
     for (const menu of menus || []) {
       (menu as HTMLElement).addEventListener('click', this._onMouseDown);
     }
+  }
+
+  private _addEventListenerToTab() {
+    // When click on the other tab of the main area, the currentChanged(index.ts) will be triggered.
+    // We only need to add the click event listener to the tab corresponding to the current widget
+    const dockPanel = document.getElementById('jp-main-dock-panel');
+    (
+      dockPanel?.getElementsByClassName('lm-mod-current')[0] as HTMLElement
+    ).addEventListener('click', this._onMouseDown);
   }
 
   private _removeEventListeners() {
