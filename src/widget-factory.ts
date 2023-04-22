@@ -56,7 +56,7 @@ export class VPWidgetFactory extends ABCWidgetFactory<
     }
     if (this._widgets.length === 1) {
       this._mainWidget?.addEventListener('mousedown', this._onMouseDown);
-      document.addEventListener('contextmenu', this._onMouseDown);
+      this._addEventListeners();
     }
   }
 
@@ -64,7 +64,41 @@ export class VPWidgetFactory extends ABCWidgetFactory<
     this._widgets.splice(this._widgets.indexOf(widget), 1);
     if (this._widgets.length === 0) {
       this._mainWidget?.removeEventListener('mousedown', this._onMouseDown);
-      document.removeEventListener('contextmenu', this._onMouseDown);
+      this._removeEventListeners();
+    }
+  }
+
+  // hack way
+  private _addEventListeners() {
+    // onPanelContextMenu from vp editor stop propagation
+    document.addEventListener('contextmenu', this._onMouseDown);
+    const sideBars = document.getElementsByClassName('jp-SideBar');
+    for (let i = 0; i < sideBars.length; i++) {
+      const sideBar = sideBars[i];
+      for (const tab of sideBar.getElementsByClassName('lm-TabBar-tab')) {
+        (tab as HTMLElement).addEventListener('click', this._onMouseDown);
+      }
+    }
+    const menuBar = document.getElementById('jp-top-panel');
+    const menus = menuBar?.getElementsByClassName('lm-MenuBar-item');
+    for (const menu of menus || []) {
+      (menu as HTMLElement).addEventListener('click', this._onMouseDown);
+    }
+  }
+
+  private _removeEventListeners() {
+    document.removeEventListener('contextmenu', this._onMouseDown);
+    const sideBars = document.getElementsByClassName('jp-SideBar');
+    for (let i = 0; i < sideBars.length; i++) {
+      const sideBar = sideBars[i];
+      for (const tab of sideBar.getElementsByClassName('button')) {
+        (tab as HTMLElement).removeEventListener('click', this._onMouseDown);
+      }
+    }
+    const menuBar = document.getElementById('jp-top-panel');
+    const menus = menuBar?.getElementsByClassName('lm-MenuBar-item');
+    for (const menu of menus || []) {
+      (menu as HTMLElement).removeEventListener('click', this._onMouseDown);
     }
   }
 }
