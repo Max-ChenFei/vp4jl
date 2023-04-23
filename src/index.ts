@@ -55,7 +55,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
       if (args.oldValue instanceof VPDocWidget) {
         args.oldValue.content.deactivate();
       }
+      closeDefaultContextMenu();
     });
+
     // move to the server side
     LoadLibrary(lib_example);
 
@@ -139,6 +141,34 @@ const plugin: JupyterFrontEndPlugin<void> = {
         args: { isPalette: true }
       });
     }
+
+    function closeDefaultContextMenu() {
+      if (app.contextMenu.menu.isAttached) {
+        app.contextMenu.menu.close();
+      }
+    }
+
+    function addClickEventToSideBar() {
+      const sideBars = document.getElementsByClassName('jp-SideBar');
+      if (!sideBars.length) {
+        window.requestAnimationFrame(() => {
+          addClickEventToSideBar();
+        });
+        return;
+      }
+      for (const sideBar of sideBars) {
+        for (const tab of sideBar.getElementsByClassName('lm-TabBar-tab')) {
+          (tab as HTMLElement).addEventListener(
+            'click',
+            closeDefaultContextMenu
+          );
+        }
+      }
+    }
+
+    window.requestAnimationFrame(() => {
+      addClickEventToSideBar();
+    });
   }
 };
 
