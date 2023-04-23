@@ -5,6 +5,7 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { ICommandPalette } from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
 import { VPModelFactory, VP_MODEL_FACTORY } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
@@ -21,13 +22,14 @@ const plugin: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:plugin',
   autoStart: true,
   requires: [ILabShell, IFileBrowserFactory],
-  optional: [ILayoutRestorer, ILauncher],
+  optional: [ILayoutRestorer, ILauncher, ICommandPalette],
   activate: (
     app: JupyterFrontEnd,
     labShell: ILabShell,
     browserFactory: IFileBrowserFactory,
     restorer: ILayoutRestorer | null,
-    launcher: ILauncher | null
+    launcher: ILauncher | null,
+    palette: ICommandPalette | null
   ) => {
     console.log('JupyterLab extension vp4jl is activated!');
     const VP_FILE_TYPE = 'vp4jl';
@@ -120,6 +122,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
         command: NEW_VP_File_COMMAND,
         category: COMMAND_CATEGORY,
         rank: 0
+      });
+    }
+    if (palette) {
+      palette.addItem({
+        command: NEW_VP_File_COMMAND,
+        category: COMMAND_CATEGORY,
+        args: { isPalette: true }
       });
     }
   }
