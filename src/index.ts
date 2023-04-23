@@ -4,6 +4,8 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
+import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { ILauncher } from '@jupyterlab/launcher';
 import { VPModelFactory, VP_MODEL_FACTORY } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
@@ -18,17 +20,22 @@ import { WidgetTracker } from '@jupyterlab/apputils';
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:plugin',
   autoStart: true,
-  requires: [ILabShell],
-  optional: [ILayoutRestorer],
+  requires: [ILabShell, IFileBrowserFactory],
+  optional: [ILayoutRestorer, ILauncher],
   activate: (
     app: JupyterFrontEnd,
     labShell: ILabShell,
-    restorer: ILayoutRestorer | null
+    browserFactory: IFileBrowserFactory,
+    restorer: ILayoutRestorer | null,
+    launcher: ILauncher | null
   ) => {
     console.log('JupyterLab extension vp4jl is activated!');
     const VP_FILE_TYPE = 'vp4jl';
     const VP_WIDGET_FACTORY = 'VP Editor';
     const TRACKER_NAMESPACE = 'vp4jl';
+    const FILE_EXTENSION = '.vp4jl';
+    const NEW_VP_File_COMMAND = 'vp4jl:new-file';
+    const COMMAND_CATEGORY = 'Visual Programming';
 
     requestAPI<any>('get_example')
       .then(data => {
@@ -81,10 +88,40 @@ const plugin: JupyterFrontEndPlugin<void> = {
       name: VP_FILE_TYPE,
       displayName: 'VP File',
       mimeTypes: ['text/json', 'application/json'],
-      extensions: ['.vp4jl'],
+      extensions: [FILE_EXTENSION],
       fileFormat: 'text',
       contentType: 'file'
     });
+
+    app.commands.addCommand(NEW_VP_File_COMMAND, {
+      label: args => (args['isPalette'] ? 'New VP File' : 'VP File'),
+      caption: 'Create a new VP file',
+      execute: async args => {
+        const cwd =
+          args['cwd'] ||
+          browserFactory.tracker.currentWidget?.model.path ||
+          browserFactory.defaultBrowser.model.path;
+        const model = await app.commands.execute('docmanager:new-untitled', {
+          path: cwd,
+          contentType: 'file',
+          fileFormat: 'text',
+          ext: FILE_EXTENSION,
+          type: 'file'
+        });
+
+        return app.commands.execute('docmanager:open', {
+          path: model.path,
+          factory: VP_WIDGET_FACTORY
+        });
+      }
+    });
+    if (launcher) {
+      launcher.add({
+        command: NEW_VP_File_COMMAND,
+        category: COMMAND_CATEGORY,
+        rank: 0
+      });
+    }
   }
 };
 
