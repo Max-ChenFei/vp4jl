@@ -5,6 +5,7 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { IMainMenu } from '@jupyterlab/mainmenu';
 import { ICommandPalette } from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
 import { VPModelFactory, VP_MODEL_FACTORY } from './model-factory';
@@ -21,12 +22,13 @@ import { WidgetTracker } from '@jupyterlab/apputils';
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:plugin',
   autoStart: true,
-  requires: [ILabShell, IFileBrowserFactory],
+  requires: [ILabShell, IFileBrowserFactory, IMainMenu],
   optional: [ILayoutRestorer, ILauncher, ICommandPalette],
   activate: (
     app: JupyterFrontEnd,
     labShell: ILabShell,
     browserFactory: IFileBrowserFactory,
+    mainMenu: IMainMenu,
     restorer: ILayoutRestorer | null,
     launcher: ILauncher | null,
     palette: ICommandPalette | null
@@ -96,7 +98,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
     });
 
     app.commands.addCommand(NEW_VP_File_COMMAND, {
-      label: args => (args['isPalette'] ? 'New VP File' : 'VP File'),
+      label: args =>
+        args['isPalette']
+          ? 'New Visual Programming File'
+          : 'Visual Programming File',
       caption: 'Create a new VP file',
       execute: async args => {
         const cwd =
@@ -117,6 +122,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
         });
       }
     });
+
+    mainMenu.fileMenu.newMenu.addGroup([{ command: NEW_VP_File_COMMAND }], 30);
+
     if (launcher) {
       launcher.add({
         command: NEW_VP_File_COMMAND,
