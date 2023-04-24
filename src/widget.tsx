@@ -12,11 +12,17 @@ export class VPWidget extends ReactWidget {
   private _editor_activated = false;
   constructor(context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>) {
     super();
-    this._context = context;
     this._content = undefined;
+    this._context = context;
     this._context.ready.then(() => {
       this._content = JSON.parse(this._context.model.value.text);
       this.update();
+      this._context.model.contentChanged.connect(() => {
+        if (this._context.model.value.text !== JSON.stringify(this._content)) {
+          this._content = JSON.parse(this._context.model.value.text);
+          this.update();
+        }
+      });
     });
   }
 
@@ -36,11 +42,13 @@ export class VPWidget extends ReactWidget {
 
   private _onContentChanged(newContent: string) {
     if (this._context.model.value.text !== newContent) {
+      this._content = JSON.parse(newContent);
       this._context.model.value.text = newContent;
     }
   }
 
   render(): JSX.Element {
+    console.log('render', this._content);
     return (
       <VPEditor
         content={this._content}
