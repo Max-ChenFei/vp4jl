@@ -48,7 +48,6 @@ export class VPWidget extends ReactWidget {
   }
 
   render(): JSX.Element {
-    console.log('render', this._content);
     return (
       <VPEditor
         content={this._content}
