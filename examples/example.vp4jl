@@ -112,7 +112,8 @@
       },
       "outputs": {
         "output": {}
-      }
+      },
+     "dataType": "any"
     }
   ],
   "edges": [
