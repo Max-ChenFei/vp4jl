@@ -10,6 +10,11 @@ export class VPWidget extends ReactWidget {
   private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
   private _content: SerializedGraph | undefined;
   private _editor_activated = false;
+  private isSameAsContent(newContent: string): boolean {
+    return (
+      JSON.stringify(JSON.parse(this._context.model.value.text)) === newContent
+    );
+  }
   constructor(context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>) {
     super();
     this._content = undefined;
@@ -18,7 +23,8 @@ export class VPWidget extends ReactWidget {
       this._content = JSON.parse(this._context.model.value.text);
       this.update();
       this._context.model.contentChanged.connect(() => {
-        if (this._context.model.value.text !== JSON.stringify(this._content)) {
+        // the change comes from the editor or the command from the menu like
+        if (!this.isSameAsContent(JSON.stringify(this._content))) {
           this._content = JSON.parse(this._context.model.value.text);
           this.update();
         }
@@ -41,7 +47,7 @@ export class VPWidget extends ReactWidget {
   }
 
   private _onContentChanged(newContent: string) {
-    if (this._context.model.value.text !== newContent) {
+    if (!this.isSameAsContent(newContent)) {
       this._content = JSON.parse(newContent);
       this._context.model.value.text = newContent;
     }
