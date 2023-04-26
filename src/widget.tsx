@@ -7,6 +7,7 @@ import 'visual-programming-editor2/dist/style.css';
  * A visual programming widget that contains the main view of the DocumentWidget.
  */
 export class VPWidget extends ReactWidget {
+  private _id: string;
   private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
   private _content: SerializedGraph | undefined;
   private _editor_activated = false;
@@ -15,8 +16,12 @@ export class VPWidget extends ReactWidget {
       JSON.stringify(JSON.parse(this._context.model.value.text)) === newContent
     );
   }
-  constructor(context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>) {
+  constructor(
+    id: string,
+    context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>
+  ) {
     super();
+    this._id = id;
     this._content = undefined;
     this._context = context;
     this._context.ready.then(() => {
@@ -56,6 +61,7 @@ export class VPWidget extends ReactWidget {
   render(): JSX.Element {
     return (
       <VPEditor
+        id={this._id}
         content={this._content}
         onContentChange={newContent => this._onContentChanged(newContent)}
         activated={this._editor_activated}

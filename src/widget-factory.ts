@@ -11,6 +11,7 @@ export class VPWidgetFactory extends ABCWidgetFactory<
   // the main widget is main area of the jupyter lab
   private _mainWidget: HTMLElement | null = null;
   private _widgets: VPDocWidget[] = [];
+  private _widgetId = 0;
   private _onMouseDown = this.deactivateWidgetIfMouseDownOut.bind(this);
   constructor(options: DocumentRegistry.IWidgetFactoryOptions<VPDocWidget>) {
     super(options);
@@ -19,7 +20,10 @@ export class VPWidgetFactory extends ABCWidgetFactory<
   protected createNewWidget(
     context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>
   ): VPDocWidget {
-    const w = new VPDocWidget({ context, content: new VPWidget(context) });
+    const w = new VPDocWidget({
+      context,
+      content: new VPWidget(`vp_widget_${++this._widgetId}`, context)
+    });
     this.onWidgetCreated(w);
     w.disposed.connect(w => {
       this.onWidgetDisposed(w);
