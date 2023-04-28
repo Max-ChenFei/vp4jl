@@ -11,10 +11,9 @@ import { ILauncher } from '@jupyterlab/launcher';
 import { VPModelFactory, VP_MODEL_FACTORY } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
-import { LoadLibrary } from 'visual-programming-editor2';
-import lib_example from './VPLibraryExample.json';
 import { VPDocWidget } from './widget';
 import { WidgetTracker } from '@jupyterlab/apputils';
+import { LoadPackageToRegistry } from 'visual-programming-editor2';
 
 /**
  * Initialization data for the vp4jl extension.
@@ -33,7 +32,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
     launcher: ILauncher | null,
     palette: ICommandPalette | null
   ) => {
-    console.log('JupyterLab extension vp4jl is activated!');
     const VP_FILE_TYPE = 'vp4jl';
     const VP_WIDGET_FACTORY = 'VP Editor';
     const TRACKER_NAMESPACE = 'vp4jl';
@@ -41,9 +39,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
     const NEW_VP_File_COMMAND = 'vp4jl:new-file';
     const COMMAND_CATEGORY = 'Visual Programming';
 
-    requestAPI<any>('get_example')
+    requestAPI<any>('get_node_libraries')
       .then(data => {
-        console.log(data);
+        Object.entries(data.packages).forEach(([key, value]) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          LoadPackageToRegistry(key, value!);
+        });
       })
       .catch(reason => {
         console.error(
@@ -57,9 +58,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
       }
       closeDefaultContextMenu();
     });
-
-    // move to the server side
-    LoadLibrary(lib_example);
 
     const tracker = new WidgetTracker<VPDocWidget>({
       namespace: TRACKER_NAMESPACE

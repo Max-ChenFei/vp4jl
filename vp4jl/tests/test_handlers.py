@@ -1,13 +1,11 @@
 import json
 
 
-async def test_get_example(jp_fetch):
+async def test_get_node_libraries(jp_fetch):
     # When
-    response = await jp_fetch("vp4jl", "get_example")
+    response = await jp_fetch("vp4jl", "get_node_libraries")
 
     # Then
     assert response.code == 200
     payload = json.loads(response.body)
-    assert payload == {
-        "data": "This is /vp4jl/get_example endpoint!"
-    }
+    assert payload
