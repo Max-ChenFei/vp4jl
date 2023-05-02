@@ -48,6 +48,73 @@ class RouteHandler(APIHandler):
             "packages": NODE_TYPE_REGISTER,
         }))
 
+    def delete(self):
+        path = self.request.body.decode(
+            'utf-8').split('.')
+        if (len(path) == 0):
+            self.finish(json.dumps({
+                "message": "the input path is empty",
+            }))
+            return
+        # delete in the register
+        filePath = ''
+        isDir = False
+        isContent = False
+        if (len(path) == 1):
+            isDir = True
+            filePath = path[0]
+            del NODE_TYPE_REGISTER[path[0]]
+        else:
+            if (path[0] not in NODE_TYPE_REGISTER.keys()):
+                self.finish(json.dumps({
+                    "message": "fail, the input path is not valid",
+                }))
+                return
+            package = NODE_TYPE_REGISTER[path[0]]
+            for i in range(1, len(path) - 1):
+                package = package[path[i]]
+            filePath = os.sep.join(path[:-1])
+            if package['__isPackage__']:
+                if path[-1] in package.keys():
+                    filePath = os.path.join(filePath, path[-1])
+                    isDir = '__isPackage__' in package[path[-1]].keys()
+                    del package[path[-1]]
+                else:
+                    package = package["__init__"]
+                    filePath = os.path.join(filePath, "__init__")
+                    isContent = True
+                    if (path[-1] in package['nodes'].keys()):
+                        del package['nodes'][path[-1]]
+                    else:
+                        self.finish(json.dumps({
+                            "message": "fail, the input path is not valid"
+                        }))
+                        return
+            else:
+                if (path[-1] in package['nodes'].keys()):
+                    isContent = True
+                    del package['nodes'][path[-1]]
+                else:
+                    self.finish(json.dumps({
+                        "message": "fail, the input path is not valid"
+                    }))
+                    return
+
+        # delete in the file system
+        if (isDir):
+            shutil.rmtree(os.path.join(NODE_TYPE_FOLDER, filePath))
+        elif isContent == False:
+            os.remove(os.path.join(NODE_TYPE_FOLDER, filePath) + ".json")
+        else:
+            with open(os.path.join(NODE_TYPE_FOLDER, filePath) + ".json", "r") as f:
+                content = json.load(f)
+            del content['nodes'][path[-1]]
+            with open(os.path.join(NODE_TYPE_FOLDER, filePath) + ".json", "w") as f:
+                json.dump(content, f)
+        self.finish(json.dumps({
+            "message": "success"
+        }))
+
 
 def setup_handlers(web_app):
     host_pattern = ".*$"
