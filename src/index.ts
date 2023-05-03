@@ -6,13 +6,12 @@ import {
 } from '@jupyterlab/application';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import { ICommandPalette } from '@jupyterlab/apputils';
+import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
 import { VPModelFactory, VP_MODEL_FACTORY } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
 import { VPDocWidget } from './widget';
-import { WidgetTracker } from '@jupyterlab/apputils';
 import { LoadPackageToRegistry } from 'visual-programming-editor2';
 
 /**
