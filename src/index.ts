@@ -13,7 +13,7 @@ import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
 import { VPDocWidget } from './widget';
 import { LoadPackageToRegistry } from 'visual-programming-editor2';
-
+import { NodeExtension } from './node-extension';
 /**
  * Initialization data for the vp4jl extension.
  */
@@ -38,26 +38,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     const NEW_VP_File_COMMAND = 'vp4jl:new-file';
     const COMMAND_CATEGORY = 'Visual Programming';
 
-    requestAPI<any>('get_node_libraries')
-      .then(data => {
-        Object.entries(data.packages).forEach(([key, value]) => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          LoadPackageToRegistry(key, value!);
-        });
-      })
-      .catch(reason => {
-        console.error(
-          `The vp4jl server extension appears to be missing.\n${reason}`
-        );
-      });
-
-    labShell.currentChanged.connect((_, args) => {
-      if (args.oldValue instanceof VPDocWidget) {
-        args.oldValue.content.deactivate();
-      }
-      closeDefaultContextMenu();
-    });
-
+    // track and restore the widgets after reload
     const tracker = new WidgetTracker<VPDocWidget>({
       namespace: TRACKER_NAMESPACE
     });
@@ -73,6 +54,24 @@ const plugin: JupyterFrontEndPlugin<void> = {
       });
     }
 
+    // add node extension to the left stack panel
+    const content = new NodeExtension();
+    app.shell.add(content, 'left');
+
+    requestAPI<any>('get_node_libraries')
+      .then(data => {
+        Object.entries(data.packages).forEach(([key, value]) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          LoadPackageToRegistry(key, value!);
+        });
+      })
+      .catch(reason => {
+        console.error(
+          `The vp4jl server extension appears to be missing.\n${reason}`
+        );
+      });
+
+    // widget factory, file type, model factory registration
     const widgetFactory = new VPWidgetFactory({
       name: VP_WIDGET_FACTORY,
       modelName: VP_MODEL_FACTORY,
@@ -96,6 +95,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       contentType: 'file'
     });
 
+    // add new file command to the file menu, launcher and palette
     app.commands.addCommand(NEW_VP_File_COMMAND, {
       label: args =>
         args['isPalette']
@@ -139,12 +139,21 @@ const plugin: JupyterFrontEndPlugin<void> = {
       });
     }
 
+    // close the context menu when switch the tab
+    labShell.currentChanged.connect((_, args) => {
+      if (args.oldValue instanceof VPDocWidget) {
+        args.oldValue.content.deactivate();
+      }
+      closeDefaultContextMenu();
+    });
+
     function closeDefaultContextMenu() {
       if (app.contextMenu.menu.isAttached) {
         app.contextMenu.menu.close();
       }
     }
 
+    // close the context menu when click the tab
     function addClickEventToSideBar() {
       const sideBars = document.getElementsByClassName('jp-SideBar');
       if (!sideBars.length) {
