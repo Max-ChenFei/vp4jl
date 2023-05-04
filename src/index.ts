@@ -55,8 +55,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
     }
 
     // add node extension to the left stack panel
-    const content = new NodeExtension();
-    app.shell.add(content, 'left');
+    const nodeExtension = new NodeExtension();
+    app.shell.add(nodeExtension, 'left');
+    if (restorer) {
+      restorer.add(nodeExtension, 'vp4jlNodeExtension');
+    }
 
     requestAPI<any>('get_node_libraries')
       .then(data => {
