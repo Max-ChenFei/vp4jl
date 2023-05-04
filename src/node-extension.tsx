@@ -8,7 +8,7 @@ export class NodeExtension extends ReactWidget {
     this.id = DOMUtils.createDomID();
     this.node.style.background = 'var(--jp-layout-color1)';
     this.title.icon = extensionIcon;
-    this.title.caption = 'Counter widget';
+    this.title.caption = 'Node Extension Manager';
     this.addClass('jp-NodeExtension');
     this.addClass('lm-StackedPanel-child');
     this.addClass('p-StackedPanel-child');
