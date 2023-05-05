@@ -60,7 +60,6 @@
       "inputs": {
         "input": {
           "title": "Value",
-
           "dataType": "float"
         }
       },
@@ -113,7 +112,8 @@
       },
       "outputs": {
         "output": {}
-      }
+      },
+      "dataType": "any"
     }
   ],
   "edges": [
