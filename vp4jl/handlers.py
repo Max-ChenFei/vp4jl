@@ -5,17 +5,20 @@ from jupyter_server.utils import url_path_join
 import tornado
 import shutil
 
-NODE_TYPE_FOLDER = os.path.join(os.path.dirname(__file__), "vp_nodes")
+NODE_TYPE_FOLDER = os.path.join(os.path.dirname(__file__), "nodeextension")
 NODE_TYPE_REGISTER = {}
 
 
 def insertToObj(obj, path, value):
     for k in path[:-1]:
-        obj = obj[k]
-    obj[path[-1]] = value
+        obj = obj[k] if k in obj.keys() else obj['subpackages'][k]
+    if ('isPackage' in obj.keys()):
+        obj['subpackages'][path[-1]] = value
+    else:
+        obj[path[-1]] = value
 
 
-def loadNodeTypes():
+def loadNodeExtensions():
     nodes_foler = NODE_TYPE_FOLDER
     register = NODE_TYPE_REGISTER
     for folder, dirs, files in os.walk(nodes_foler):
@@ -34,7 +37,7 @@ def loadNodeTypes():
                     relativeFolder, os.path.splitext(file)[0]).split(os.sep), content)
         for dir in dirs:
             insertToObj(register, os.path.join(
-                relativeFolder, dir).split(os.sep), {'__isPackage__': True})
+                relativeFolder, dir).split(os.sep), {'isPackage': True, 'subpackages': {}})
 
 
 class RouteHandler(APIHandler):
@@ -74,10 +77,10 @@ class RouteHandler(APIHandler):
             for i in range(1, len(path) - 1):
                 package = package[path[i]]
             filePath = os.sep.join(path[:-1])
-            if package['__isPackage__']:
+            if package['isPackage']:
                 if path[-1] in package.keys():
                     filePath = os.path.join(filePath, path[-1])
-                    isDir = '__isPackage__' in package[path[-1]].keys()
+                    isDir = 'isPackage' in package[path[-1]].keys()
                     del package[path[-1]]
                 else:
                     package = package["__init__"]
@@ -121,6 +124,6 @@ def setup_handlers(web_app):
 
     base_url = web_app.settings["base_url"]
     route_pattern = url_path_join(base_url, "vp4jl", "get_node_libraries")
-    loadNodeTypes()
+    loadNodeExtensions()
     handlers = [(route_pattern, RouteHandler)]
     web_app.add_handlers(host_pattern, handlers)

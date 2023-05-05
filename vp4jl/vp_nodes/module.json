@@ -1,0 +1,15 @@
+{  
+  "href": "http://www.google.com",
+  "description": "this is a single file.",
+  "nodes": {
+    "literal": {
+      "type": "literal",
+      "category": "literal",
+      "inputs": {
+        "input": {
+          "tooltip": "literal handle"
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,10 @@
 import React from 'react';
 import { ReactWidget, DOMUtils } from '@jupyterlab/apputils';
 import { extensionIcon } from '@jupyterlab/ui-components';
+import {
+  NodeLibraryList,
+  nodeConfigRegistry
+} from 'visual-programming-editor2';
 
 export class NodeExtension extends ReactWidget {
   constructor() {
@@ -15,6 +19,28 @@ export class NodeExtension extends ReactWidget {
   }
 
   render(): JSX.Element {
-    return <p style={{ textAlign: 'center' }}>Node Extension</p>;
+    return (
+      <>
+        <NodeLibraryList
+          title="INSTALLED"
+          nodeExtensions={nodeConfigRegistry.getAllNodeConfigs()}
+          onUninstall={() => {
+            console.log('uninstall');
+            nodeConfigRegistry.removeNodeConfig('package1');
+            this.update();
+          }}
+          onDisable={() => {
+            console.log('disable');
+            nodeConfigRegistry.disableNodeConfig('package1');
+            this.update();
+          }}
+          onEnable={() => {
+            console.log('enable');
+            nodeConfigRegistry.enableNodeConfig('package1');
+            this.update();
+          }}
+        />
+      </>
+    );
   }
 }
