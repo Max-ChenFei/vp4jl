@@ -1,6 +1,7 @@
 import React from 'react';
 import { ReactWidget, DOMUtils } from '@jupyterlab/apputils';
 import { extensionIcon } from '@jupyterlab/ui-components';
+import { requestAPI } from './handler';
 import {
   NodeLibraryList,
   nodeConfigRegistry
@@ -18,24 +19,38 @@ export class NodeExtension extends ReactWidget {
     this.addClass('p-StackedPanel-child');
   }
 
+  private uninstallNodeExtension(name: string) {
+    requestAPI<any>('node_extension_manager', {
+      method: 'DELETE',
+      body: JSON.stringify(name)
+    })
+      .then(data => {
+        if (data.status === 'ok') {
+          nodeConfigRegistry.removeNodeConfig(name);
+          this.update();
+        }
+      })
+      .catch(reason => {
+        console.error(
+          `The node extension manager appears to be missing.\n${reason}`
+        );
+      });
+  }
+
   render(): JSX.Element {
     return (
       <>
         <NodeLibraryList
           title="INSTALLED"
-          nodeExtensions={nodeConfigRegistry.getAllNodeConfigs()}
-          onUninstall={() => {
-            console.log('uninstall');
-            nodeConfigRegistry.removeNodeConfig('package1');
-            this.update();
+          nodeExtensions={{ ...nodeConfigRegistry.getAllNodeConfigs() }}
+          onUninstall={(name: string) => {
+            this.uninstallNodeExtension(name);
           }}
           onDisable={() => {
-            console.log('disable');
             nodeConfigRegistry.disableNodeConfig('package1');
             this.update();
           }}
           onEnable={() => {
-            console.log('enable');
             nodeConfigRegistry.enableNodeConfig('package1');
             this.update();
           }}
