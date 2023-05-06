@@ -1,9 +1,9 @@
 import json
 
 
-async def test_get_node_libraries(jp_fetch):
+async def test_node_extension_manager(jp_fetch):
     # When
-    response = await jp_fetch("vp4jl", "get_node_libraries")
+    response = await jp_fetch("vp4jl", "node_extension_manager")
 
     # Then
     assert response.code == 200

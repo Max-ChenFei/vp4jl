@@ -52,8 +52,7 @@ class RouteHandler(APIHandler):
         }))
 
     def delete(self):
-        path = self.request.body.decode(
-            'utf-8').split('.')
+        path = json.loads(self.request.body).split('.')
         if (len(path) == 0):
             self.finish(json.dumps({
                 "message": "the input path is empty",
@@ -67,6 +66,7 @@ class RouteHandler(APIHandler):
             isDir = True
             filePath = path[0]
             del NODE_TYPE_REGISTER[path[0]]
+            isDir = os.path.isdir(os.path.join(NODE_TYPE_FOLDER, filePath))
         else:
             if (path[0] not in NODE_TYPE_REGISTER.keys()):
                 self.finish(json.dumps({
@@ -115,7 +115,7 @@ class RouteHandler(APIHandler):
             with open(os.path.join(NODE_TYPE_FOLDER, filePath) + ".json", "w") as f:
                 json.dump(content, f)
         self.finish(json.dumps({
-            "message": "success"
+            "status": "ok"
         }))
 
 
@@ -123,7 +123,7 @@ def setup_handlers(web_app):
     host_pattern = ".*$"
 
     base_url = web_app.settings["base_url"]
-    route_pattern = url_path_join(base_url, "vp4jl", "get_node_libraries")
+    route_pattern = url_path_join(base_url, "vp4jl", "node_extension_manager")
     loadNodeExtensions()
     handlers = [(route_pattern, RouteHandler)]
     web_app.add_handlers(host_pattern, handlers)
