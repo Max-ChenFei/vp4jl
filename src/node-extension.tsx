@@ -37,6 +37,24 @@ export class NodeExtension extends ReactWidget {
       });
   }
 
+  private enableNodeExtension(name: string, enable: boolean) {
+    requestAPI<any>('node_extension_manager', {
+      method: 'POST',
+      body: JSON.stringify({ name: name, enable: enable })
+    })
+      .then(data => {
+        if (data.status === 'ok') {
+          nodeConfigRegistry.enableNodeConfig(name, enable);
+          this.update();
+        }
+      })
+      .catch(reason => {
+        console.error(
+          `The node extension manager appears to be missing.\n${reason}`
+        );
+      });
+  }
+
   render(): JSX.Element {
     return (
       <>
@@ -46,13 +64,11 @@ export class NodeExtension extends ReactWidget {
           onUninstall={(name: string) => {
             this.uninstallNodeExtension(name);
           }}
-          onDisable={() => {
-            nodeConfigRegistry.disableNodeConfig('package1');
-            this.update();
+          onDisable={(name: string) => {
+            this.enableNodeExtension(name, false);
           }}
-          onEnable={() => {
-            nodeConfigRegistry.enableNodeConfig('package1');
-            this.update();
+          onEnable={(name: string) => {
+            this.enableNodeExtension(name, true);
           }}
         />
       </>

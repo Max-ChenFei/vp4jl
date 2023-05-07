@@ -51,6 +51,33 @@ class RouteHandler(APIHandler):
             "packages": NODE_TYPE_REGISTER,
         }))
 
+    def post(self):
+        payload = json.loads(self.request.body)
+        path = payload['name']
+        if (path == None):
+            self.finish(json.dumps({
+                "message": "the input path is empty",
+            }))
+            return
+        enable = payload['enable']
+        fullpath = os.path.join(NODE_TYPE_FOLDER, path)
+        if (os.path.isdir(fullpath)):
+            fullpath = os.path.join(fullpath, "__init__")
+        fullpath = fullpath + ".json"
+        if (os.path.exists(fullpath) and os.path.isfile(fullpath)):
+            with open(fullpath, "r") as f:
+                content = json.load(f)
+            content['enable'] = enable
+            with open(fullpath, "w") as f:
+                json.dump(content, f)
+            self.finish(json.dumps({
+                "status": "ok"
+            }))
+        else:
+            self.finish(json.dumps({
+                "message": "fail, the input path is not valid"
+            }))
+
     def delete(self):
         path = json.loads(self.request.body).split('.')
         if (len(path) == 0):
