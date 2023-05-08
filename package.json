@@ -61,10 +61,14 @@
     "@jupyterlab/mainmenu": "^3.6.3",
     "@jupyterlab/services": "^6.1.0",
     "crypto": "^1.0.1",
+    "filepond": "^4.30.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-filepond": "^7.1.2",
     "reactflow": "^11.7.0",
-    "visual-programming-editor2": "^0.2.13",
+    "stream": "^0.0.2",
+    "util": "^0.12.5",
+    "visual-programming-editor2": "^0.5.0",
     "yjs": "^13.5.53"
   },
   "devDependencies": {
