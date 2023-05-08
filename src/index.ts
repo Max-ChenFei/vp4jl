@@ -63,7 +63,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     requestAPI<any>('node_extension_manager')
       .then(data => {
-        console.log('node_extension_manager', data);
         Object.entries(data.packages).forEach(([key, value]) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           LoadPackageToRegistry(key, value!);
