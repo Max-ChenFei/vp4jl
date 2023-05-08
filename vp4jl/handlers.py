@@ -4,6 +4,8 @@ from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
 import tornado
 import shutil
+import zipfile
+
 
 NODE_TYPE_FOLDER = os.path.join(os.path.dirname(__file__), "nodeextension")
 NODE_TYPE_REGISTER = {}
@@ -51,15 +53,27 @@ class RouteHandler(APIHandler):
             "packages": NODE_TYPE_REGISTER,
         }))
 
-    def post(self):
-        payload = json.loads(self.request.body)
-        path = payload['name']
+    def addNewExtension(self, files):
+        for file in files:
+            if (file['content_type'] == 'text/plain' or file['content_type'] == 'application/json'):
+                with open(os.path.join(NODE_TYPE_FOLDER, file['filename']), 'w') as f:
+                    f.write(file['body'].decode('utf-8'))
+            if (file['content_type'] == 'application/octet-stream'):
+                with open(os.path.join(NODE_TYPE_FOLDER, file['filename']), 'wb') as f:
+                    f.write(file['body'])
+                with zipfile.ZipFile(os.path.join(NODE_TYPE_FOLDER, file['filename']), 'r') as zip_ref:
+                    zip_ref.extractall(NODE_TYPE_FOLDER)
+                os.remove(os.path.join(NODE_TYPE_FOLDER, file['filename']))
+        self.finish(json.dumps({
+            "status": "ok"
+        }))
+
+    def enableExtension(self, path, enable):
         if (path == None):
             self.finish(json.dumps({
                 "message": "the input path is empty",
             }))
             return
-        enable = payload['enable']
         fullpath = os.path.join(NODE_TYPE_FOLDER, path)
         if (os.path.isdir(fullpath)):
             fullpath = os.path.join(fullpath, "__init__")
@@ -77,6 +91,19 @@ class RouteHandler(APIHandler):
             self.finish(json.dumps({
                 "message": "fail, the input path is not valid"
             }))
+
+    def post(self):
+        if (self.request.files and 'files' in self.request.files.keys()):
+            self.addNewExtension(self.request.files['files'])
+            return
+        payload = json.loads(self.request.body)
+        path = payload['name']
+        if (path == None):
+            self.finish(json.dumps({
+                "message": "the input path is empty",
+            }))
+            return
+        self.enableExtension(path, payload['enable'])
 
     def delete(self):
         path = json.loads(self.request.body).split('.')

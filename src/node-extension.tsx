@@ -1,5 +1,7 @@
 import React from 'react';
 import { ReactWidget, DOMUtils } from '@jupyterlab/apputils';
+import { URLExt } from '@jupyterlab/coreutils';
+import { ServerConnection } from '@jupyterlab/services';
 import { extensionIcon } from '@jupyterlab/ui-components';
 import { requestAPI } from './handler';
 import {
@@ -7,7 +9,40 @@ import {
   nodeConfigRegistry,
   Progress
 } from 'visual-programming-editor2';
+import { jltoken } from './token';
 
+function NodeExtensionWidget({
+  fetching,
+  uninstallNodeExtension,
+  enableNodeExtension,
+  url
+}: {
+  fetching: boolean;
+  uninstallNodeExtension: (name: string) => void;
+  enableNodeExtension: (name: string, enable: boolean) => void;
+  url?: string;
+}): JSX.Element {
+  return (
+    <>
+      <Progress enable={fetching} />
+      <NodeLibraryList
+        title="INSTALLED"
+        nodeExtensions={{ ...nodeConfigRegistry.getAllNodeConfigs() }}
+        onUninstall={(name: string) => {
+          uninstallNodeExtension(name);
+        }}
+        onDisable={(name: string) => {
+          enableNodeExtension(name, false);
+        }}
+        onEnable={(name: string) => {
+          enableNodeExtension(name, true);
+        }}
+        url={url}
+        tokens={jltoken()}
+      />
+    </>
+  );
+}
 export class NodeExtension extends ReactWidget {
   private fetching = false;
   constructor() {
@@ -67,26 +102,22 @@ export class NodeExtension extends ReactWidget {
         this.fetching = false;
         this.update();
       });
-  }
+  } // Make request to Jupyter API
+  settings = ServerConnection.makeSettings();
+  requestUrl = URLExt.join(
+    this.settings.baseUrl,
+    'vp4jl', // API Namespace
+    'node_extension_manager'
+  );
 
   render(): JSX.Element {
     return (
-      <>
-        <Progress enable={this.fetching} />
-        <NodeLibraryList
-          title="INSTALLED"
-          nodeExtensions={{ ...nodeConfigRegistry.getAllNodeConfigs() }}
-          onUninstall={(name: string) => {
-            this.uninstallNodeExtension(name);
-          }}
-          onDisable={(name: string) => {
-            this.enableNodeExtension(name, false);
-          }}
-          onEnable={(name: string) => {
-            this.enableNodeExtension(name, true);
-          }}
-        />
-      </>
+      <NodeExtensionWidget
+        fetching={this.fetching}
+        uninstallNodeExtension={this.uninstallNodeExtension.bind(this)}
+        enableNodeExtension={this.enableNodeExtension.bind(this)}
+        url={this.requestUrl}
+      />
     );
   }
 }
