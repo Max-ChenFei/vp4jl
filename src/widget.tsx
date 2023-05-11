@@ -71,7 +71,7 @@ export class VPWidget extends ReactWidget {
 }
 
 /**
- * A DocumentWidge that represents the view for a fiel type
+ * A Document Widget that represents the view for a file type
  */
 export class VPDocWidget extends DocumentWidget<
   VPWidget,
