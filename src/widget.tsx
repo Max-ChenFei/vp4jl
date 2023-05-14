@@ -1,8 +1,15 @@
 import React from 'react';
-import { ReactWidget } from '@jupyterlab/apputils';
+import {
+  ISessionContext,
+  ReactWidget,
+  SessionContext,
+  sessionContextDialogs
+} from '@jupyterlab/apputils';
 import { DocumentRegistry, DocumentWidget } from '@jupyterlab/docregistry';
 import { VPEditor, type SerializedGraph } from 'visual-programming-editor2';
 import 'visual-programming-editor2/dist/style.css';
+import { ServiceManager } from '@jupyterlab/services';
+import { Message } from '@lumino/messaging';
 /**
  * A visual programming widget that contains the main view of the DocumentWidget.
  */
@@ -77,12 +84,47 @@ export class VPDocWidget extends DocumentWidget<
   VPWidget,
   DocumentRegistry.ICodeModel
 > {
+  private _sessionContext: SessionContext;
   constructor(
-    options: DocumentWidget.IOptions<VPWidget, DocumentRegistry.ICodeModel>
+    options: DocumentWidget.IOptions<VPWidget, DocumentRegistry.ICodeModel>,
+    serviceManager: ServiceManager.IManager
   ) {
     super(options);
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';
     this.addClass('jp-VPWidget');
+
+    this._sessionContext = new SessionContext({
+      sessionManager: serviceManager.sessions,
+      specsManager: serviceManager.kernelspecs,
+      name: options.context.sessionContext.name
+    });
+
+    void this._sessionContext
+      .initialize()
+      .then(async value => {
+        if (value) {
+          await sessionContextDialogs.selectKernel(this._sessionContext);
+          await this._sessionContext.session?.kernel?.info;
+        }
+      })
+      .catch(reason => {
+        console.error(
+          `Failed to initialize the session in Visual Programming Panel.\n${reason}`
+        );
+      });
+  }
+  get session(): ISessionContext {
+    return this._sessionContext;
+  }
+
+  dispose(): void {
+    this._sessionContext.dispose();
+    super.dispose();
+  }
+
+  protected onCloseRequest(msg: Message): void {
+    super.onCloseRequest(msg);
+    this.dispose();
   }
 }
