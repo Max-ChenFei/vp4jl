@@ -75,12 +75,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
       });
 
     // widget factory, file type, model factory registration
-    const widgetFactory = new VPWidgetFactory({
-      name: VP_WIDGET_FACTORY,
-      modelName: VP_MODEL_FACTORY,
-      fileTypes: [VP_FILE_TYPE],
-      defaultFor: [VP_FILE_TYPE]
-    });
+    const widgetFactory = new VPWidgetFactory(
+      {
+        name: VP_WIDGET_FACTORY,
+        modelName: VP_MODEL_FACTORY,
+        fileTypes: [VP_FILE_TYPE],
+        defaultFor: [VP_FILE_TYPE]
+      },
+      app.serviceManager
+    );
     widgetFactory.widgetCreated.connect((sender, widget) => {
       widget.context.pathChanged.connect(() => {
         tracker.save(widget);
