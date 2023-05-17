@@ -1,7 +1,5 @@
 import { DocumentRegistry, ABCWidgetFactory } from '@jupyterlab/docregistry';
 import { VPDocWidget, VPWidget } from './widget';
-import { ServiceManager } from '@jupyterlab/services';
-
 /**
  * A widget factory to create new intance of VPDocWidget.
  */
@@ -14,25 +12,18 @@ export class VPWidgetFactory extends ABCWidgetFactory<
   private _widgets: VPDocWidget[] = [];
   private _widgetId = 0;
   private _onMouseDown = this.deactivateWidgetIfMouseDownOut.bind(this);
-  private _serviceManager: ServiceManager.IManager;
-  constructor(
-    options: DocumentRegistry.IWidgetFactoryOptions<VPDocWidget>,
-    serviceManager: ServiceManager.IManager
-  ) {
+
+  constructor(options: DocumentRegistry.IWidgetFactoryOptions<VPDocWidget>) {
     super(options);
-    this._serviceManager = serviceManager;
   }
 
   protected createNewWidget(
     context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>
   ): VPDocWidget {
-    const w = new VPDocWidget(
-      {
-        context,
-        content: new VPWidget(`vp_widget_${++this._widgetId}`, context)
-      },
-      this._serviceManager
-    );
+    const w = new VPDocWidget({
+      context,
+      content: new VPWidget(`vp_widget_${++this._widgetId}`, context)
+    });
     this.onWidgetCreated(w);
     w.disposed.connect(w => {
       this.onWidgetDisposed(w);

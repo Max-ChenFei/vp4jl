@@ -4,7 +4,10 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import {
+  IFileBrowserFactory,
+  IDefaultFileBrowser
+} from '@jupyterlab/filebrowser';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
@@ -12,7 +15,7 @@ import { VPModelFactory, VP_MODEL_FACTORY } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
 import { VPDocWidget } from './widget';
-import { LoadPackageToRegistry } from 'visual-programming-editor2';
+import { LoadPackageToRegistry } from 'visual-programming-editor';
 import { NodeExtension } from './node-extension';
 /**
  * Initialization data for the vp4jl extension.
@@ -20,11 +23,12 @@ import { NodeExtension } from './node-extension';
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:plugin',
   autoStart: true,
-  requires: [ILabShell, IFileBrowserFactory, IMainMenu],
+  requires: [ILabShell, IDefaultFileBrowser, IFileBrowserFactory, IMainMenu],
   optional: [ILayoutRestorer, ILauncher, ICommandPalette],
   activate: (
     app: JupyterFrontEnd,
     labShell: ILabShell,
+    defaultFileBrowser: IDefaultFileBrowser,
     browserFactory: IFileBrowserFactory,
     mainMenu: IMainMenu,
     restorer: ILayoutRestorer | null,
@@ -75,15 +79,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
       });
 
     // widget factory, file type, model factory registration
-    const widgetFactory = new VPWidgetFactory(
-      {
-        name: VP_WIDGET_FACTORY,
-        modelName: VP_MODEL_FACTORY,
-        fileTypes: [VP_FILE_TYPE],
-        defaultFor: [VP_FILE_TYPE]
-      },
-      app.serviceManager
-    );
+    const widgetFactory = new VPWidgetFactory({
+      name: VP_WIDGET_FACTORY,
+      modelName: VP_MODEL_FACTORY,
+      fileTypes: [VP_FILE_TYPE],
+      defaultFor: [VP_FILE_TYPE]
+    });
     widgetFactory.widgetCreated.connect((sender, widget) => {
       widget.context.pathChanged.connect(() => {
         tracker.save(widget);
@@ -112,7 +113,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         const cwd =
           args['cwd'] ||
           browserFactory.tracker.currentWidget?.model.path ||
-          browserFactory.defaultBrowser.model.path;
+          defaultFileBrowser.model.path;
         const model = await app.commands.execute('docmanager:new-untitled', {
           path: cwd,
           contentType: 'file',

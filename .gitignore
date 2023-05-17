@@ -1,3 +1,7 @@
+.vscode/*
+_temp_extension
+.yarn/
+.copier-answers.yml
 *.bundle.*
 lib/
 node_modules/
@@ -120,3 +124,6 @@ dmypy.json
 
 # OSX files
 .DS_Store
+
+# Yarn cache
+.yarn/

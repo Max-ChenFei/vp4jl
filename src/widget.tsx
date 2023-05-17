@@ -1,36 +1,23 @@
 import React from 'react';
-import {
-  ISessionContext,
-  ReactWidget,
-  SessionContext,
-  sessionContextDialogs
-} from '@jupyterlab/apputils';
+import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
 import { DocumentRegistry, DocumentWidget } from '@jupyterlab/docregistry';
-import { VPEditor, type SerializedGraph } from 'visual-programming-editor2';
-import 'visual-programming-editor2/dist/style.css';
-import {
-  Kernel,
-  KernelMessage,
-  ServiceManager,
-  Session
-} from '@jupyterlab/services';
-import { Message } from '@lumino/messaging';
+import { Kernel, Session } from '@jupyterlab/services';
+import { VPEditor, type SerializedGraph } from 'visual-programming-editor';
+import 'visual-programming-editor/dist/style.css';
 
 function isSameContent(
-  a: string | SerializedGraph | undefined,
-  b: string | SerializedGraph | undefined
+  a: string | null | object,
+  b: string | null | object
 ): boolean {
-  if (a === undefined && b === undefined) {
-    return false;
-  }
-  const aContent =
-    typeof a !== 'string'
-      ? JSON.stringify(a as SerializedGraph)
-      : JSON.stringify(JSON.parse(a) as SerializedGraph);
-  const bContent =
-    typeof b !== 'string'
-      ? JSON.stringify(b as SerializedGraph)
-      : JSON.stringify(JSON.parse(b) as SerializedGraph);
+  const pureContentString = (content: string | null | object) => {
+    let pure = content;
+    if (typeof content === 'string') {
+      pure = JSON.parse(content || 'null');
+    }
+    return JSON.stringify(pure);
+  };
+  const aContent = pureContentString(a);
+  const bContent = pureContentString(b);
   return aContent === bContent;
 }
 
@@ -38,60 +25,120 @@ function isSameContent(
  * A visual programming widget that contains the main view of the DocumentWidget.
  */
 export class VPWidget extends ReactWidget {
-  private _sessionContext!: ISessionContext;
   private _id: string;
   private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
-  private _graphContent: SerializedGraph | undefined;
-  private _editor_activated = false;
+  private _vpContent: SerializedGraph | null;
   private _modelMetadata: { [key: string]: any } = {};
-
+  private _editor_activated = false;
+  private _shouldStartKernel = true;
   constructor(
     id: string,
     context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>
   ) {
     super();
     this._id = id;
-    this._graphContent = undefined;
+    this._vpContent = null;
     this._context = context;
+    this.model.contentChanged.connect(this._setContent.bind(this));
+    this.sessionContext.kernelChanged.connect(this._onKernelChanged, this);
     this._context.ready.then(() => {
-      this._setContent();
-      this._context.model.contentChanged.connect(() => {
-        // the change of model.value.text comes from the editor or the command from the menu like "reload from disk"
-        this._setContent();
-      });
+      if (this._shouldStartKernel) {
+        this._context.sessionContext.kernelPreference = {
+          canStart: true,
+          shouldStart: true,
+          autoStartDefault: false,
+          shutdownOnDispose: true
+        };
+      }
     });
   }
 
+  get model(): DocumentRegistry.ICodeModel {
+    return this._context.model;
+  }
+
+  get sessionContext(): ISessionContext {
+    return this._context.sessionContext;
+  }
+
+  private async _setKernelSpec(newSpec?: any) {
+    if (newSpec) {
+      this._shouldStartKernel = false;
+      this.sessionContext.changeKernel(newSpec);
+    }
+  }
+
   private _setContent() {
-    if (!isSameContent(this._graphContent, this._context.model.value.text)) {
-      const model = JSON.parse(this._context.model.value.text);
-      this._graphContent = model as SerializedGraph;
-      this._modelMetadata = model.metadata || {};
+    const model = JSON.parse(this.model.toString());
+    if (!isSameContent(this._modelMetadata, model.metadata ?? {})) {
+      this._setKernelSpec(model.metadata?.kernelspec);
+      this._modelMetadata = model.metadata;
+    }
+    if (!isSameContent(this._vpContent, model.vpContent)) {
+      this._vpContent = model.vpContent;
       this.update();
     }
   }
 
-  private _setModelText(): void {
-    this._context.model.value.text = JSON.stringify({
-      ...this._graphContent,
-      metadata: this._modelMetadata
+  private _updateModelString({
+    metadata,
+    vpContent
+  }: {
+    metadata?: { [key: string]: any };
+    vpContent?: SerializedGraph;
+  }): void {
+    this.model.fromString(
+      JSON.stringify({
+        vpContent: vpContent ?? this._vpContent,
+        metadata: metadata ?? this._modelMetadata
+      })
+    );
+  }
+
+  private _syncVPContent(newContent: string) {
+    // when the context is ready amd get the value from the disk,
+    // the funciton will be called, so unnecessary update will be avoided.
+    const vpContent = JSON.parse(newContent);
+    if (isSameContent(this._vpContent, vpContent)) {
+      return;
+    }
+    this._vpContent = vpContent;
+    this._updateModelString({ vpContent });
+  }
+
+  private setMetadata(key: string, value: any) {
+    this._updateModelString({
+      metadata: { ...this._modelMetadata, [key]: value }
     });
   }
 
-  private _onContentChanged(newContent: string) {
-    if (!isSameContent(newContent, this._graphContent)) {
-      this._graphContent = JSON.parse(newContent);
-      this._setModelText();
+  private _onKernelChanged(
+    sender: any,
+    args: Session.ISessionConnection.IKernelChangedArgs
+  ): void {
+    if (!this.model || !args.newValue) {
+      return;
     }
+    const { newValue } = args;
+    void this._updatekernelSpec(newValue);
   }
 
-  set sessionContext(sessionContext: ISessionContext) {
-    this._sessionContext = sessionContext;
-    this._sessionContext.kernelChanged.connect(this._onKernelChanged, this);
-  }
-
-  get model(): DocumentRegistry.ICodeModel | null {
-    return this._context.model;
+  private async _updatekernelSpec(
+    kernel: Kernel.IKernelConnection
+  ): Promise<void> {
+    const spec = await kernel.spec;
+    if (this.isDisposed) {
+      return;
+    }
+    const newSpec = {
+      name: kernel.name,
+      display_name: spec?.display_name,
+      language: spec?.language
+    };
+    if (!isSameContent(this._modelMetadata.kernelspec, newSpec)) {
+      this._modelMetadata.kernelspec = newSpec;
+      this.setMetadata('kernelspec', newSpec);
+    }
   }
 
   activate(): void {
@@ -108,54 +155,14 @@ export class VPWidget extends ReactWidget {
     }
   }
 
-  private setMetadata(key: string, value: any) {
-    this._modelMetadata[key] = value;
-    this._setModelText();
-  }
-
-  private _onKernelChanged(
-    sender: any,
-    args: Session.ISessionConnection.IKernelChangedArgs
-  ): void {
-    if (!this.model || !args.newValue) {
-      return;
-    }
-    const { newValue } = args;
-    void newValue.info.then(info => {
-      if (
-        this.model &&
-        this._context.sessionContext.session?.kernel === newValue
-      ) {
-        this._updateLanguage(info.language_info);
-      }
-    });
-    void this._updatekernelSpec(newValue);
-  }
-
-  private _updateLanguage(language: KernelMessage.ILanguageInfo): void {
-    this.setMetadata('language_info', language);
-  }
-
-  private async _updatekernelSpec(
-    kernel: Kernel.IKernelConnection
-  ): Promise<void> {
-    const spec = await kernel.spec;
-    if (this.isDisposed) {
-      return;
-    }
-    this.setMetadata('kernelspec', {
-      name: kernel.name,
-      display_name: spec?.display_name,
-      language: spec?.language
-    });
-  }
-
   render(): JSX.Element {
     return (
       <VPEditor
         id={this._id}
-        content={this._graphContent}
-        onContentChange={newContent => this._onContentChanged(newContent)}
+        content={this._vpContent}
+        onContentChange={(newContent: string) =>
+          this._syncVPContent(newContent)
+        }
         activated={this._editor_activated}
       />
     );
@@ -169,53 +176,12 @@ export class VPDocWidget extends DocumentWidget<
   VPWidget,
   DocumentRegistry.ICodeModel
 > {
-  private _sessionContext: SessionContext;
   constructor(
-    options: DocumentWidget.IOptions<VPWidget, DocumentRegistry.ICodeModel>,
-    serviceManager: ServiceManager.IManager
+    options: DocumentWidget.IOptions<VPWidget, DocumentRegistry.ICodeModel>
   ) {
     super(options);
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';
     this.addClass('jp-VPWidget');
-    this._sessionContext = new SessionContext({
-      sessionManager: serviceManager.sessions,
-      specsManager: serviceManager.kernelspecs,
-      name: options.context.sessionContext.name
-    });
-    // so the vpwidget can get the sessionContext and bind slot to the kernelChanged signal
-    options.content.sessionContext = this._sessionContext;
-    void this._sessionContext
-      .initialize()
-      .then(async value => {
-        if (!value) {
-          return;
-        }
-        options.context.ready.then(async () => {
-          const content = JSON.parse(options.context.model.value.text);
-          console.log(content);
-          if (content.metadata?.kernelspec) {
-            this._sessionContext.changeKernel(content.metadata.kernelspec);
-          } else {
-            console.log('No kernelspec in the metadata');
-            await sessionContextDialogs.selectKernel(this._sessionContext);
-          }
-        });
-      })
-      .catch(reason => {
-        console.error(
-          `Failed to initialize the session in Visual Programming Panel.\n${reason}`
-        );
-      });
-  }
-
-  dispose(): void {
-    this._sessionContext.dispose();
-    super.dispose();
-  }
-
-  protected onCloseRequest(msg: Message): void {
-    super.onCloseRequest(msg);
-    this.dispose();
   }
 }

@@ -8,7 +8,7 @@ import {
   NodeLibraryList,
   nodeConfigRegistry,
   Progress
-} from 'visual-programming-editor2';
+} from 'visual-programming-editor';
 import { jltoken } from './token';
 
 function NodeExtensionWidget({
