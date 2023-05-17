@@ -6,8 +6,8 @@ import { VPEditor, type SerializedGraph } from 'visual-programming-editor';
 import 'visual-programming-editor/dist/style.css';
 
 function isSameContent(
-  a: string | null | Object,
-  b: string | null | Object
+  a: string | null | object,
+  b: string | null | object
 ): boolean {
   const pureContentString = (content: string | null | object) => {
     let pure = content;
@@ -42,13 +42,14 @@ export class VPWidget extends ReactWidget {
     this.model.contentChanged.connect(this._setContent.bind(this));
     this.sessionContext.kernelChanged.connect(this._onKernelChanged, this);
     this._context.ready.then(() => {
-      if (this._shouldStartKernel)
+      if (this._shouldStartKernel) {
         this._context.sessionContext.kernelPreference = {
           canStart: true,
           shouldStart: true,
           autoStartDefault: false,
           shutdownOnDispose: true
         };
+      }
     });
   }
 
@@ -98,7 +99,9 @@ export class VPWidget extends ReactWidget {
     // when the context is ready amd get the value from the disk,
     // the funciton will be called, so unnecessary update will be avoided.
     const vpContent = JSON.parse(newContent);
-    if (isSameContent(this._vpContent, vpContent)) return;
+    if (isSameContent(this._vpContent, vpContent)) {
+      return;
+    }
     this._vpContent = vpContent;
     this._updateModelString({ vpContent });
   }
