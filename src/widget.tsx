@@ -41,16 +41,7 @@ export class VPWidget extends ReactWidget {
     this._context = context;
     this.model.contentChanged.connect(this._setContent.bind(this));
     this.sessionContext.kernelChanged.connect(this._onKernelChanged, this);
-    this._context.ready.then(() => {
-      if (this._shouldStartKernel) {
-        this._context.sessionContext.kernelPreference = {
-          canStart: true,
-          shouldStart: true,
-          autoStartDefault: false,
-          shutdownOnDispose: true
-        };
-      }
-    });
+    this._context.ready.then(this._onContextReady.bind(this));
   }
 
   get model(): DocumentRegistry.ICodeModel {
@@ -138,6 +129,17 @@ export class VPWidget extends ReactWidget {
     if (!isSameContent(this._modelMetadata.kernelspec, newSpec)) {
       this._modelMetadata.kernelspec = newSpec;
       this.setMetadata('kernelspec', newSpec);
+    }
+  }
+
+  private _onContextReady() {
+    if (this._shouldStartKernel) {
+      this._context.sessionContext.kernelPreference = {
+        canStart: true,
+        shouldStart: true,
+        autoStartDefault: false,
+        shutdownOnDispose: true
+      };
     }
   }
 

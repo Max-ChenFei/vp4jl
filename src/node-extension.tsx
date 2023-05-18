@@ -1,15 +1,15 @@
 import React from 'react';
-import { ReactWidget, DOMUtils } from '@jupyterlab/apputils';
 import { URLExt } from '@jupyterlab/coreutils';
 import { ServerConnection } from '@jupyterlab/services';
 import { extensionIcon } from '@jupyterlab/ui-components';
-import { requestAPI } from './handler';
+import { ReactWidget, DOMUtils } from '@jupyterlab/apputils';
 import {
   NodeLibraryList,
   nodeConfigRegistry,
   Progress
 } from 'visual-programming-editor';
-import { jltoken } from './token';
+import { requestAPI } from './request';
+import { requestToken } from './request-token';
 
 function NodeExtensionWidget({
   fetching,
@@ -38,7 +38,7 @@ function NodeExtensionWidget({
           enableNodeExtension(name, true);
         }}
         url={url}
-        tokens={jltoken()}
+        tokens={requestToken()}
       />
     </>
   );
