@@ -9,21 +9,21 @@ import {
   IDefaultFileBrowser
 } from '@jupyterlab/filebrowser';
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
+import { ICommandPalette } from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
 import { VPModelFactory } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
 import { VPDocWidget } from './widget';
-import { LoadPackageToRegistry } from 'visual-programming-editor';
+import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { NodeExtension } from './node-extension';
 import { vp4jlIDs as gVP4jlIDs } from './namepace';
+import { LoadPackageToRegistry } from 'visual-programming-editor';
 
-const vp4jl: JupyterFrontEndPlugin<void> = {
+const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
   id: 'vp4jl:plugin',
   autoStart: true,
-  requires: [],
-  optional: [ILayoutRestorer],
+  provides: IVPTrackerToken,
   activate: activateVp4jl
 };
 
@@ -35,11 +35,11 @@ const vp4jlMenu: JupyterFrontEndPlugin<void> = {
   activate: activateVp4jlMenu
 };
 
-const vp4jlFixContextMenuClose: JupyterFrontEndPlugin<void> = {
-  id: 'vp4jl:FixContextMenuClose',
+const vp4jlRestorer: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:Restorer',
   autoStart: true,
-  requires: [ILabShell],
-  activate: activateVp4jlFixContextMenuClose
+  optional: [ILayoutRestorer, IVPTrackerToken],
+  activate: activateVp4jlRestorer
 };
 
 const vp4jlNodeExtension: JupyterFrontEndPlugin<void> = {
@@ -49,32 +49,28 @@ const vp4jlNodeExtension: JupyterFrontEndPlugin<void> = {
   optional: [ILayoutRestorer],
   activate: activateVp4jlNodeExtension
 };
+const vp4jlFixContextMenuClose: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:FixContextMenuClose',
+  autoStart: true,
+  requires: [ILabShell],
+  activate: activateVp4jlFixContextMenuClose
+};
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
   vp4jl,
   vp4jlMenu,
-  vp4jlFixContextMenuClose,
-  vp4jlNodeExtension
+  vp4jlRestorer,
+  vp4jlNodeExtension,
+  vp4jlFixContextMenuClose
 ];
 export default plugins;
 
-function activateVp4jl(app: JupyterFrontEnd, restorer: ILayoutRestorer | null) {
+function activateVp4jl(app: JupyterFrontEnd): IVPTracker {
   const vp4jlIDs = gVP4jlIDs;
-  // track and restore the widgets after reload
-  const tracker = new WidgetTracker<VPDocWidget>({
+
+  const tracker = new VPTracker({
     namespace: vp4jlIDs.trackerNamespace
   });
-
-  if (restorer) {
-    restorer.restore(tracker, {
-      command: 'docmanager:open',
-      args: widget => ({
-        path: widget.context.path,
-        factory: vp4jlIDs.widgetFactory
-      }),
-      name: widget => widget.context.path
-    });
-  }
 
   const widgetFactory = new VPWidgetFactory({
     name: vp4jlIDs.widgetFactory,
@@ -88,6 +84,7 @@ function activateVp4jl(app: JupyterFrontEnd, restorer: ILayoutRestorer | null) {
     });
     tracker.add(widget);
   });
+
   app.docRegistry.addWidgetFactory(widgetFactory);
   app.docRegistry.addModelFactory(new VPModelFactory());
   app.docRegistry.addFileType({
@@ -98,6 +95,7 @@ function activateVp4jl(app: JupyterFrontEnd, restorer: ILayoutRestorer | null) {
     fileFormat: 'text',
     contentType: 'file'
   });
+  return tracker;
 }
 
 function activateVp4jlMenu(
@@ -160,6 +158,52 @@ function activateVp4jlMenu(
   });
 }
 
+function activateVp4jlRestorer(
+  app: JupyterFrontEnd,
+  restorer: ILayoutRestorer | null,
+  tracker: IVPTracker | null
+) {
+  const vp4jlIDs = gVP4jlIDs;
+  if (restorer && tracker) {
+    restorer.restore(tracker, {
+      command: 'docmanager:open',
+      args: widget => ({
+        path: widget.context.path,
+        factory: vp4jlIDs.widgetFactory
+      }),
+      name: widget => widget.context.path
+    });
+  }
+}
+
+function activateVp4jlNodeExtension(
+  app: JupyterFrontEnd,
+  restorer: ILayoutRestorer | null
+) {
+  const nodeExtension = new NodeExtension();
+  app.shell.add(nodeExtension, 'left');
+
+  if (restorer) {
+    restorer.add(nodeExtension, 'vp4jlNodeExtension');
+  }
+  fetchNodeExtensions();
+}
+
+function fetchNodeExtensions() {
+  requestAPI<any>('node_extension_manager')
+    .then(data => {
+      Object.entries(data.packages).forEach(([key, value]) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        LoadPackageToRegistry(key, value!);
+      });
+    })
+    .catch(reason => {
+      console.error(
+        `The vp4jl server extension appears to be missing.\n${reason}`
+      );
+    });
+}
+
 function activateVp4jlFixContextMenuClose(
   app: JupyterFrontEnd,
   labShell: ILabShell
@@ -197,32 +241,4 @@ function activateVp4jlFixContextMenuClose(
   window.requestAnimationFrame(() => {
     addClickEventToSideBar();
   });
-}
-
-function activateVp4jlNodeExtension(
-  app: JupyterFrontEnd,
-  restorer: ILayoutRestorer | null
-) {
-  const nodeExtension = new NodeExtension();
-  app.shell.add(nodeExtension, 'left');
-
-  if (restorer) {
-    restorer.add(nodeExtension, 'vp4jlNodeExtension');
-  }
-  fetchNodeExtensions();
-}
-
-function fetchNodeExtensions() {
-  requestAPI<any>('node_extension_manager')
-    .then(data => {
-      Object.entries(data.packages).forEach(([key, value]) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        LoadPackageToRegistry(key, value!);
-      });
-    })
-    .catch(reason => {
-      console.error(
-        `The vp4jl server extension appears to be missing.\n${reason}`
-      );
-    });
 }
