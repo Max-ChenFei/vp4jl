@@ -11,40 +11,27 @@ import {
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
-import { VPModelFactory, VP_MODEL_FACTORY } from './model-factory';
+import { VPModelFactory } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
 import { VPDocWidget } from './widget';
 import { LoadPackageToRegistry } from 'visual-programming-editor';
 import { NodeExtension } from './node-extension';
+import { vp4jlIDs as gVP4jlIDs } from './namepace';
+
 /**
  * Initialization data for the vp4jl extension.
  */
-const plugin: JupyterFrontEndPlugin<void> = {
+const vp4jl: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:plugin',
   autoStart: true,
-  requires: [ILabShell, IDefaultFileBrowser, IFileBrowserFactory, IMainMenu],
-  optional: [ILayoutRestorer, ILauncher, ICommandPalette],
-  activate: (
-    app: JupyterFrontEnd,
-    labShell: ILabShell,
-    defaultFileBrowser: IDefaultFileBrowser,
-    browserFactory: IFileBrowserFactory,
-    mainMenu: IMainMenu,
-    restorer: ILayoutRestorer | null,
-    launcher: ILauncher | null,
-    palette: ICommandPalette | null
-  ) => {
-    const VP_FILE_TYPE = 'vp4jl';
-    const VP_WIDGET_FACTORY = 'VP Editor';
-    const TRACKER_NAMESPACE = 'vp4jl';
-    const FILE_EXTENSION = '.vp4jl';
-    const NEW_VP_File_COMMAND = 'vp4jl:new-file';
-    const COMMAND_CATEGORY = 'Visual Programming';
-
+  requires: [],
+  optional: [ILayoutRestorer],
+  activate: (app: JupyterFrontEnd, restorer: ILayoutRestorer | null) => {
+    const vp4jlIDs = gVP4jlIDs;
     // track and restore the widgets after reload
     const tracker = new WidgetTracker<VPDocWidget>({
-      namespace: TRACKER_NAMESPACE
+      namespace: vp4jlIDs.trackerNamespace
     });
 
     if (restorer) {
@@ -52,38 +39,17 @@ const plugin: JupyterFrontEndPlugin<void> = {
         command: 'docmanager:open',
         args: widget => ({
           path: widget.context.path,
-          factory: VP_WIDGET_FACTORY
+          factory: vp4jlIDs.widgetFactory
         }),
         name: widget => widget.context.path
       });
     }
 
-    // add node extension to the left stack panel
-    const nodeExtension = new NodeExtension();
-    app.shell.add(nodeExtension, 'left');
-    if (restorer) {
-      restorer.add(nodeExtension, 'vp4jlNodeExtension');
-    }
-
-    requestAPI<any>('node_extension_manager')
-      .then(data => {
-        Object.entries(data.packages).forEach(([key, value]) => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          LoadPackageToRegistry(key, value!);
-        });
-      })
-      .catch(reason => {
-        console.error(
-          `The vp4jl server extension appears to be missing.\n${reason}`
-        );
-      });
-
-    // widget factory, file type, model factory registration
     const widgetFactory = new VPWidgetFactory({
-      name: VP_WIDGET_FACTORY,
-      modelName: VP_MODEL_FACTORY,
-      fileTypes: [VP_FILE_TYPE],
-      defaultFor: [VP_FILE_TYPE]
+      name: vp4jlIDs.widgetFactory,
+      modelName: vp4jlIDs.modelFactory,
+      fileTypes: [vp4jlIDs.fileType],
+      defaultFor: [vp4jlIDs.fileType]
     });
     widgetFactory.widgetCreated.connect((sender, widget) => {
       widget.context.pathChanged.connect(() => {
@@ -94,21 +60,38 @@ const plugin: JupyterFrontEndPlugin<void> = {
     app.docRegistry.addWidgetFactory(widgetFactory);
     app.docRegistry.addModelFactory(new VPModelFactory());
     app.docRegistry.addFileType({
-      name: VP_FILE_TYPE,
+      name: vp4jlIDs.fileType,
       displayName: 'VP File',
       mimeTypes: ['text/json', 'application/json'],
-      extensions: [FILE_EXTENSION],
+      extensions: [vp4jlIDs.fileExtension],
       fileFormat: 'text',
       contentType: 'file'
     });
+  }
+};
 
-    // add new file command to the file menu, launcher and palette
-    app.commands.addCommand(NEW_VP_File_COMMAND, {
+const vp4jlMenu: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:Menu',
+  autoStart: true,
+  requires: [IDefaultFileBrowser, IFileBrowserFactory, IMainMenu],
+  optional: [ILauncher, ICommandPalette],
+  activate: (
+    app: JupyterFrontEnd,
+    defaultFileBrowser: IDefaultFileBrowser,
+    browserFactory: IFileBrowserFactory,
+    mainMenu: IMainMenu,
+    launcher: ILauncher | null,
+    palette: ICommandPalette | null
+  ) => {
+    const vp4jlIDs = gVP4jlIDs;
+    app.commands.addCommand(vp4jlIDs.createNew, {
       label: args =>
-        args['isPalette'] || args['isContextMenu']
-          ? 'New Visual Programming File'
-          : 'Visual Programming File',
-      caption: 'Create a new VP file',
+        args['isPalette']
+          ? vp4jlIDs.createNewLabelInPalette
+          : args['isContextMenu']
+          ? vp4jlIDs.createNewLabelInContextMenu
+          : vp4jlIDs.createNewLabelInFileMenu,
+      caption: vp4jlIDs.caption,
       execute: async args => {
         const cwd =
           args['cwd'] ||
@@ -118,43 +101,46 @@ const plugin: JupyterFrontEndPlugin<void> = {
           path: cwd,
           contentType: 'file',
           fileFormat: 'text',
-          ext: FILE_EXTENSION,
+          ext: vp4jlIDs.fileExtension,
           type: 'file'
         });
-
         return app.commands.execute('docmanager:open', {
           path: model.path,
-          factory: VP_WIDGET_FACTORY
+          factory: vp4jlIDs.widgetFactory
         });
       }
     });
 
-    mainMenu.fileMenu.newMenu.addGroup([{ command: NEW_VP_File_COMMAND }], 30);
+    mainMenu.fileMenu.newMenu.addGroup([{ command: vp4jlIDs.createNew }], 30);
 
-    if (launcher) {
-      launcher.add({
-        command: NEW_VP_File_COMMAND,
-        category: COMMAND_CATEGORY,
-        rank: 0
-      });
-    }
-    if (palette) {
-      palette.addItem({
-        command: NEW_VP_File_COMMAND,
-        category: COMMAND_CATEGORY,
-        args: { isPalette: true }
-      });
-    }
+    launcher?.add({
+      command: vp4jlIDs.createNew,
+      category: vp4jlIDs.commandCategory,
+      rank: 0
+    });
+
+    palette?.addItem({
+      command: vp4jlIDs.createNew,
+      category: vp4jlIDs.commandCategory,
+      args: { isPalette: true }
+    });
 
     app.contextMenu.addItem({
-      command: NEW_VP_File_COMMAND,
+      command: vp4jlIDs.createNew,
       selector: '.jp-DirListing-content',
       rank: 53,
       args: {
         isContextMenu: true
       }
     });
+  }
+};
 
+const vp4jlFixContextMenuClose: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:FixContextMenuClose',
+  autoStart: true,
+  requires: [ILabShell],
+  activate: (app: JupyterFrontEnd, labShell: ILabShell) => {
     // close the context menu when switch the tab
     labShell.currentChanged.connect((_, args) => {
       if (args.oldValue instanceof VPDocWidget) {
@@ -194,4 +180,41 @@ const plugin: JupyterFrontEndPlugin<void> = {
   }
 };
 
-export default plugin;
+const vp4jlNodeExtension: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:NodeExtension',
+  autoStart: true,
+  requires: [],
+  optional: [ILayoutRestorer],
+  activate: (app: JupyterFrontEnd, restorer: ILayoutRestorer | null) => {
+    const nodeExtension = new NodeExtension();
+    app.shell.add(nodeExtension, 'left');
+
+    if (restorer) {
+      restorer.add(nodeExtension, 'vp4jlNodeExtension');
+    }
+    fetchNodeExtensions();
+  }
+};
+
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  vp4jl,
+  vp4jlMenu,
+  vp4jlFixContextMenuClose,
+  vp4jlNodeExtension
+];
+export default plugins;
+
+function fetchNodeExtensions() {
+  requestAPI<any>('node_extension_manager')
+    .then(data => {
+      Object.entries(data.packages).forEach(([key, value]) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        LoadPackageToRegistry(key, value!);
+      });
+    })
+    .catch(reason => {
+      console.error(
+        `The vp4jl server extension appears to be missing.\n${reason}`
+      );
+    });
+}
