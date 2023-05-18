@@ -105,7 +105,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     // add new file command to the file menu, launcher and palette
     app.commands.addCommand(NEW_VP_File_COMMAND, {
       label: args =>
-        args['isPalette']
+        args['isPalette'] || args['isContextMenu']
           ? 'New Visual Programming File'
           : 'Visual Programming File',
       caption: 'Create a new VP file',
@@ -145,6 +145,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
         args: { isPalette: true }
       });
     }
+
+    app.contextMenu.addItem({
+      command: NEW_VP_File_COMMAND,
+      selector: '.jp-DirListing-content',
+      rank: 53,
+      args: {
+        isContextMenu: true
+      }
+    });
 
     // close the context menu when switch the tab
     labShell.currentChanged.connect((_, args) => {
