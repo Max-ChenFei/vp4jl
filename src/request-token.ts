@@ -1,6 +1,6 @@
 import { ServerConnection } from '@jupyterlab/services';
 
-export interface ITokens {
+interface ITokens {
   authenticated: boolean;
   Authorization: null | string;
   'X-XSRFToken': null | string;
@@ -14,7 +14,7 @@ function getCookie(name: string): string | undefined {
   return matches?.[1];
 }
 
-export function jltoken(): ITokens {
+export function requestToken(): ITokens {
   const token: ITokens = {
     authenticated: false,
     Authorization: null,

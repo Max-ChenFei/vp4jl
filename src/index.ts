@@ -1,6 +1,6 @@
 import {
-  ILayoutRestorer,
   ILabShell,
+  ILayoutRestorer,
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
@@ -8,16 +8,16 @@ import {
   IFileBrowserFactory,
   IDefaultFileBrowser
 } from '@jupyterlab/filebrowser';
+import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { ICommandPalette } from '@jupyterlab/apputils';
-import { ILauncher } from '@jupyterlab/launcher';
 import { VPModelFactory } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './handler';
 import { VPDocWidget } from './widget';
-import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { NodeExtension } from './node-extension';
 import { vp4jlIDs as gVP4jlIDs } from './namepace';
+import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { LoadPackageToRegistry } from 'visual-programming-editor';
 
 const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
@@ -45,10 +45,10 @@ const vp4jlRestorer: JupyterFrontEndPlugin<void> = {
 const vp4jlNodeExtension: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:NodeExtension',
   autoStart: true,
-  requires: [],
   optional: [ILayoutRestorer],
   activate: activateVp4jlNodeExtension
 };
+
 const vp4jlFixContextMenuClose: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:FixContextMenuClose',
   autoStart: true,
