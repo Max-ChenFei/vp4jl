@@ -8,7 +8,7 @@ import {
   nodeConfigRegistry,
   Progress
 } from 'visual-programming-editor';
-import { requestAPI } from './handler';
+import { requestAPI } from './request';
 import { requestToken } from './request-token';
 
 function NodeExtensionWidget({

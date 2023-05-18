@@ -13,7 +13,7 @@ import { IMainMenu } from '@jupyterlab/mainmenu';
 import { ICommandPalette } from '@jupyterlab/apputils';
 import { VPModelFactory } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
-import { requestAPI } from './handler';
+import { requestAPI } from './request';
 import { VPDocWidget } from './widget';
 import { NodeExtension } from './node-extension';
 import { vp4jlIDs as gVP4jlIDs } from './namepace';
