@@ -78,7 +78,7 @@ function activateVp4jl(app: JupyterFrontEnd): IVPTracker {
     modelName: vp4jlIDs.modelFactory,
     fileTypes: [vp4jlIDs.fileType],
     defaultFor: [vp4jlIDs.fileType],
-    toolbarFactory: getToolbarFactory(app.commands)
+    toolbarFactory: getToolbarFactory(app.commands, vp4jlIDs.widgetFactory)
   });
   widgetFactory.widgetCreated.connect((sender, widget) => {
     widget.context.pathChanged.connect(() => {
