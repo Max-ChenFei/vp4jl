@@ -21,6 +21,7 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
     { name: 'run', command: 'runmenu:run' },
+    { name: 'interrupt', command: 'kernelmenu:interrupt' },
     { name: 'spacer', type: 'spacer' },
     {
       name: 'kernelName',

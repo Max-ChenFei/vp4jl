@@ -166,6 +166,22 @@ function activateVp4jlCommands(
     },
     isEnabled
   });
+
+  app.commands.addCommand(cmdIds.kernelInterrupt, {
+    label: 'Interrupt Kernel',
+    caption: 'Interrupt the kernel',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (!current) {
+        return;
+      }
+      const kernel = current.context.sessionContext.session?.kernel;
+      if (kernel) {
+        return kernel.interrupt();
+      }
+    },
+    isEnabled
+  });
 }
 
 /**
@@ -211,6 +227,10 @@ function activateVp4jlAttachCommandsToGui(
   mainMenu.fileMenu.newMenu.addGroup([{ command: cmdIds.createNew }], 30);
   mainMenu.runMenu.codeRunners.run.add({
     id: cmdIds.run,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.interruptKernel.add({
+    id: cmdIds.kernelInterrupt,
     isEnabled
   });
 
