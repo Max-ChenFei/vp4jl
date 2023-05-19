@@ -11,10 +11,10 @@ import {
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { ICommandPalette } from '@jupyterlab/apputils';
-import { VPModelFactory } from './model-factory';
-import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './request';
 import { VPDocWidget } from './widget';
+import { VPModelFactory } from './model-factory';
+import { VPWidgetFactory } from './widget-factory';
 import { NodeExtension } from './node-extension';
 import { vp4jlIDs as gVP4jlIDs } from './namepace';
 import { getToolbarFactory } from './toolbar-factory';
