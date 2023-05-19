@@ -16,7 +16,6 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
   return [
     {
       name: 'save',
-      create: 'Save',
       factory: (widget: VPDocWidget) =>
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
