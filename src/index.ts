@@ -10,13 +10,18 @@ import {
 } from '@jupyterlab/filebrowser';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import { ICommandPalette } from '@jupyterlab/apputils';
+import { fastForwardIcon } from '@jupyterlab/ui-components';
+import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
+import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { requestAPI } from './request';
 import { VPDocWidget } from './widget';
 import { VPModelFactory } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { NodeExtension } from './node-extension';
-import { vp4jlIDs as gVP4jlIDs } from './namepace';
+import {
+  vp4jlIDs as gVP4jlIDs,
+  vp4jlCommandIDs as gVp4jlCommandIDs
+} from './namepace';
 import { getToolbarFactory } from './toolbar-factory';
 import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { LoadPackageToRegistry } from 'visual-programming-editor';
@@ -28,12 +33,20 @@ const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
   activate: activateVp4jl
 };
 
-const vp4jlMenu: JupyterFrontEndPlugin<void> = {
-  id: 'vp4jl:Menu',
+const vp4jlCommands: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:Commands',
   autoStart: true,
-  requires: [IDefaultFileBrowser, IFileBrowserFactory, IMainMenu],
+  requires: [IVPTrackerToken, ISessionContextDialogs, IFileBrowserFactory],
+  optional: [IDefaultFileBrowser],
+  activate: activateVp4jlCommands
+};
+
+const vp4jlAttachCommandsToGui: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:AttachCommandsToGui',
+  autoStart: true,
+  requires: [IMainMenu, IVPTrackerToken],
   optional: [ILauncher, ICommandPalette],
-  activate: activateVp4jlMenu
+  activate: activateVp4jlAttachCommandsToGui
 };
 
 const vp4jlRestorer: JupyterFrontEndPlugin<void> = {
@@ -59,7 +72,8 @@ const vp4jlFixContextMenuClose: JupyterFrontEndPlugin<void> = {
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
   vp4jl,
-  vp4jlMenu,
+  vp4jlCommands,
+  vp4jlAttachCommandsToGui,
   vp4jlRestorer,
   vp4jlNodeExtension,
   vp4jlFixContextMenuClose
@@ -100,16 +114,21 @@ function activateVp4jl(app: JupyterFrontEnd): IVPTracker {
   return tracker;
 }
 
-function activateVp4jlMenu(
+function activateVp4jlCommands(
   app: JupyterFrontEnd,
-  defaultFileBrowser: IDefaultFileBrowser,
+  tracker: IVPTracker,
+  sessionDialogs: ISessionContextDialogs,
   browserFactory: IFileBrowserFactory,
-  mainMenu: IMainMenu,
-  launcher: ILauncher | null,
-  palette: ICommandPalette | null
+  defaultFileBrowser: IDefaultFileBrowser | null
 ) {
   const vp4jlIDs = gVP4jlIDs;
-  app.commands.addCommand(vp4jlIDs.createNew, {
+  const cmdIds = gVp4jlCommandIDs;
+  const { shell } = app;
+  const isEnabled = (): boolean => {
+    return isFocusVPWidget(shell, tracker);
+  };
+
+  app.commands.addCommand(cmdIds.createNew, {
     label: args =>
       args['isPalette']
         ? vp4jlIDs.createNewLabelInPalette
@@ -121,7 +140,8 @@ function activateVp4jlMenu(
       const cwd =
         args['cwd'] ||
         browserFactory.tracker.currentWidget?.model.path ||
-        defaultFileBrowser.model.path;
+        defaultFileBrowser?.model.path ||
+        '';
       const model = await app.commands.execute('docmanager:new-untitled', {
         path: cwd,
         contentType: 'file',
@@ -136,22 +156,138 @@ function activateVp4jlMenu(
     }
   });
 
-  mainMenu.fileMenu.newMenu.addGroup([{ command: vp4jlIDs.createNew }], 30);
+  app.commands.addCommand(cmdIds.run, {
+    label: 'Run Visual Programming File',
+    caption: 'Run the visual programming file',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        const { context, content } = current;
+        return console.log(context.path, context.model.toString(), content);
+      }
+    },
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.kernelInterrupt, {
+    label: 'Interrupt Kernel',
+    caption: 'Interrupt the kernel',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (!current) {
+        return;
+      }
+      const kernel = current.context.sessionContext.session?.kernel;
+      if (kernel) {
+        return kernel.interrupt();
+      }
+    },
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.kernelRestart, {
+    label: 'Restart Kernel',
+    caption: 'Restart the kernel',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        return sessionDialogs.restart(current.sessionContext);
+      }
+    },
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.kernelRestartAndRun, {
+    label: 'Restart Kernel and Run',
+    caption: 'Restart the kernel and re-run the whole file',
+    execute: async args => {
+      const restarted: boolean = await app.commands.execute(
+        cmdIds.kernelRestart,
+        {
+          activate: false
+        }
+      );
+      if (restarted) {
+        await app.commands.execute(cmdIds.run);
+      }
+    },
+    isEnabled,
+    icon: fastForwardIcon
+  });
+}
+
+/**
+ * Whether there is an active vp doc widget.
+ */
+function isFocusVPWidget(
+  shell: JupyterFrontEnd.IShell,
+  tracker: IVPTracker
+): boolean {
+  return (
+    tracker.currentWidget !== null &&
+    tracker.currentWidget === shell.currentWidget
+  );
+}
+
+// Get the current widget and activate unless the args specify otherwise.
+function getCurrent(
+  tracker: IVPTracker,
+  shell: JupyterFrontEnd.IShell,
+  args: ReadonlyPartialJSONObject
+): VPDocWidget | null {
+  const widget = tracker.currentWidget;
+  const activate = args['activate'] !== false;
+
+  if (activate && widget) {
+    shell.activateById(widget.id);
+  }
+
+  return widget;
+}
+
+function activateVp4jlAttachCommandsToGui(
+  app: JupyterFrontEnd,
+  mainMenu: IMainMenu,
+  tracker: IVPTracker,
+  launcher: ILauncher | null,
+  palette: ICommandPalette | null
+) {
+  const cmdIds = gVp4jlCommandIDs;
+  const isEnabled = (): boolean => {
+    return isFocusVPWidget(app.shell, tracker);
+  };
+  mainMenu.fileMenu.newMenu.addGroup([{ command: cmdIds.createNew }], 30);
+  mainMenu.runMenu.codeRunners.run.add({
+    id: cmdIds.run,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.interruptKernel.add({
+    id: cmdIds.kernelInterrupt,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.restartKernel.add({
+    id: cmdIds.kernelRestart,
+    isEnabled
+  });
+  mainMenu.runMenu.codeRunners.restart.add({
+    id: cmdIds.kernelRestartAndRun,
+    isEnabled
+  });
 
   launcher?.add({
-    command: vp4jlIDs.createNew,
-    category: vp4jlIDs.commandCategory,
+    command: cmdIds.createNew,
+    category: cmdIds.commandCategory,
     rank: 0
   });
 
   palette?.addItem({
-    command: vp4jlIDs.createNew,
-    category: vp4jlIDs.commandCategory,
+    command: cmdIds.createNew,
+    category: cmdIds.commandCategory,
     args: { isPalette: true }
   });
 
   app.contextMenu.addItem({
-    command: vp4jlIDs.createNew,
+    command: cmdIds.createNew,
     selector: '.jp-DirListing-content',
     rank: 53,
     args: {

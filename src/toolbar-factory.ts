@@ -20,6 +20,13 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
       factory: (widget: VPDocWidget) =>
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
+    { name: 'run', command: 'runmenu:run' },
+    { name: 'interrupt', command: 'kernelmenu:interrupt' },
+    { name: 'restart', command: 'kernelmenu:restart' },
+    {
+      name: 'restart-and-run',
+      command: 'runmenu:restart-and-run-all'
+    },
     { name: 'spacer', type: 'spacer' },
     {
       name: 'kernelName',
