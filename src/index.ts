@@ -10,7 +10,7 @@ import {
 } from '@jupyterlab/filebrowser';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import { ICommandPalette } from '@jupyterlab/apputils';
+import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { requestAPI } from './request';
 import { VPDocWidget } from './widget';
@@ -35,7 +35,7 @@ const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
 const vp4jlCommands: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:Commands',
   autoStart: true,
-  requires: [IVPTrackerToken, IFileBrowserFactory],
+  requires: [IVPTrackerToken, ISessionContextDialogs, IFileBrowserFactory],
   optional: [IDefaultFileBrowser],
   activate: activateVp4jlCommands
 };
@@ -116,6 +116,7 @@ function activateVp4jl(app: JupyterFrontEnd): IVPTracker {
 function activateVp4jlCommands(
   app: JupyterFrontEnd,
   tracker: IVPTracker,
+  sessionDialogs: ISessionContextDialogs,
   browserFactory: IFileBrowserFactory,
   defaultFileBrowser: IDefaultFileBrowser | null
 ) {
@@ -182,6 +183,18 @@ function activateVp4jlCommands(
     },
     isEnabled
   });
+
+  app.commands.addCommand(cmdIds.kernelRestart, {
+    label: 'Restart Kernel',
+    caption: 'Restart the kernel',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        return sessionDialogs.restart(current.sessionContext);
+      }
+    },
+    isEnabled
+  });
 }
 
 /**
@@ -231,6 +244,10 @@ function activateVp4jlAttachCommandsToGui(
   });
   mainMenu.kernelMenu.kernelUsers.interruptKernel.add({
     id: cmdIds.kernelInterrupt,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.restartKernel.add({
+    id: cmdIds.kernelRestart,
     isEnabled
   });
 

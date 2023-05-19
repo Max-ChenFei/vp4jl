@@ -22,6 +22,7 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
     },
     { name: 'run', command: 'runmenu:run' },
     { name: 'interrupt', command: 'kernelmenu:interrupt' },
+    { name: 'restart', command: 'kernelmenu:restart' },
     { name: 'spacer', type: 'spacer' },
     {
       name: 'kernelName',
