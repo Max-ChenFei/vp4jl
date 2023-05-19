@@ -10,6 +10,7 @@ import {
 } from '@jupyterlab/filebrowser';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
+import { fastForwardIcon } from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { requestAPI } from './request';
@@ -195,6 +196,24 @@ function activateVp4jlCommands(
     },
     isEnabled
   });
+
+  app.commands.addCommand(cmdIds.kernelRestartAndRun, {
+    label: 'Restart Kernel and Run',
+    caption: 'Restart the kernel and re-run the whole file',
+    execute: async args => {
+      const restarted: boolean = await app.commands.execute(
+        cmdIds.kernelRestart,
+        {
+          activate: false
+        }
+      );
+      if (restarted) {
+        await app.commands.execute(cmdIds.run);
+      }
+    },
+    isEnabled,
+    icon: fastForwardIcon
+  });
 }
 
 /**
@@ -248,6 +267,10 @@ function activateVp4jlAttachCommandsToGui(
   });
   mainMenu.kernelMenu.kernelUsers.restartKernel.add({
     id: cmdIds.kernelRestart,
+    isEnabled
+  });
+  mainMenu.runMenu.codeRunners.restart.add({
+    id: cmdIds.kernelRestartAndRun,
     isEnabled
   });
 
