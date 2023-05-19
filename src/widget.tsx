@@ -30,7 +30,6 @@ export class VPWidget extends ReactWidget {
   private _vpContent: SerializedGraph | null;
   private _modelMetadata: { [key: string]: any } = {};
   private _editor_activated = false;
-  private _shouldStartKernel = true;
   constructor(
     id: string,
     context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>
@@ -54,7 +53,6 @@ export class VPWidget extends ReactWidget {
 
   private async _setKernelSpec(newSpec?: any) {
     if (newSpec) {
-      this._shouldStartKernel = false;
       this.sessionContext.changeKernel(newSpec);
     }
   }
@@ -133,14 +131,13 @@ export class VPWidget extends ReactWidget {
   }
 
   private _onContextReady() {
-    if (this._shouldStartKernel) {
-      this._context.sessionContext.kernelPreference = {
-        canStart: true,
-        shouldStart: true,
-        autoStartDefault: false,
-        shutdownOnDispose: true
-      };
-    }
+    this._context.sessionContext.kernelPreference = {
+      canStart: true,
+      shouldStart: true,
+      autoStartDefault: false,
+      shutdownOnDispose: false
+    };
+    // }
   }
 
   activate(): void {
@@ -178,6 +175,7 @@ export class VPDocWidget extends DocumentWidget<
   VPWidget,
   DocumentRegistry.ICodeModel
 > {
+  private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
   constructor(
     options: DocumentWidget.IOptions<VPWidget, DocumentRegistry.ICodeModel>
   ) {
@@ -185,5 +183,10 @@ export class VPDocWidget extends DocumentWidget<
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';
     this.addClass('jp-VPWidget');
+    this._context = options.context;
+  }
+
+  get sessionContext(): ISessionContext {
+    return this._context.sessionContext;
   }
 }

@@ -11,12 +11,13 @@ import {
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { ICommandPalette } from '@jupyterlab/apputils';
-import { VPModelFactory } from './model-factory';
-import { VPWidgetFactory } from './widget-factory';
 import { requestAPI } from './request';
 import { VPDocWidget } from './widget';
+import { VPModelFactory } from './model-factory';
+import { VPWidgetFactory } from './widget-factory';
 import { NodeExtension } from './node-extension';
 import { vp4jlIDs as gVP4jlIDs } from './namepace';
+import { getToolbarFactory } from './toolbar-factory';
 import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { LoadPackageToRegistry } from 'visual-programming-editor';
 
@@ -76,7 +77,8 @@ function activateVp4jl(app: JupyterFrontEnd): IVPTracker {
     name: vp4jlIDs.widgetFactory,
     modelName: vp4jlIDs.modelFactory,
     fileTypes: [vp4jlIDs.fileType],
-    defaultFor: [vp4jlIDs.fileType]
+    defaultFor: [vp4jlIDs.fileType],
+    toolbarFactory: getToolbarFactory(app.commands, vp4jlIDs.widgetFactory)
   });
   widgetFactory.widgetCreated.connect((sender, widget) => {
     widget.context.pathChanged.connect(() => {
