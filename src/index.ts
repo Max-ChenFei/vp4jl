@@ -28,12 +28,20 @@ const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
   activate: activateVp4jl
 };
 
-const vp4jlMenu: JupyterFrontEndPlugin<void> = {
-  id: 'vp4jl:Menu',
+const vp4jlCommands: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:Commands',
   autoStart: true,
-  requires: [IDefaultFileBrowser, IFileBrowserFactory, IMainMenu],
+  requires: [IFileBrowserFactory],
+  optional: [IDefaultFileBrowser],
+  activate: activateVp4jlCommands
+};
+
+const vp4jlAttachCommandsToGui: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:AttachCommandsToGui',
+  autoStart: true,
+  requires: [IMainMenu],
   optional: [ILauncher, ICommandPalette],
-  activate: activateVp4jlMenu
+  activate: activateVp4jlAttachCommandsToGui
 };
 
 const vp4jlRestorer: JupyterFrontEndPlugin<void> = {
@@ -59,7 +67,8 @@ const vp4jlFixContextMenuClose: JupyterFrontEndPlugin<void> = {
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
   vp4jl,
-  vp4jlMenu,
+  vp4jlCommands,
+  vp4jlAttachCommandsToGui,
   vp4jlRestorer,
   vp4jlNodeExtension,
   vp4jlFixContextMenuClose
@@ -100,13 +109,10 @@ function activateVp4jl(app: JupyterFrontEnd): IVPTracker {
   return tracker;
 }
 
-function activateVp4jlMenu(
+function activateVp4jlCommands(
   app: JupyterFrontEnd,
-  defaultFileBrowser: IDefaultFileBrowser,
   browserFactory: IFileBrowserFactory,
-  mainMenu: IMainMenu,
-  launcher: ILauncher | null,
-  palette: ICommandPalette | null
+  defaultFileBrowser: IDefaultFileBrowser | null
 ) {
   const vp4jlIDs = gVP4jlIDs;
   app.commands.addCommand(vp4jlIDs.createNew, {
@@ -121,7 +127,8 @@ function activateVp4jlMenu(
       const cwd =
         args['cwd'] ||
         browserFactory.tracker.currentWidget?.model.path ||
-        defaultFileBrowser.model.path;
+        defaultFileBrowser?.model.path ||
+        '';
       const model = await app.commands.execute('docmanager:new-untitled', {
         path: cwd,
         contentType: 'file',
@@ -135,6 +142,15 @@ function activateVp4jlMenu(
       });
     }
   });
+}
+
+function activateVp4jlAttachCommandsToGui(
+  app: JupyterFrontEnd,
+  mainMenu: IMainMenu,
+  launcher: ILauncher | null,
+  palette: ICommandPalette | null
+) {
+  const vp4jlIDs = gVP4jlIDs;
 
   mainMenu.fileMenu.newMenu.addGroup([{ command: vp4jlIDs.createNew }], 30);
 
