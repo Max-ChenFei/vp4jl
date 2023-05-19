@@ -16,7 +16,10 @@ import { VPDocWidget } from './widget';
 import { VPModelFactory } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { NodeExtension } from './node-extension';
-import { vp4jlIDs as gVP4jlIDs } from './namepace';
+import {
+  vp4jlIDs as gVP4jlIDs,
+  vp4jlCommandIDs as gVp4jlCommandIDs
+} from './namepace';
 import { getToolbarFactory } from './toolbar-factory';
 import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { LoadPackageToRegistry } from 'visual-programming-editor';
@@ -115,7 +118,8 @@ function activateVp4jlCommands(
   defaultFileBrowser: IDefaultFileBrowser | null
 ) {
   const vp4jlIDs = gVP4jlIDs;
-  app.commands.addCommand(vp4jlIDs.createNew, {
+  const cmdIds = gVp4jlCommandIDs;
+  app.commands.addCommand(cmdIds.createNew, {
     label: args =>
       args['isPalette']
         ? vp4jlIDs.createNewLabelInPalette
@@ -150,24 +154,24 @@ function activateVp4jlAttachCommandsToGui(
   launcher: ILauncher | null,
   palette: ICommandPalette | null
 ) {
-  const vp4jlIDs = gVP4jlIDs;
+  const cmdIds = gVp4jlCommandIDs;
 
-  mainMenu.fileMenu.newMenu.addGroup([{ command: vp4jlIDs.createNew }], 30);
+  mainMenu.fileMenu.newMenu.addGroup([{ command: cmdIds.createNew }], 30);
 
   launcher?.add({
-    command: vp4jlIDs.createNew,
-    category: vp4jlIDs.commandCategory,
+    command: cmdIds.createNew,
+    category: cmdIds.commandCategory,
     rank: 0
   });
 
   palette?.addItem({
-    command: vp4jlIDs.createNew,
-    category: vp4jlIDs.commandCategory,
+    command: cmdIds.createNew,
+    category: cmdIds.commandCategory,
     args: { isPalette: true }
   });
 
   app.contextMenu.addItem({
-    command: vp4jlIDs.createNew,
+    command: cmdIds.createNew,
     selector: '.jp-DirListing-content',
     rank: 53,
     args: {
