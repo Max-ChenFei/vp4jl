@@ -20,6 +20,7 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
       factory: (widget: VPDocWidget) =>
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
+    { name: 'run', command: 'runmenu:run' },
     { name: 'spacer', type: 'spacer' },
     {
       name: 'kernelName',

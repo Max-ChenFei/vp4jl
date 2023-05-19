@@ -11,6 +11,7 @@ import {
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { ICommandPalette } from '@jupyterlab/apputils';
+import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { requestAPI } from './request';
 import { VPDocWidget } from './widget';
 import { VPModelFactory } from './model-factory';
@@ -34,7 +35,7 @@ const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
 const vp4jlCommands: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:Commands',
   autoStart: true,
-  requires: [IFileBrowserFactory],
+  requires: [IVPTrackerToken, IFileBrowserFactory],
   optional: [IDefaultFileBrowser],
   activate: activateVp4jlCommands
 };
@@ -42,7 +43,7 @@ const vp4jlCommands: JupyterFrontEndPlugin<void> = {
 const vp4jlAttachCommandsToGui: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:AttachCommandsToGui',
   autoStart: true,
-  requires: [IMainMenu],
+  requires: [IMainMenu, IVPTrackerToken],
   optional: [ILauncher, ICommandPalette],
   activate: activateVp4jlAttachCommandsToGui
 };
@@ -114,11 +115,17 @@ function activateVp4jl(app: JupyterFrontEnd): IVPTracker {
 
 function activateVp4jlCommands(
   app: JupyterFrontEnd,
+  tracker: IVPTracker,
   browserFactory: IFileBrowserFactory,
   defaultFileBrowser: IDefaultFileBrowser | null
 ) {
   const vp4jlIDs = gVP4jlIDs;
   const cmdIds = gVp4jlCommandIDs;
+  const { shell } = app;
+  const isEnabled = (): boolean => {
+    return isFocusVPWidget(shell, tracker);
+  };
+
   app.commands.addCommand(cmdIds.createNew, {
     label: args =>
       args['isPalette']
@@ -146,17 +153,66 @@ function activateVp4jlCommands(
       });
     }
   });
+
+  app.commands.addCommand(cmdIds.run, {
+    label: 'Run Visual Programming File',
+    caption: 'Run the visual programming file',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        const { context, content } = current;
+        return console.log(context.path, context.model.toString(), content);
+      }
+    },
+    isEnabled
+  });
+}
+
+/**
+ * Whether there is an active vp doc widget.
+ */
+function isFocusVPWidget(
+  shell: JupyterFrontEnd.IShell,
+  tracker: IVPTracker
+): boolean {
+  return (
+    tracker.currentWidget !== null &&
+    tracker.currentWidget === shell.currentWidget
+  );
+}
+
+// Get the current widget and activate unless the args specify otherwise.
+function getCurrent(
+  tracker: IVPTracker,
+  shell: JupyterFrontEnd.IShell,
+  args: ReadonlyPartialJSONObject
+): VPDocWidget | null {
+  const widget = tracker.currentWidget;
+  const activate = args['activate'] !== false;
+
+  if (activate && widget) {
+    shell.activateById(widget.id);
+  }
+
+  return widget;
 }
 
 function activateVp4jlAttachCommandsToGui(
   app: JupyterFrontEnd,
   mainMenu: IMainMenu,
+  tracker: IVPTracker,
   launcher: ILauncher | null,
   palette: ICommandPalette | null
 ) {
   const cmdIds = gVp4jlCommandIDs;
-
+  const isEnabled = (): boolean => {
+    return isFocusVPWidget(app.shell, tracker);
+  };
   mainMenu.fileMenu.newMenu.addGroup([{ command: cmdIds.createNew }], 30);
+  mainMenu.runMenu.codeRunners.run.add({
+    id: cmdIds.run,
+    isEnabled
+  });
 
   launcher?.add({
     command: cmdIds.createNew,

@@ -13,4 +13,5 @@ export namespace vp4jlIDs {
 export namespace vp4jlCommandIDs {
   export const commandCategory = 'Visual Programming';
   export const createNew = 'vp4jl:create-new';
+  export const run = 'vp4jl:run';
 }
