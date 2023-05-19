@@ -1,5 +1,6 @@
 import { Widget } from '@lumino/widgets';
 import { CommandRegistry } from '@lumino/commands';
+import { Toolbar } from '@jupyterlab/apputils/lib/toolbar';
 import { ToolbarRegistry, createDefaultFactory } from '@jupyterlab/apputils';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { ToolbarItems as DocToolbarItems } from '@jupyterlab/docmanager-extension';
@@ -19,7 +20,12 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
       factory: (widget: VPDocWidget) =>
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
-    { name: 'spacer', type: 'spacer' }
+    { name: 'spacer', type: 'spacer' },
+    {
+      name: 'kernelName',
+      factory: (widget: VPDocWidget) =>
+        Toolbar.createKernelNameItem(widget.sessionContext)
+    }
   ];
 }
 
