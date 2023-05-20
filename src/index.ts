@@ -177,7 +177,7 @@ function activateVp4jlCommands(
       if (!current) {
         return;
       }
-      const kernel = current.context.sessionContext.session?.kernel;
+      const kernel = current.sessionContext.session?.kernel;
       if (kernel) {
         return kernel.interrupt();
       }
@@ -216,9 +216,6 @@ function activateVp4jlCommands(
   });
 }
 
-/**
- * Whether there is an active vp doc widget.
- */
 function isFocusVPWidget(
   shell: JupyterFrontEnd.IShell,
   tracker: IVPTracker
@@ -229,7 +226,6 @@ function isFocusVPWidget(
   );
 }
 
-// Get the current widget and activate unless the args specify otherwise.
 function getCurrent(
   tracker: IVPTracker,
   shell: JupyterFrontEnd.IShell,

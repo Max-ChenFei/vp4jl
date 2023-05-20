@@ -102,7 +102,7 @@ export class NodeExtension extends ReactWidget {
         this.fetching = false;
         this.update();
       });
-  } // Make request to Jupyter API
+  }
   settings = ServerConnection.makeSettings();
   requestUrl = URLExt.join(
     this.settings.baseUrl,

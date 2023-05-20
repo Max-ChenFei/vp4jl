@@ -1,142 +1,18 @@
 import React from 'react';
-import { Kernel, Session } from '@jupyterlab/services';
+import { Session } from '@jupyterlab/services';
 import { DocumentWidget } from '@jupyterlab/docregistry';
 import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
-import { VPEditor, type SerializedGraph } from 'visual-programming-editor';
+import { VPEditor } from 'visual-programming-editor';
 import 'visual-programming-editor/dist/style.css';
 import { IVPContext } from './context';
-import { IVPModel } from './model';
+import { IVPModel, IKernelspec } from './model';
 
-function isSameContent(
-  a: string | null | object,
-  b: string | null | object
-): boolean {
-  const pureContentString = (content: string | null | object) => {
-    let pure = content;
-    if (typeof content === 'string') {
-      pure = JSON.parse(content || 'null');
-    }
-    return JSON.stringify(pure);
-  };
-  const aContent = pureContentString(a);
-  const bContent = pureContentString(b);
-  return aContent === bContent;
-}
-
-/**
- * A visual programming widget that contains the main view of the DocumentWidget.
- */
 export class VPMainAreaWidget extends ReactWidget {
-  private _id: string;
-  private _context: IVPContext;
-  private _vpContent: SerializedGraph | null;
-  private _modelMetadata: { [key: string]: any } = {};
-  private _editor_activated = false;
-
-  constructor(id: string, context: IVPContext) {
+  constructor(id: string, model: IVPModel) {
     super();
-    this._id = id;
-    this._vpContent = null;
-    this._context = context;
-    this.model.contentChanged.connect(this._setContent.bind(this));
-    this.sessionContext.kernelChanged.connect(this._onKernelChanged, this);
-    this._context.ready.then(this._onContextReady.bind(this));
-  }
-
-  get model(): IVPModel {
-    return this._context.model;
-  }
-
-  get sessionContext(): ISessionContext {
-    return this._context.sessionContext;
-  }
-
-  private async _setKernelSpec(newSpec?: any) {
-    if (newSpec) {
-      this.sessionContext.changeKernel(newSpec);
-    }
-  }
-
-  private _setContent() {
-    const model = JSON.parse(this.model.toString());
-    if (!isSameContent(this._modelMetadata, model.metadata ?? {})) {
-      this._setKernelSpec(model.metadata?.kernelspec);
-      this._modelMetadata = model.metadata;
-    }
-    if (!isSameContent(this._vpContent, model.vpContent)) {
-      this._vpContent = model.vpContent;
-      this.update();
-    }
-  }
-
-  private _updateModelString({
-    metadata,
-    vpContent
-  }: {
-    metadata?: { [key: string]: any };
-    vpContent?: SerializedGraph;
-  }): void {
-    this.model.fromString(
-      JSON.stringify({
-        vpContent: vpContent ?? this._vpContent,
-        metadata: metadata ?? this._modelMetadata
-      })
-    );
-  }
-
-  private _syncVPContent(newContent: string) {
-    // when the context is ready amd get the value from the disk,
-    // the funciton will be called, so unnecessary update will be avoided.
-    const vpContent = JSON.parse(newContent);
-    if (isSameContent(this._vpContent, vpContent)) {
-      return;
-    }
-    this._vpContent = vpContent;
-    this._updateModelString({ vpContent });
-  }
-
-  private setMetadata(key: string, value: any) {
-    this._updateModelString({
-      metadata: { ...this._modelMetadata, [key]: value }
-    });
-  }
-
-  private _onKernelChanged(
-    sender: any,
-    args: Session.ISessionConnection.IKernelChangedArgs
-  ): void {
-    if (!this.model || !args.newValue) {
-      return;
-    }
-    const { newValue } = args;
-    void this._updatekernelSpec(newValue);
-  }
-
-  private async _updatekernelSpec(
-    kernel: Kernel.IKernelConnection
-  ): Promise<void> {
-    const spec = await kernel.spec;
-    if (this.isDisposed) {
-      return;
-    }
-    const newSpec = {
-      name: kernel.name,
-      display_name: spec?.display_name,
-      language: spec?.language
-    };
-    if (!isSameContent(this._modelMetadata.kernelspec, newSpec)) {
-      this._modelMetadata.kernelspec = newSpec;
-      this.setMetadata('kernelspec', newSpec);
-    }
-  }
-
-  private _onContextReady() {
-    this._context.sessionContext.kernelPreference = {
-      canStart: true,
-      shouldStart: true,
-      autoStartDefault: false,
-      shutdownOnDispose: false
-    };
+    this.id = id;
+    this._model = model;
+    this._model.vpContentChanged.connect(this.update, this);
   }
 
   activate(): void {
@@ -156,33 +32,61 @@ export class VPMainAreaWidget extends ReactWidget {
   render(): JSX.Element {
     return (
       <VPEditor
-        id={this._id}
-        content={this._vpContent}
-        onContentChange={(newContent: string) =>
-          this._syncVPContent(newContent)
-        }
+        id={this.id}
+        content={this._model.vpContent}
+        onContentChange={this._model.setVpContent.bind(this._model)}
         activated={this._editor_activated}
       />
     );
   }
+
+  private _model: IVPModel;
+  private _editor_activated = false;
 }
 
-/**
- * A Document Widget that represents the view for a file type
- */
 export class VPWidget extends DocumentWidget<VPMainAreaWidget, IVPModel> {
-  private _context: IVPContext;
-
-  constructor(options: DocumentWidget.IOptions<VPMainAreaWidget, IVPModel>) {
-    super(options);
+  constructor(id: string, context: IVPContext) {
+    super({
+      context,
+      content: new VPMainAreaWidget(id, context.model)
+    });
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';
     this.addClass('jp-VPWidget');
     this.toolbar.addClass('jp-vp-toolbar');
-    this._context = options.context;
+
+    this.context.ready.then(this._onContextReady.bind(this));
+    this.model.kernelSpecChanged.connect(this._changeKernel, this);
+    this.sessionContext.kernelChanged.connect(this._setModelKernelSpec, this);
+  }
+
+  get model(): IVPModel {
+    return this.context.model;
   }
 
   get sessionContext(): ISessionContext {
-    return this._context.sessionContext;
+    return this.context.sessionContext;
+  }
+
+  private _onContextReady() {
+    this.sessionContext.kernelPreference = {
+      canStart: true,
+      shouldStart: true,
+      autoStartDefault: false,
+      shutdownOnDispose: false
+    };
+  }
+
+  private async _changeKernel(sender: any, newSpec: IKernelspec) {
+    if (newSpec) {
+      this.sessionContext.changeKernel(newSpec);
+    }
+  }
+
+  private _setModelKernelSpec(
+    sender: any,
+    args: Session.ISessionConnection.IKernelChangedArgs
+  ): void {
+    void this.model.setKernelSpec(args.newValue);
   }
 }
