@@ -4,24 +4,9 @@ import { DocumentWidget } from '@jupyterlab/docregistry';
 import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
 import { VPEditor, type SerializedGraph } from 'visual-programming-editor';
 import 'visual-programming-editor/dist/style.css';
+import { isSameContent } from './utils';
 import { IVPContext } from './context';
 import { IVPModel } from './model';
-
-function isSameContent(
-  a: string | null | object,
-  b: string | null | object
-): boolean {
-  const pureContentString = (content: string | null | object) => {
-    let pure = content;
-    if (typeof content === 'string') {
-      pure = JSON.parse(content || 'null');
-    }
-    return JSON.stringify(pure);
-  };
-  const aContent = pureContentString(a);
-  const bContent = pureContentString(b);
-  return aContent === bContent;
-}
 
 /**
  * A visual programming widget that contains the main view of the DocumentWidget.
