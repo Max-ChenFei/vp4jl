@@ -1,6 +1,6 @@
 import { DocumentRegistry, ABCWidgetFactory } from '@jupyterlab/docregistry';
-import { VPWidget, VPMainAreaWidget } from './widget';
 import { IVPModel } from './model';
+import { VPWidget } from './widget';
 import { IVPContext } from './context';
 
 /**
@@ -18,10 +18,7 @@ export class VPWidgetFactory extends ABCWidgetFactory<VPWidget, IVPModel> {
   }
 
   protected createNewWidget(context: IVPContext): VPWidget {
-    const w = new VPWidget({
-      context,
-      content: new VPMainAreaWidget(`vp_widget_${++this._widgetId}`, context)
-    });
+    const w = new VPWidget(`vp_widget_${++this._widgetId}`, context);
     this.onWidgetCreated(w);
     w.disposed.connect(w => {
       this.onWidgetDisposed(w);

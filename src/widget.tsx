@@ -156,8 +156,11 @@ export class VPMainAreaWidget extends ReactWidget {
  * A Document Widget that represents the view for a file type
  */
 export class VPWidget extends DocumentWidget<VPMainAreaWidget, IVPModel> {
-  constructor(options: DocumentWidget.IOptions<VPMainAreaWidget, IVPModel>) {
-    super(options);
+  constructor(id: string, context: IVPContext) {
+    super({
+      context,
+      content: new VPMainAreaWidget(id, context)
+    });
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';
     this.addClass('jp-VPWidget');
