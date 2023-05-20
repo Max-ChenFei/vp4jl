@@ -177,7 +177,7 @@ function activateVp4jlCommands(
       if (!current) {
         return;
       }
-      const kernel = current.context.sessionContext.session?.kernel;
+      const kernel = current.sessionContext.session?.kernel;
       if (kernel) {
         return kernel.interrupt();
       }

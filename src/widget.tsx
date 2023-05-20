@@ -156,18 +156,15 @@ export class VPMainAreaWidget extends ReactWidget {
  * A Document Widget that represents the view for a file type
  */
 export class VPWidget extends DocumentWidget<VPMainAreaWidget, IVPModel> {
-  private _context: IVPContext;
-
   constructor(options: DocumentWidget.IOptions<VPMainAreaWidget, IVPModel>) {
     super(options);
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';
     this.addClass('jp-VPWidget');
     this.toolbar.addClass('jp-vp-toolbar');
-    this._context = options.context;
   }
 
   get sessionContext(): ISessionContext {
-    return this._context.sessionContext;
+    return this.context.sessionContext;
   }
 }
