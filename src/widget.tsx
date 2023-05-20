@@ -4,6 +4,7 @@ import { DocumentRegistry, DocumentWidget } from '@jupyterlab/docregistry';
 import { Kernel, Session } from '@jupyterlab/services';
 import { VPEditor, type SerializedGraph } from 'visual-programming-editor';
 import 'visual-programming-editor/dist/style.css';
+import { IVPModel } from './model';
 
 function isSameContent(
   a: string | null | object,
@@ -26,14 +27,12 @@ function isSameContent(
  */
 export class VPWidget extends ReactWidget {
   private _id: string;
-  private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
+  private _context: DocumentRegistry.IContext<IVPModel>;
   private _vpContent: SerializedGraph | null;
   private _modelMetadata: { [key: string]: any } = {};
   private _editor_activated = false;
-  constructor(
-    id: string,
-    context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>
-  ) {
+
+  constructor(id: string, context: DocumentRegistry.IContext<IVPModel>) {
     super();
     this._id = id;
     this._vpContent = null;
@@ -43,7 +42,7 @@ export class VPWidget extends ReactWidget {
     this._context.ready.then(this._onContextReady.bind(this));
   }
 
-  get model(): DocumentRegistry.ICodeModel {
+  get model(): IVPModel {
     return this._context.model;
   }
 
@@ -171,14 +170,10 @@ export class VPWidget extends ReactWidget {
 /**
  * A Document Widget that represents the view for a file type
  */
-export class VPDocWidget extends DocumentWidget<
-  VPWidget,
-  DocumentRegistry.ICodeModel
-> {
-  private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
-  constructor(
-    options: DocumentWidget.IOptions<VPWidget, DocumentRegistry.ICodeModel>
-  ) {
+export class VPDocWidget extends DocumentWidget<VPWidget, IVPModel> {
+  private _context: DocumentRegistry.IContext<IVPModel>;
+
+  constructor(options: DocumentWidget.IOptions<VPWidget, IVPModel>) {
     super(options);
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';

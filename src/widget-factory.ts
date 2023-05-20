@@ -1,12 +1,11 @@
 import { DocumentRegistry, ABCWidgetFactory } from '@jupyterlab/docregistry';
 import { VPDocWidget, VPWidget } from './widget';
+import { IVPModel } from './model';
+
 /**
  * A widget factory to create new intance of VPDocWidget.
  */
-export class VPWidgetFactory extends ABCWidgetFactory<
-  VPDocWidget,
-  DocumentRegistry.ICodeModel
-> {
+export class VPWidgetFactory extends ABCWidgetFactory<VPDocWidget, IVPModel> {
   // the main widget is main area of the jupyter lab
   private _mainWidget: HTMLElement | null = null;
   private _widgets: VPDocWidget[] = [];
@@ -18,7 +17,7 @@ export class VPWidgetFactory extends ABCWidgetFactory<
   }
 
   protected createNewWidget(
-    context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>
+    context: DocumentRegistry.IContext<IVPModel>
   ): VPDocWidget {
     const w = new VPDocWidget({
       context,
