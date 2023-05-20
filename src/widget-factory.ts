@@ -1,6 +1,7 @@
 import { DocumentRegistry, ABCWidgetFactory } from '@jupyterlab/docregistry';
 import { VPDocWidget, VPWidget } from './widget';
 import { IVPModel } from './model';
+import { IVPContext } from './context';
 
 /**
  * A widget factory to create new intance of VPDocWidget.
@@ -16,9 +17,7 @@ export class VPWidgetFactory extends ABCWidgetFactory<VPDocWidget, IVPModel> {
     super(options);
   }
 
-  protected createNewWidget(
-    context: DocumentRegistry.IContext<IVPModel>
-  ): VPDocWidget {
+  protected createNewWidget(context: IVPContext): VPDocWidget {
     const w = new VPDocWidget({
       context,
       content: new VPWidget(`vp_widget_${++this._widgetId}`, context)

@@ -1,9 +1,10 @@
 import React from 'react';
-import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
-import { DocumentRegistry, DocumentWidget } from '@jupyterlab/docregistry';
 import { Kernel, Session } from '@jupyterlab/services';
+import { DocumentWidget } from '@jupyterlab/docregistry';
+import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
 import { VPEditor, type SerializedGraph } from 'visual-programming-editor';
 import 'visual-programming-editor/dist/style.css';
+import { IVPContext } from './context';
 import { IVPModel } from './model';
 
 function isSameContent(
@@ -27,12 +28,12 @@ function isSameContent(
  */
 export class VPWidget extends ReactWidget {
   private _id: string;
-  private _context: DocumentRegistry.IContext<IVPModel>;
+  private _context: IVPContext;
   private _vpContent: SerializedGraph | null;
   private _modelMetadata: { [key: string]: any } = {};
   private _editor_activated = false;
 
-  constructor(id: string, context: DocumentRegistry.IContext<IVPModel>) {
+  constructor(id: string, context: IVPContext) {
     super();
     this._id = id;
     this._vpContent = null;
@@ -171,7 +172,7 @@ export class VPWidget extends ReactWidget {
  * A Document Widget that represents the view for a file type
  */
 export class VPDocWidget extends DocumentWidget<VPWidget, IVPModel> {
-  private _context: DocumentRegistry.IContext<IVPModel>;
+  private _context: IVPContext;
 
   constructor(options: DocumentWidget.IOptions<VPWidget, IVPModel>) {
     super(options);
