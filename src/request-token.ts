@@ -5,9 +5,7 @@ interface ITokens {
   Authorization: null | string;
   'X-XSRFToken': null | string;
 }
-/**
- * Get a cookie from the document.
- */
+
 function getCookie(name: string): string | undefined {
   // From http://www.tornadoweb.org/en/stable/guide/security.html
   const matches = document.cookie.match('\\b' + name + '=([^;]*)\\b');

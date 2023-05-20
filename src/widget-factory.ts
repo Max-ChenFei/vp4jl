@@ -3,9 +3,6 @@ import { IVPModel } from './model';
 import { VPWidget } from './widget';
 import { IVPContext } from './context';
 
-/**
- * A widget factory to create new intance of VPDocWidget.
- */
 export class VPWidgetFactory extends ABCWidgetFactory<VPWidget, IVPModel> {
   // the main widget is main area of the jupyter lab
   private _mainWidget: HTMLElement | null = null;

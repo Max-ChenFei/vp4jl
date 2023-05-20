@@ -229,7 +229,6 @@ function isFocusVPWidget(
   );
 }
 
-// Get the current widget and activate unless the args specify otherwise.
 function getCurrent(
   tracker: IVPTracker,
   shell: JupyterFrontEnd.IShell,

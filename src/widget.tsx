@@ -8,9 +8,6 @@ import { isSameContent } from './utils';
 import { IVPContext } from './context';
 import { IVPModel } from './model';
 
-/**
- * A visual programming widget that contains the main view of the DocumentWidget.
- */
 export class VPMainAreaWidget extends ReactWidget {
   private _id: string;
   private _context: IVPContext;
@@ -152,9 +149,6 @@ export class VPMainAreaWidget extends ReactWidget {
   }
 }
 
-/**
- * A Document Widget that represents the view for a file type
- */
 export class VPWidget extends DocumentWidget<VPMainAreaWidget, IVPModel> {
   constructor(id: string, context: IVPContext) {
     super({
