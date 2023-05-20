@@ -1,8 +1,8 @@
 import { Token } from '@lumino/coreutils';
 import { WidgetTracker } from '@jupyterlab/apputils';
-import { VPDocWidget } from './widget';
+import { VPWidget } from './widget';
 
-export type IVPTracker = WidgetTracker<VPDocWidget>;
+export type IVPTracker = WidgetTracker<VPWidget>;
 
 export const IVPTrackerToken = new Token<IVPTracker>(
   '@jupyterlab/vp4jl:IVPTracker',
@@ -11,6 +11,4 @@ export const IVPTrackerToken = new Token<IVPTracker>(
   created by the application.`
 );
 
-export class VPTracker
-  extends WidgetTracker<VPDocWidget>
-  implements IVPTracker {}
+export class VPTracker extends WidgetTracker<VPWidget> implements IVPTracker {}

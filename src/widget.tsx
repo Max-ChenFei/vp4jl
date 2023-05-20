@@ -26,7 +26,7 @@ function isSameContent(
 /**
  * A visual programming widget that contains the main view of the DocumentWidget.
  */
-export class VPWidget extends ReactWidget {
+export class VPMainAreaWidget extends ReactWidget {
   private _id: string;
   private _context: IVPContext;
   private _vpContent: SerializedGraph | null;
@@ -171,10 +171,10 @@ export class VPWidget extends ReactWidget {
 /**
  * A Document Widget that represents the view for a file type
  */
-export class VPDocWidget extends DocumentWidget<VPWidget, IVPModel> {
+export class VPWidget extends DocumentWidget<VPMainAreaWidget, IVPModel> {
   private _context: IVPContext;
 
-  constructor(options: DocumentWidget.IOptions<VPWidget, IVPModel>) {
+  constructor(options: DocumentWidget.IOptions<VPMainAreaWidget, IVPModel>) {
     super(options);
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';

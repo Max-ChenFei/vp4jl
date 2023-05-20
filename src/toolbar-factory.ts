@@ -5,11 +5,11 @@ import { Toolbar } from '@jupyterlab/apputils/lib/toolbar';
 import { ToolbarRegistry, createDefaultFactory } from '@jupyterlab/apputils';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { ToolbarItems as DocToolbarItems } from '@jupyterlab/docmanager-extension';
-import { VPDocWidget } from './widget';
+import { VPWidget } from './widget';
 
 interface IToolbarItemWithFactory {
   name: string;
-  factory: (widget: VPDocWidget) => Widget;
+  factory: (widget: VPWidget) => Widget;
 }
 
 type IToolbarItem = IToolbarItemWithFactory | ToolbarRegistry.IWidget;
@@ -18,7 +18,7 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
   return [
     {
       name: 'save',
-      factory: (widget: VPDocWidget) =>
+      factory: (widget: VPWidget) =>
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
     { name: 'run', command: 'runmenu:run' },
@@ -31,12 +31,12 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
     { name: 'spacer', type: 'spacer' },
     {
       name: 'kernelName',
-      factory: (widget: VPDocWidget) =>
+      factory: (widget: VPWidget) =>
         Toolbar.createKernelNameItem(widget.sessionContext)
     },
     {
       name: 'executionProgress',
-      factory: (widget: VPDocWidget) =>
+      factory: (widget: VPWidget) =>
         ExecutionIndicator.createExecutionIndicatorItem(
           // @ts-ignore
           widget,
@@ -53,7 +53,7 @@ export function getToolbarFactory(
 ) {
   const items = getToolbarItems(commands);
   const defaultFactory = createDefaultFactory(commands);
-  return (widget: VPDocWidget): DocumentRegistry.IToolbarItem[] => {
+  return (widget: VPWidget): DocumentRegistry.IToolbarItem[] => {
     return items.map(toolbar => ({
       name: toolbar.name,
       widget: toolbar.factory
