@@ -216,9 +216,6 @@ function activateVp4jlCommands(
   });
 }
 
-/**
- * Whether there is an active vp doc widget.
- */
 function isFocusVPWidget(
   shell: JupyterFrontEnd.IShell,
   tracker: IVPTracker
