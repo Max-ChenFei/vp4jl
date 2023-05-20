@@ -1,8 +1,8 @@
 export function isSameContent(
-  a: string | null | object,
-  b: string | null | object
+  a: string | null | object | undefined,
+  b: string | null | object | undefined
 ): boolean {
-  const pureContentString = (content: string | null | object) => {
+  const pureContentString = (content: string | null | object | undefined) => {
     let pure = content;
     if (typeof content === 'string') {
       pure = JSON.parse(content || 'null');
