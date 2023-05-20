@@ -137,7 +137,6 @@ export class VPMainAreaWidget extends ReactWidget {
       autoStartDefault: false,
       shutdownOnDispose: false
     };
-    // }
   }
 
   activate(): void {
