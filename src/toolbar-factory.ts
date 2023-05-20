@@ -1,5 +1,6 @@
 import { Widget } from '@lumino/widgets';
 import { CommandRegistry } from '@lumino/commands';
+import { ExecutionIndicator } from '@jupyterlab/notebook';
 import { Toolbar } from '@jupyterlab/apputils/lib/toolbar';
 import { ToolbarRegistry, createDefaultFactory } from '@jupyterlab/apputils';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
@@ -32,6 +33,16 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
       name: 'kernelName',
       factory: (widget: VPDocWidget) =>
         Toolbar.createKernelNameItem(widget.sessionContext)
+    },
+    {
+      name: 'executionProgress',
+      factory: (widget: VPDocWidget) =>
+        ExecutionIndicator.createExecutionIndicatorItem(
+          // @ts-ignore
+          widget,
+          undefined,
+          undefined
+        )
     }
   ];
 }
