@@ -1,28 +1,26 @@
 import { DocumentRegistry, ABCWidgetFactory } from '@jupyterlab/docregistry';
-import { VPDocWidget, VPWidget } from './widget';
+import { VPWidget, VPMainAreaWidget } from './widget';
+import { IVPModel } from './model';
+import { IVPContext } from './context';
+
 /**
  * A widget factory to create new intance of VPDocWidget.
  */
-export class VPWidgetFactory extends ABCWidgetFactory<
-  VPDocWidget,
-  DocumentRegistry.ICodeModel
-> {
+export class VPWidgetFactory extends ABCWidgetFactory<VPWidget, IVPModel> {
   // the main widget is main area of the jupyter lab
   private _mainWidget: HTMLElement | null = null;
-  private _widgets: VPDocWidget[] = [];
+  private _widgets: VPWidget[] = [];
   private _widgetId = 0;
   private _onMouseDown = this.deactivateWidgetIfMouseDownOut.bind(this);
 
-  constructor(options: DocumentRegistry.IWidgetFactoryOptions<VPDocWidget>) {
+  constructor(options: DocumentRegistry.IWidgetFactoryOptions<VPWidget>) {
     super(options);
   }
 
-  protected createNewWidget(
-    context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>
-  ): VPDocWidget {
-    const w = new VPDocWidget({
+  protected createNewWidget(context: IVPContext): VPWidget {
+    const w = new VPWidget({
       context,
-      content: new VPWidget(`vp_widget_${++this._widgetId}`, context)
+      content: new VPMainAreaWidget(`vp_widget_${++this._widgetId}`, context)
     });
     this.onWidgetCreated(w);
     w.disposed.connect(w => {
@@ -55,7 +53,7 @@ export class VPWidgetFactory extends ABCWidgetFactory<
     }
   }
 
-  private onWidgetCreated(w: VPDocWidget) {
+  private onWidgetCreated(w: VPWidget) {
     this._widgets.push(w);
     if (this._mainWidget === null) {
       this._mainWidget = document.getElementById('main');
@@ -66,7 +64,7 @@ export class VPWidgetFactory extends ABCWidgetFactory<
     }
   }
 
-  private onWidgetDisposed(widget: VPDocWidget) {
+  private onWidgetDisposed(widget: VPWidget) {
     this._widgets.splice(this._widgets.indexOf(widget), 1);
     if (this._widgets.length === 0) {
       this._mainWidget?.removeEventListener('mousedown', this._onMouseDown);

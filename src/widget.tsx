@@ -1,9 +1,11 @@
 import React from 'react';
-import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
-import { DocumentRegistry, DocumentWidget } from '@jupyterlab/docregistry';
 import { Kernel, Session } from '@jupyterlab/services';
+import { DocumentWidget } from '@jupyterlab/docregistry';
+import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
 import { VPEditor, type SerializedGraph } from 'visual-programming-editor';
 import 'visual-programming-editor/dist/style.css';
+import { IVPContext } from './context';
+import { IVPModel } from './model';
 
 function isSameContent(
   a: string | null | object,
@@ -24,16 +26,14 @@ function isSameContent(
 /**
  * A visual programming widget that contains the main view of the DocumentWidget.
  */
-export class VPWidget extends ReactWidget {
+export class VPMainAreaWidget extends ReactWidget {
   private _id: string;
-  private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
+  private _context: IVPContext;
   private _vpContent: SerializedGraph | null;
   private _modelMetadata: { [key: string]: any } = {};
   private _editor_activated = false;
-  constructor(
-    id: string,
-    context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>
-  ) {
+
+  constructor(id: string, context: IVPContext) {
     super();
     this._id = id;
     this._vpContent = null;
@@ -43,7 +43,7 @@ export class VPWidget extends ReactWidget {
     this._context.ready.then(this._onContextReady.bind(this));
   }
 
-  get model(): DocumentRegistry.ICodeModel {
+  get model(): IVPModel {
     return this._context.model;
   }
 
@@ -137,7 +137,6 @@ export class VPWidget extends ReactWidget {
       autoStartDefault: false,
       shutdownOnDispose: false
     };
-    // }
   }
 
   activate(): void {
@@ -171,14 +170,10 @@ export class VPWidget extends ReactWidget {
 /**
  * A Document Widget that represents the view for a file type
  */
-export class VPDocWidget extends DocumentWidget<
-  VPWidget,
-  DocumentRegistry.ICodeModel
-> {
-  private _context: DocumentRegistry.IContext<DocumentRegistry.ICodeModel>;
-  constructor(
-    options: DocumentWidget.IOptions<VPWidget, DocumentRegistry.ICodeModel>
-  ) {
+export class VPWidget extends DocumentWidget<VPMainAreaWidget, IVPModel> {
+  private _context: IVPContext;
+
+  constructor(options: DocumentWidget.IOptions<VPMainAreaWidget, IVPModel>) {
     super(options);
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';

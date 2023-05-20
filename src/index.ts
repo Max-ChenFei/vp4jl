@@ -13,15 +13,15 @@ import { IMainMenu } from '@jupyterlab/mainmenu';
 import { fastForwardIcon } from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
-import { requestAPI } from './request';
-import { VPDocWidget } from './widget';
-import { VPModelFactory } from './model-factory';
-import { VPWidgetFactory } from './widget-factory';
-import { NodeExtension } from './node-extension';
+import { VPWidget } from './widget';
 import {
   vp4jlIDs as gVP4jlIDs,
   vp4jlCommandIDs as gVp4jlCommandIDs
 } from './namepace';
+import { requestAPI } from './request';
+import { NodeExtension } from './node-extension';
+import { VPModelFactory } from './model-factory';
+import { VPWidgetFactory } from './widget-factory';
 import { getToolbarFactory } from './toolbar-factory';
 import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { LoadPackageToRegistry } from 'visual-programming-editor';
@@ -234,7 +234,7 @@ function getCurrent(
   tracker: IVPTracker,
   shell: JupyterFrontEnd.IShell,
   args: ReadonlyPartialJSONObject
-): VPDocWidget | null {
+): VPWidget | null {
   const widget = tracker.currentWidget;
   const activate = args['activate'] !== false;
 
@@ -348,7 +348,7 @@ function activateVp4jlFixContextMenuClose(
 ) {
   // close the context menu when switch the tab
   labShell.currentChanged.connect((_, args) => {
-    if (args.oldValue instanceof VPDocWidget) {
+    if (args.oldValue instanceof VPWidget) {
       args.oldValue.content.deactivate();
     }
     closeDefaultContextMenu();
