@@ -183,7 +183,7 @@ export class VPDocWidget extends DocumentWidget<
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';
     this.addClass('jp-VPWidget');
-    this.toolbar.addClass('jp-VPToolbar');
+    this.toolbar.addClass('jp-VP-Toolbar');
     this._context = options.context;
   }
 
