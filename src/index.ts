@@ -176,7 +176,9 @@ function activateVp4jlCommands(
   app.commands.addCommand(cmdIds.copy, {
     label: args => {
       const current = getCurrent(tracker, shell, { ...args, activate: false });
-      return !current?.model.vpActions?.getSelectedCount()
+      return !args.toolbar
+        ? 'Copy'
+        : !current?.model.vpActions?.getSelectedCount()
         ? 'Copy Node'
         : 'Copy Nodes';
     },
