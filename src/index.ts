@@ -276,6 +276,7 @@ function activateVp4jlAttachCommandsToGui(
     return isFocusVPWidget(app.shell, tracker);
   };
   mainMenu.fileMenu.newMenu.addGroup([{ command: cmdIds.createNew }], 30);
+  mainMenu.editMenu.addGroup([{ command: cmdIds.copy }], 4);
   mainMenu.runMenu.codeRunners.run.add({
     id: cmdIds.run,
     isEnabled
