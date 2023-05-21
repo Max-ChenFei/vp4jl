@@ -350,13 +350,18 @@ function activateVp4jlAttachCommandsToGui(
   const isEnabled = (): boolean => {
     return isFocusVPWidget(app.shell, tracker);
   };
-  mainMenu.fileMenu.newMenu.addGroup([{ command: cmdIds.createNew }], 30);
-  mainMenu.editMenu.addGroup([{ command: cmdIds.copy }], 4);
-  mainMenu.editMenu.addGroup([{ command: cmdIds.paste }], 4);
-  mainMenu.editMenu.addGroup([{ command: cmdIds.duplicate }], 4);
-  mainMenu.editMenu.addGroup([{ command: cmdIds.cut }], 4);
-  mainMenu.editMenu.addGroup([{ command: cmdIds.del }], 4);
-  mainMenu.editMenu.addGroup([{ command: cmdIds.clear }], 4);
+  mainMenu.fileMenu.newMenu.addItem({ command: cmdIds.createNew, rank: 30 });
+  mainMenu.editMenu.addGroup(
+    [
+      { command: cmdIds.copy },
+      { command: cmdIds.paste },
+      { command: cmdIds.duplicate },
+      { command: cmdIds.cut },
+      { command: cmdIds.del },
+      { command: cmdIds.clear }
+    ],
+    4
+  );
   mainMenu.runMenu.codeRunners.run.add({
     id: cmdIds.run,
     isEnabled
