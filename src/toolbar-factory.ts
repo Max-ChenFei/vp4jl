@@ -23,6 +23,7 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
     { name: 'copy', command: vp4jlCommandIDs.copy },
+    { name: 'paste', command: vp4jlCommandIDs.paste },
     { name: 'run', command: 'runmenu:run' },
     { name: 'interrupt', command: 'kernelmenu:interrupt' },
     { name: 'restart', command: 'kernelmenu:restart' },

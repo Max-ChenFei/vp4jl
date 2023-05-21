@@ -10,7 +10,11 @@ import {
 } from '@jupyterlab/filebrowser';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import { copyIcon, fastForwardIcon } from '@jupyterlab/ui-components';
+import {
+  copyIcon,
+  pasteIcon,
+  fastForwardIcon
+} from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { VPWidget } from './widget';
@@ -192,6 +196,19 @@ function activateVp4jlCommands(
     isEnabled
   });
 
+  app.commands.addCommand(cmdIds.paste, {
+    label: 'Paste',
+    caption: 'Paste from the clipboard',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.pasteFromClipboard();
+      }
+    },
+    icon: args => (args.toolbar ? pasteIcon : undefined),
+    isEnabled
+  });
+
   app.commands.addCommand(cmdIds.kernelInterrupt, {
     label: 'Interrupt Kernel',
     caption: 'Interrupt the kernel',
@@ -277,6 +294,7 @@ function activateVp4jlAttachCommandsToGui(
   };
   mainMenu.fileMenu.newMenu.addGroup([{ command: cmdIds.createNew }], 30);
   mainMenu.editMenu.addGroup([{ command: cmdIds.copy }], 4);
+  mainMenu.editMenu.addGroup([{ command: cmdIds.paste }], 4);
   mainMenu.runMenu.codeRunners.run.add({
     id: cmdIds.run,
     isEnabled
