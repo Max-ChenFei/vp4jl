@@ -70,7 +70,9 @@ export class VPModel extends DocumentModel implements IVPModel {
 
   setVpContent(vpContent: SerializedGraph | null | string) {
     this.vpContent =
-      typeof vpContent === 'string' ? JSON.parse(vpContent) : vpContent;
+      typeof vpContent === 'string'
+        ? JSON.parse(vpContent === '' ? 'null' : vpContent)
+        : vpContent;
   }
 
   set vpContent(vpContent: SerializedGraph | null) {
