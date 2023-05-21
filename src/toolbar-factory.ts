@@ -5,6 +5,7 @@ import { Toolbar } from '@jupyterlab/apputils/lib/toolbar';
 import { ToolbarRegistry, createDefaultFactory } from '@jupyterlab/apputils';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import { ToolbarItems as DocToolbarItems } from '@jupyterlab/docmanager-extension';
+import { vp4jlCommandIDs } from './namepace';
 import { VPWidget } from './widget';
 
 interface IToolbarItemWithFactory {
@@ -21,6 +22,7 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
       factory: (widget: VPWidget) =>
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
+    { name: 'copy', command: vp4jlCommandIDs.copy },
     { name: 'run', command: 'runmenu:run' },
     { name: 'interrupt', command: 'kernelmenu:interrupt' },
     { name: 'restart', command: 'kernelmenu:restart' },
