@@ -36,6 +36,7 @@ export class VPMainAreaWidget extends ReactWidget {
         content={this._model.vpContent}
         onContentChange={this._model.setVpContent.bind(this._model)}
         activated={this._editor_activated}
+        onSceneActionsInit={this._model.setVpActions.bind(this._model)}
       />
     );
   }

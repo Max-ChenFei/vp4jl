@@ -10,7 +10,7 @@ import {
 } from '@jupyterlab/filebrowser';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import { fastForwardIcon } from '@jupyterlab/ui-components';
+import { copyIcon, fastForwardIcon } from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { VPWidget } from './widget';
@@ -166,6 +166,29 @@ function activateVp4jlCommands(
         return console.log(context.path, context.model.toString(), content);
       }
     },
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.copy, {
+    label: args => {
+      const current = getCurrent(tracker, shell, { ...args, activate: false });
+      return !current?.model.vpActions?.getSelectedCount()
+        ? 'Copy Node'
+        : 'Copy Nodes';
+    },
+    caption: args => {
+      const current = getCurrent(tracker, shell, { ...args, activate: false });
+      return !current?.model.vpActions?.getSelectedCount()
+        ? 'Copy this node'
+        : 'Copy theses nodes';
+    },
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.copySelectedNodeToClipboard();
+      }
+    },
+    icon: args => (args.toolbar ? copyIcon : undefined),
     isEnabled
   });
 

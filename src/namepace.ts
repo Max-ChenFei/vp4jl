@@ -14,6 +14,7 @@ export namespace vp4jlCommandIDs {
   export const commandCategory = 'Visual Programming';
   export const createNew = 'vp4jl:create-new';
   export const run = 'vp4jl:run';
+  export const copy = 'vp4jl:copy';
   export const kernelInterrupt = 'vp4jl:interrupt';
   export const kernelRestart = 'vp4jl:restart';
   export const kernelRestartAndRun = 'vp4jl:restart-and-run';
