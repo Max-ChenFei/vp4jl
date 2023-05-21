@@ -14,6 +14,7 @@ import {
   copyIcon,
   pasteIcon,
   cutIcon,
+  deleteIcon,
   fastForwardIcon
 } from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
@@ -212,6 +213,19 @@ function activateVp4jlCommands(
     isEnabled
   });
 
+  app.commands.addCommand(cmdIds.del, {
+    label: 'Delete',
+    caption: 'Delete the selected node',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.deleteSelectedElements();
+      }
+    },
+    icon: args => (args.toolbar ? deleteIcon : undefined),
+    isEnabled
+  });
+
   app.commands.addCommand(cmdIds.cut, {
     label: 'Cut',
     caption: 'Cut the selected node',
@@ -312,6 +326,7 @@ function activateVp4jlAttachCommandsToGui(
   mainMenu.editMenu.addGroup([{ command: cmdIds.copy }], 4);
   mainMenu.editMenu.addGroup([{ command: cmdIds.paste }], 4);
   mainMenu.editMenu.addGroup([{ command: cmdIds.cut }], 4);
+  mainMenu.editMenu.addGroup([{ command: cmdIds.del }], 4);
   mainMenu.runMenu.codeRunners.run.add({
     id: cmdIds.run,
     isEnabled
