@@ -16,6 +16,7 @@ import {
   cutIcon,
   deleteIcon,
   duplicateIcon,
+  clearIcon,
   fastForwardIcon
 } from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
@@ -253,6 +254,19 @@ function activateVp4jlCommands(
     isEnabled
   });
 
+  app.commands.addCommand(cmdIds.clear, {
+    label: 'Clear',
+    caption: 'Delete all nodes and edges',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.clear();
+      }
+    },
+    icon: args => (args.toolbar ? clearIcon : undefined),
+    isEnabled
+  });
+
   app.commands.addCommand(cmdIds.kernelInterrupt, {
     label: 'Interrupt Kernel',
     caption: 'Interrupt the kernel',
@@ -341,6 +355,8 @@ function activateVp4jlAttachCommandsToGui(
   mainMenu.editMenu.addGroup([{ command: cmdIds.paste }], 4);
   mainMenu.editMenu.addGroup([{ command: cmdIds.cut }], 4);
   mainMenu.editMenu.addGroup([{ command: cmdIds.del }], 4);
+  mainMenu.editMenu.addGroup([{ command: cmdIds.duplicate }], 4);
+  mainMenu.editMenu.addGroup([{ command: cmdIds.clear }], 4);
   mainMenu.runMenu.codeRunners.run.add({
     id: cmdIds.run,
     isEnabled

@@ -27,6 +27,7 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
     { name: 'delete', command: vp4jlCommandIDs.del },
     { name: 'cut', command: vp4jlCommandIDs.cut },
     { name: 'duplicate', command: vp4jlCommandIDs.duplicate },
+    { name: 'clear', command: vp4jlCommandIDs.clear },
     { name: 'run', command: 'runmenu:run' },
     { name: 'interrupt', command: 'kernelmenu:interrupt' },
     { name: 'restart', command: 'kernelmenu:restart' },
