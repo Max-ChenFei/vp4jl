@@ -18,6 +18,7 @@ export namespace vp4jlCommandIDs {
   export const paste = 'vp4jl:paste';
   export const del = 'vp4jl:delete';
   export const cut = 'vp4jl:cut';
+  export const duplicate = 'vp4jl:duplicate';
   export const kernelInterrupt = 'vp4jl:interrupt';
   export const kernelRestart = 'vp4jl:restart';
   export const kernelRestartAndRun = 'vp4jl:restart-and-run';

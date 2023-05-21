@@ -15,6 +15,7 @@ import {
   pasteIcon,
   cutIcon,
   deleteIcon,
+  duplicateIcon,
   fastForwardIcon
 } from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
@@ -236,6 +237,19 @@ function activateVp4jlCommands(
       }
     },
     icon: args => (args.toolbar ? cutIcon : undefined),
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.duplicate, {
+    label: 'Duplicate',
+    caption: 'Duplicate the selected node',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.duplicateSelectedNodes();
+      }
+    },
+    icon: args => (args.toolbar ? duplicateIcon : undefined),
     isEnabled
   });
 
