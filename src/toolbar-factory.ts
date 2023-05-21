@@ -24,6 +24,7 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
     },
     { name: 'copy', command: vp4jlCommandIDs.copy },
     { name: 'paste', command: vp4jlCommandIDs.paste },
+    { name: 'cut', command: vp4jlCommandIDs.cut },
     { name: 'run', command: 'runmenu:run' },
     { name: 'interrupt', command: 'kernelmenu:interrupt' },
     { name: 'restart', command: 'kernelmenu:restart' },
