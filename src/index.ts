@@ -10,7 +10,15 @@ import {
 } from '@jupyterlab/filebrowser';
 import { ILauncher } from '@jupyterlab/launcher';
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import { fastForwardIcon } from '@jupyterlab/ui-components';
+import {
+  copyIcon,
+  pasteIcon,
+  cutIcon,
+  deleteIcon,
+  duplicateIcon,
+  clearIcon,
+  fastForwardIcon
+} from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { VPWidget } from './widget';
@@ -128,6 +136,14 @@ function activateVp4jlCommands(
     return isFocusVPWidget(shell, tracker);
   };
 
+  const isEnabledDependOnSelected = (args: any): boolean => {
+    if (!isEnabled()) {
+      return false;
+    }
+    const current = getCurrent(tracker, shell, { ...args, activate: false });
+    return !!current?.model.vpActions?.getSelectedCounts().nodesCount;
+  };
+
   app.commands.addCommand(cmdIds.createNew, {
     label: args =>
       args['isPalette']
@@ -166,6 +182,104 @@ function activateVp4jlCommands(
         return console.log(context.path, context.model.toString(), content);
       }
     },
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.copy, {
+    label: args => {
+      const current = getCurrent(tracker, shell, { ...args, activate: false });
+      return !args.toolbar
+        ? 'Copy'
+        : !current?.model.vpActions?.getSelectedCounts().nodesCount
+        ? 'Copy Node'
+        : 'Copy Nodes';
+    },
+    caption: args => {
+      const current = getCurrent(tracker, shell, { ...args, activate: false });
+      return !current?.model.vpActions?.getSelectedCounts().nodesCount
+        ? 'Copy this node'
+        : 'Copy theses nodes';
+    },
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.copySelectedNodeToClipboard();
+      }
+    },
+    icon: args => (args.toolbar ? copyIcon : undefined),
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
+  });
+
+  app.commands.addCommand(cmdIds.paste, {
+    label: 'Paste',
+    caption: 'Paste from the clipboard',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.pasteFromClipboard();
+      }
+    },
+    icon: args => (args.toolbar ? pasteIcon : undefined),
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.del, {
+    label: 'Delete',
+    caption: 'Delete the selected node',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.deleteSelectedElements();
+      }
+    },
+    icon: args => (args.toolbar ? deleteIcon : undefined),
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
+  });
+
+  app.commands.addCommand(cmdIds.cut, {
+    label: 'Cut',
+    caption: 'Cut the selected node',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.cutSelectedNodesToClipboard();
+      }
+    },
+    icon: args => (args.toolbar ? cutIcon : undefined),
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
+  });
+
+  app.commands.addCommand(cmdIds.duplicate, {
+    label: 'Duplicate',
+    caption: 'Duplicate the selected node',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.duplicateSelectedNodes();
+      }
+    },
+    icon: args => (args.toolbar ? duplicateIcon : undefined),
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
+  });
+
+  app.commands.addCommand(cmdIds.clear, {
+    label: 'Clear',
+    caption: 'Delete all nodes and edges',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.model.vpActions?.clear();
+      }
+    },
+    icon: args => (args.toolbar ? clearIcon : undefined),
     isEnabled
   });
 
@@ -252,7 +366,18 @@ function activateVp4jlAttachCommandsToGui(
   const isEnabled = (): boolean => {
     return isFocusVPWidget(app.shell, tracker);
   };
-  mainMenu.fileMenu.newMenu.addGroup([{ command: cmdIds.createNew }], 30);
+  mainMenu.fileMenu.newMenu.addItem({ command: cmdIds.createNew, rank: 30 });
+  mainMenu.editMenu.addGroup(
+    [
+      { command: cmdIds.copy },
+      { command: cmdIds.paste },
+      { command: cmdIds.duplicate },
+      { command: cmdIds.cut },
+      { command: cmdIds.del },
+      { command: cmdIds.clear }
+    ],
+    4
+  );
   mainMenu.runMenu.codeRunners.run.add({
     id: cmdIds.run,
     isEnabled

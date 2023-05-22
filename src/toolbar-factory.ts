@@ -2,25 +2,40 @@ import { Widget } from '@lumino/widgets';
 import { CommandRegistry } from '@lumino/commands';
 import { ExecutionIndicator } from '@jupyterlab/notebook';
 import { Toolbar } from '@jupyterlab/apputils/lib/toolbar';
-import { ToolbarRegistry, createDefaultFactory } from '@jupyterlab/apputils';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
+import { ToolbarRegistry, createDefaultFactory } from '@jupyterlab/apputils';
 import { ToolbarItems as DocToolbarItems } from '@jupyterlab/docmanager-extension';
+import { vp4jlCommandIDs } from './namepace';
 import { VPWidget } from './widget';
 
-interface IToolbarItemWithFactory {
+interface IToolbarItemWithFactoryConfig {
   name: string;
   factory: (widget: VPWidget) => Widget;
 }
 
-type IToolbarItem = IToolbarItemWithFactory | ToolbarRegistry.IWidget;
+type IToolbarItemConfig =
+  | IToolbarItemWithFactoryConfig
+  | ToolbarRegistry.IWidget;
 
-export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
+type IDefaultToolbarFactory = (
+  widgetFactory: string,
+  widget: Widget,
+  toolbarItem: ToolbarRegistry.IWidget
+) => Widget;
+
+function getToolbarItems(commands: CommandRegistry): IToolbarItemConfig[] {
   return [
     {
       name: 'save',
       factory: (widget: VPWidget) =>
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
+    { name: 'copy', command: vp4jlCommandIDs.copy },
+    { name: 'paste', command: vp4jlCommandIDs.paste },
+    { name: 'duplicate', command: vp4jlCommandIDs.duplicate },
+    { name: 'cut', command: vp4jlCommandIDs.cut },
+    { name: 'delete', command: vp4jlCommandIDs.del },
+    { name: 'clear', command: vp4jlCommandIDs.clear },
     { name: 'run', command: 'runmenu:run' },
     { name: 'interrupt', command: 'kernelmenu:interrupt' },
     { name: 'restart', command: 'kernelmenu:restart' },
@@ -47,22 +62,34 @@ export function getToolbarItems(commands: CommandRegistry): IToolbarItem[] {
   ];
 }
 
+function createWidget(
+  widget: VPWidget,
+  widgetFactory: string | undefined,
+  item: IToolbarItemConfig,
+  defaultFactory: IDefaultToolbarFactory
+): Widget {
+  return item.factory
+    ? (item as IToolbarItemWithFactoryConfig).factory(widget)
+    : defaultFactory(
+        widgetFactory ?? '',
+        widget,
+        item as ToolbarRegistry.IWidget
+      );
+}
+
 export function getToolbarFactory(
   commands: CommandRegistry,
   widgetFactory?: string
-) {
-  const items = getToolbarItems(commands);
+): (widget: VPWidget) => DocumentRegistry.IToolbarItem[] {
+  const toolbarItems = getToolbarItems(commands);
   const defaultFactory = createDefaultFactory(commands);
+
   return (widget: VPWidget): DocumentRegistry.IToolbarItem[] => {
-    return items.map(toolbar => ({
-      name: toolbar.name,
-      widget: toolbar.factory
-        ? (toolbar as IToolbarItemWithFactory).factory(widget)
-        : defaultFactory(
-            widgetFactory ?? '',
-            widget,
-            toolbar as ToolbarRegistry.IWidget
-          )
+    const toolbar = toolbarItems.map(item => ({
+      name: item.name,
+      widget: createWidget(widget, widgetFactory, item, defaultFactory)
     }));
+    widget.model?.setToolbarItems(toolbar);
+    return toolbar;
   };
 }

@@ -15,6 +15,10 @@ export class VPMainAreaWidget extends ReactWidget {
     this._model.vpContentChanged.connect(this.update, this);
   }
 
+  get model(): IVPModel {
+    return this._model;
+  }
+
   activate(): void {
     if (!this._editor_activated) {
       this._editor_activated = true;
@@ -29,6 +33,14 @@ export class VPMainAreaWidget extends ReactWidget {
     }
   }
 
+  private _updateToolbar() {
+    // from toolbar-factory.tsx
+    ['copy', 'cut', 'duplicate', 'delete'].forEach(name => {
+      console.log(this.model.toolbarItems[name]);
+      this.model.toolbarItems[name].widget.update();
+    });
+  }
+
   render(): JSX.Element {
     return (
       <VPEditor
@@ -36,6 +48,8 @@ export class VPMainAreaWidget extends ReactWidget {
         content={this._model.vpContent}
         onContentChange={this._model.setVpContent.bind(this._model)}
         activated={this._editor_activated}
+        onSceneActionsInit={this._model.setVpActions.bind(this._model)}
+        onSelectionChange={this._updateToolbar.bind(this)}
       />
     );
   }

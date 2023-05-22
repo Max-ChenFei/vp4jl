@@ -3,13 +3,21 @@ import { Kernel } from '@jupyterlab/services';
 import { ISignal, Signal } from '@lumino/signaling';
 import { DocumentRegistry, DocumentModel } from '@jupyterlab/docregistry';
 import { isSameContent } from './utils';
-import { SerializedGraph } from 'visual-programming-editor';
+import { ISceneActions, SerializedGraph } from 'visual-programming-editor';
+
+export type IToolbarItems = {
+  [name: string]: DocumentRegistry.IToolbarItem;
+};
 
 export interface IVPModel extends DocumentRegistry.ICodeModel {
   kernelSpec: Partial<Kernel.IModel> | undefined;
   vpContent: SerializedGraph | null;
+  vpActions: ISceneActions | null;
+  toolbarItems: IToolbarItems;
   setKernelSpec(kernel: Kernel.IKernelConnection | null): Promise<void>;
   setVpContent(vpContent: SerializedGraph | null | string): void;
+  setVpActions(vpActions: ISceneActions | null): void;
+  setToolbarItems(toolbarItems: DocumentRegistry.IToolbarItem[] | null): void;
   kernelSpecChanged: ISignal<this, IKernelspec>;
   vpContentChanged: ISignal<this, void>;
 }
@@ -70,7 +78,9 @@ export class VPModel extends DocumentModel implements IVPModel {
 
   setVpContent(vpContent: SerializedGraph | null | string) {
     this.vpContent =
-      typeof vpContent === 'string' ? JSON.parse(vpContent) : vpContent;
+      typeof vpContent === 'string'
+        ? JSON.parse(vpContent === '' ? 'null' : vpContent)
+        : vpContent;
   }
 
   set vpContent(vpContent: SerializedGraph | null) {
@@ -93,8 +103,30 @@ export class VPModel extends DocumentModel implements IVPModel {
     return this._vpContentChanged;
   }
 
+  get vpActions(): ISceneActions | null {
+    return this._vpActions;
+  }
+
+  setVpActions(vpActions: ISceneActions | null) {
+    this._vpActions = vpActions;
+  }
+
+  get toolbarItems(): IToolbarItems {
+    return this._toolbarItems;
+  }
+
+  setToolbarItems(toolbarItems: DocumentRegistry.IToolbarItem[]) {
+    toolbarItems?.forEach(item => {
+      this._toolbarItems[item.name] = item;
+    });
+  }
+
   private _kernelSpec: Partial<Kernel.IModel> | undefined = {};
   private _vpContent: SerializedGraph | null = null;
   private _kernelSpecChanged = new Signal<this, IKernelspec>(this);
   private _vpContentChanged = new Signal<this, void>(this);
+  private _vpActions: ISceneActions | null = null;
+  private _toolbarItems: {
+    [name: string]: DocumentRegistry.IToolbarItem;
+  } = {};
 }
