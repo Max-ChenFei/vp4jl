@@ -30,18 +30,18 @@ function getToolbarItems(commands: CommandRegistry): IToolbarItemConfig[] {
       factory: (widget: VPWidget) =>
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
+    { name: 'cut', command: vp4jlCommandIDs.cut },
     { name: 'copy', command: vp4jlCommandIDs.copy },
     { name: 'paste', command: vp4jlCommandIDs.paste },
     { name: 'duplicate', command: vp4jlCommandIDs.duplicate },
-    { name: 'cut', command: vp4jlCommandIDs.cut },
     { name: 'delete', command: vp4jlCommandIDs.del },
-    { name: 'clear', command: vp4jlCommandIDs.clear },
-    { name: 'run', command: 'runmenu:run' },
-    { name: 'interrupt', command: 'kernelmenu:interrupt' },
-    { name: 'restart', command: 'kernelmenu:restart' },
+    { name: 'deleteAll', command: vp4jlCommandIDs.deleteAll },
+    { name: 'run', command: vp4jlCommandIDs.run },
+    { name: 'interrupt', command: vp4jlCommandIDs.interruptKernel },
+    { name: 'restart', command: vp4jlCommandIDs.restartKernel },
     {
       name: 'restart-and-run',
-      command: 'runmenu:restart-and-run-all'
+      command: vp4jlCommandIDs.restartKernelAndRun
     },
     { name: 'spacer', type: 'spacer' },
     {

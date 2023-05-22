@@ -17,7 +17,10 @@ import {
   deleteIcon,
   duplicateIcon,
   clearIcon,
-  fastForwardIcon
+  fastForwardIcon,
+  refreshIcon,
+  stopIcon,
+  runIcon
 } from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
@@ -182,6 +185,7 @@ function activateVp4jlCommands(
         return console.log(context.path, context.model.toString(), content);
       }
     },
+    icon: args => (args.toolbar ? runIcon : undefined),
     isEnabled
   });
 
@@ -222,7 +226,9 @@ function activateVp4jlCommands(
       }
     },
     icon: args => (args.toolbar ? pasteIcon : undefined),
-    isEnabled
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
   });
 
   app.commands.addCommand(cmdIds.del, {
@@ -270,8 +276,8 @@ function activateVp4jlCommands(
     }
   });
 
-  app.commands.addCommand(cmdIds.clear, {
-    label: 'Clear',
+  app.commands.addCommand(cmdIds.deleteAll, {
+    label: 'Delete All',
     caption: 'Delete all nodes and edges',
     execute: args => {
       const current = getCurrent(tracker, shell, args);
@@ -283,7 +289,7 @@ function activateVp4jlCommands(
     isEnabled
   });
 
-  app.commands.addCommand(cmdIds.kernelInterrupt, {
+  app.commands.addCommand(cmdIds.interruptKernel, {
     label: 'Interrupt Kernel',
     caption: 'Interrupt the kernel',
     execute: args => {
@@ -296,10 +302,11 @@ function activateVp4jlCommands(
         return kernel.interrupt();
       }
     },
+    icon: args => (args.toolbar ? stopIcon : undefined),
     isEnabled
   });
 
-  app.commands.addCommand(cmdIds.kernelRestart, {
+  app.commands.addCommand(cmdIds.restartKernel, {
     label: 'Restart Kernel',
     caption: 'Restart the kernel',
     execute: args => {
@@ -308,15 +315,42 @@ function activateVp4jlCommands(
         return sessionDialogs.restart(current.sessionContext);
       }
     },
+    icon: args => (args.toolbar ? refreshIcon : undefined),
     isEnabled
   });
 
-  app.commands.addCommand(cmdIds.kernelRestartAndRun, {
+  app.commands.addCommand(cmdIds.clearOutput, {
+    label: 'Clear Output',
+    caption: 'Clear the output',
+    execute: args => {
+      console.log('clear output');
+    },
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.reconnectKernel, {
+    label: 'Reconnect to Kernel',
+    caption: 'Reconnect to the kernel',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (!current) {
+        return;
+      }
+      const kernel = current.context.sessionContext.session?.kernel;
+
+      if (kernel) {
+        return kernel.reconnect();
+      }
+    },
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.restartKernelAndRun, {
     label: 'Restart Kernel and Run',
     caption: 'Restart the kernel and re-run the whole file',
     execute: async args => {
       const restarted: boolean = await app.commands.execute(
-        cmdIds.kernelRestart,
+        cmdIds.restartKernel,
         {
           activate: false
         }
@@ -325,8 +359,31 @@ function activateVp4jlCommands(
         await app.commands.execute(cmdIds.run);
       }
     },
-    isEnabled,
-    icon: fastForwardIcon
+    icon: fastForwardIcon,
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.shutdownKernel, {
+    label: 'Shut Down Kernel',
+    caption: 'Shutdown the kernel',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        return current.context.sessionContext.shutdown();
+      }
+    },
+    isEnabled
+  });
+  app.commands.addCommand(cmdIds.changeKernel, {
+    label: 'Change Kernel…',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+
+      if (current) {
+        return sessionDialogs.selectKernel(current.context.sessionContext);
+      }
+    },
+    isEnabled
   });
 }
 
@@ -374,7 +431,7 @@ function activateVp4jlAttachCommandsToGui(
       { command: cmdIds.duplicate },
       { command: cmdIds.cut },
       { command: cmdIds.del },
-      { command: cmdIds.clear }
+      { command: cmdIds.deleteAll }
     ],
     4
   );
@@ -383,15 +440,37 @@ function activateVp4jlAttachCommandsToGui(
     isEnabled
   });
   mainMenu.kernelMenu.kernelUsers.interruptKernel.add({
-    id: cmdIds.kernelInterrupt,
+    id: cmdIds.interruptKernel,
     isEnabled
   });
   mainMenu.kernelMenu.kernelUsers.restartKernel.add({
-    id: cmdIds.kernelRestart,
+    id: cmdIds.restartKernel,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.reconnectToKernel.add({
+    id: cmdIds.reconnectKernel,
     isEnabled
   });
   mainMenu.runMenu.codeRunners.restart.add({
-    id: cmdIds.kernelRestartAndRun,
+    id: cmdIds.restartKernelAndRun,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.shutdownKernel.add({
+    id: cmdIds.shutdownKernel,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.changeKernel.add({
+    id: cmdIds.changeKernel,
+    isEnabled
+  });
+
+  mainMenu.kernelMenu.kernelUsers.clearWidget.add({
+    id: cmdIds.clearOutput,
+    isEnabled
+  });
+
+  mainMenu.editMenu.clearers.clearCurrent.add({
+    id: cmdIds.clearOutput,
     isEnabled
   });
 
