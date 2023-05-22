@@ -226,7 +226,9 @@ function activateVp4jlCommands(
       }
     },
     icon: args => (args.toolbar ? pasteIcon : undefined),
-    isEnabled
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
   });
 
   app.commands.addCommand(cmdIds.del, {

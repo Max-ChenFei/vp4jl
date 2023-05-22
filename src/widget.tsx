@@ -35,7 +35,7 @@ export class VPMainAreaWidget extends ReactWidget {
 
   private _updateToolbar() {
     // from toolbar-factory.tsx
-    ['copy', 'cut', 'duplicate', 'delete'].forEach(name => {
+    ['copy', 'paste', 'cut', 'duplicate', 'delete'].forEach(name => {
       console.log(this.model.toolbarItems[name]);
       this.model.toolbarItems[name].widget.update();
     });
