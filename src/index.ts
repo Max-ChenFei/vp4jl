@@ -363,6 +363,17 @@ function activateVp4jlCommands(
     },
     isEnabled
   });
+  app.commands.addCommand(cmdIds.kernelChange, {
+    label: 'Change Kernel…',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+
+      if (current) {
+        return sessionDialogs.selectKernel(current.context.sessionContext);
+      }
+    },
+    isEnabled
+  });
 }
 
 function isFocusVPWidget(
@@ -435,6 +446,10 @@ function activateVp4jlAttachCommandsToGui(
   });
   mainMenu.kernelMenu.kernelUsers.shutdownKernel.add({
     id: cmdIds.kernelshutdown,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.changeKernel.add({
+    id: cmdIds.kernelChange,
     isEnabled
   });
 

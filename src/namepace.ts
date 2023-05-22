@@ -24,5 +24,6 @@ export namespace vp4jlCommandIDs {
   export const kernelInterrupt = 'vp4jl:interrupt';
   export const kernelRestart = 'vp4jl:restart';
   export const kernelReconnect = 'vp4jl:reconnect';
+  export const kernelChange = 'vp4jl:change-kernel';
   export const kernelRestartAndRun = 'vp4jl:restart-and-run';
 }
