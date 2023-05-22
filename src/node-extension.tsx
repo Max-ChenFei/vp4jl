@@ -1,13 +1,15 @@
 import React from 'react';
+import { Token } from '@lumino/coreutils';
 import { URLExt } from '@jupyterlab/coreutils';
 import { ServerConnection } from '@jupyterlab/services';
 import { extensionIcon } from '@jupyterlab/ui-components';
-import { ReactWidget, DOMUtils } from '@jupyterlab/apputils';
+import { ReactWidget } from '@jupyterlab/apputils';
 import {
   NodeLibraryList,
   nodeConfigRegistry,
   Progress
 } from 'visual-programming-editor';
+import { vp4jlIDs } from './namepace';
 import { requestAPI } from './request';
 import { requestToken } from './request-token';
 
@@ -43,11 +45,12 @@ function NodeExtensionWidget({
     </>
   );
 }
+
 export class NodeExtension extends ReactWidget {
   private fetching = false;
   constructor() {
     super();
-    this.id = DOMUtils.createDomID();
+    this.id = vp4jlIDs.nodeExtension;
     this.node.style.background = 'var(--jp-layout-color1)';
     this.title.icon = extensionIcon;
     this.title.caption = 'Node Extension Manager';
@@ -121,3 +124,9 @@ export class NodeExtension extends ReactWidget {
     );
   }
 }
+
+export const NodeExtensionToken = new Token<NodeExtension>(
+  '@jupyterlab/vp4jl:INodeExtension',
+  `A node package extension panel for visual programming files.
+  This is used to install, uninstall, enable or disable node packages that can be used in the visual programming files.`
+);

@@ -30,7 +30,7 @@ import {
   vp4jlCommandIDs as gVp4jlCommandIDs
 } from './namepace';
 import { requestAPI } from './request';
-import { NodeExtension } from './node-extension';
+import { NodeExtensionToken, NodeExtension } from './node-extension';
 import { VPModelFactory } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { getToolbarFactory } from './toolbar-factory';
@@ -47,7 +47,13 @@ const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
 const vp4jlCommands: JupyterFrontEndPlugin<void> = {
   id: 'vp4jl:Commands',
   autoStart: true,
-  requires: [IVPTrackerToken, ISessionContextDialogs, IFileBrowserFactory],
+  requires: [
+    ILabShell,
+    IVPTrackerToken,
+    ISessionContextDialogs,
+    IFileBrowserFactory,
+    NodeExtensionToken
+  ],
   optional: [IDefaultFileBrowser],
   activate: activateVp4jlCommands
 };
@@ -67,10 +73,11 @@ const vp4jlRestorer: JupyterFrontEndPlugin<void> = {
   activate: activateVp4jlRestorer
 };
 
-const vp4jlNodeExtension: JupyterFrontEndPlugin<void> = {
+const vp4jlNodeExtension: JupyterFrontEndPlugin<NodeExtension> = {
   id: 'vp4jl:NodeExtension',
   autoStart: true,
   optional: [ILayoutRestorer],
+  provides: NodeExtensionToken,
   activate: activateVp4jlNodeExtension
 };
 
@@ -127,9 +134,11 @@ function activateVp4jl(app: JupyterFrontEnd): IVPTracker {
 
 function activateVp4jlCommands(
   app: JupyterFrontEnd,
+  labShell: ILabShell,
   tracker: IVPTracker,
   sessionDialogs: ISessionContextDialogs,
   browserFactory: IFileBrowserFactory,
+  nodeExtension: NodeExtension,
   defaultFileBrowser: IDefaultFileBrowser | null
 ) {
   const vp4jlIDs = gVP4jlIDs;
@@ -385,6 +394,30 @@ function activateVp4jlCommands(
     },
     isEnabled
   });
+
+  app.commands.addCommand(cmdIds.showNodeExtension, {
+    label: 'Show Node Packages Manager',
+    execute: () => {
+      labShell.activateById(vp4jlIDs.nodeExtension);
+    }
+  });
+
+  app.commands.addCommand(cmdIds.hideNodeExtension, {
+    label: 'Hide Node Extension',
+    execute: () => {
+      labShell.collapseLeft();
+    }
+  });
+
+  app.commands.addCommand(cmdIds.toggleNodeExtension, {
+    label: 'Node Packages Manager',
+    execute: () => {
+      if (nodeExtension.isHidden) {
+        return app.commands.execute(cmdIds.showNodeExtension, void 0);
+      }
+      return app.commands.execute(cmdIds.hideNodeExtension, void 0);
+    }
+  });
 }
 
 function isFocusVPWidget(
@@ -474,6 +507,11 @@ function activateVp4jlAttachCommandsToGui(
     isEnabled
   });
 
+  mainMenu.viewMenu.addItem({
+    command: cmdIds.toggleNodeExtension,
+    rank: 9
+  });
+
   launcher?.add({
     command: cmdIds.createNew,
     category: cmdIds.commandCategory,
@@ -517,7 +555,7 @@ function activateVp4jlRestorer(
 function activateVp4jlNodeExtension(
   app: JupyterFrontEnd,
   restorer: ILayoutRestorer | null
-) {
+): NodeExtension {
   const nodeExtension = new NodeExtension();
   app.shell.add(nodeExtension, 'left');
 
@@ -525,6 +563,7 @@ function activateVp4jlNodeExtension(
     restorer.add(nodeExtension, 'vp4jlNodeExtension');
   }
   fetchNodeExtensions();
+  return nodeExtension;
 }
 
 function fetchNodeExtensions() {

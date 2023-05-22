@@ -8,6 +8,7 @@ export namespace vp4jlIDs {
   export const createNewLabelInFileMenu = 'Visual Programming File';
   export const createNewLabelInContextMenu = 'Visual Programming File';
   export const caption = 'Create a new Visual Programming file';
+  export const nodeExtension = 'vp4jl-node-extension';
 }
 
 export namespace vp4jlCommandIDs {
@@ -27,4 +28,7 @@ export namespace vp4jlCommandIDs {
   export const reconnectKernel = 'vp4jl:reconnect-kernel';
   export const changeKernel = 'vp4jl:change-kernel';
   export const restartKernelAndRun = 'vp4jl:restart-kernel-and-run';
+  export const showNodeExtension = 'vp4jl:show-node-extension';
+  export const hideNodeExtension = 'vp4jl:hide-node-extension';
+  export const toggleNodeExtension = 'vp4jl:toggle-node-extension';
 }
