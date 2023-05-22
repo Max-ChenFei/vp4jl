@@ -317,6 +317,23 @@ function activateVp4jlCommands(
     isEnabled
   });
 
+  app.commands.addCommand(cmdIds.kernelReconnect, {
+    label: 'Reconnect to Kernel',
+    caption: 'Reconnect to the kernel',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (!current) {
+        return;
+      }
+      const kernel = current.context.sessionContext.session?.kernel;
+
+      if (kernel) {
+        return kernel.reconnect();
+      }
+    },
+    isEnabled
+  });
+
   app.commands.addCommand(cmdIds.kernelRestartAndRun, {
     label: 'Restart Kernel and Run',
     caption: 'Restart the kernel and re-run the whole file',
@@ -406,6 +423,10 @@ function activateVp4jlAttachCommandsToGui(
   });
   mainMenu.kernelMenu.kernelUsers.restartKernel.add({
     id: cmdIds.kernelRestart,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.reconnectToKernel.add({
+    id: cmdIds.kernelReconnect,
     isEnabled
   });
   mainMenu.runMenu.codeRunners.restart.add({
