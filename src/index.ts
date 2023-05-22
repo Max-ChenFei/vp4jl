@@ -136,6 +136,14 @@ function activateVp4jlCommands(
     return isFocusVPWidget(shell, tracker);
   };
 
+  const isEnabledDependOnSelected = (args: any): boolean => {
+    if (!isEnabled()) {
+      return false;
+    }
+    const current = getCurrent(tracker, shell, { ...args, activate: false });
+    return !!current?.model.vpActions?.getSelectedCounts().nodesCount;
+  };
+
   app.commands.addCommand(cmdIds.createNew, {
     label: args =>
       args['isPalette']
@@ -182,13 +190,13 @@ function activateVp4jlCommands(
       const current = getCurrent(tracker, shell, { ...args, activate: false });
       return !args.toolbar
         ? 'Copy'
-        : !current?.model.vpActions?.getSelectedCount()
+        : !current?.model.vpActions?.getSelectedCounts().nodesCount
         ? 'Copy Node'
         : 'Copy Nodes';
     },
     caption: args => {
       const current = getCurrent(tracker, shell, { ...args, activate: false });
-      return !current?.model.vpActions?.getSelectedCount()
+      return !current?.model.vpActions?.getSelectedCounts().nodesCount
         ? 'Copy this node'
         : 'Copy theses nodes';
     },
@@ -199,7 +207,9 @@ function activateVp4jlCommands(
       }
     },
     icon: args => (args.toolbar ? copyIcon : undefined),
-    isEnabled
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
   });
 
   app.commands.addCommand(cmdIds.paste, {
@@ -225,7 +235,9 @@ function activateVp4jlCommands(
       }
     },
     icon: args => (args.toolbar ? deleteIcon : undefined),
-    isEnabled
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
   });
 
   app.commands.addCommand(cmdIds.cut, {
@@ -238,7 +250,9 @@ function activateVp4jlCommands(
       }
     },
     icon: args => (args.toolbar ? cutIcon : undefined),
-    isEnabled
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
   });
 
   app.commands.addCommand(cmdIds.duplicate, {
@@ -251,7 +265,9 @@ function activateVp4jlCommands(
       }
     },
     icon: args => (args.toolbar ? duplicateIcon : undefined),
-    isEnabled
+    isEnabled: args => {
+      return isEnabledDependOnSelected(args);
+    }
   });
 
   app.commands.addCommand(cmdIds.clear, {

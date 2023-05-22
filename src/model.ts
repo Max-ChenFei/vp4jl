@@ -5,13 +5,19 @@ import { DocumentRegistry, DocumentModel } from '@jupyterlab/docregistry';
 import { isSameContent } from './utils';
 import { ISceneActions, SerializedGraph } from 'visual-programming-editor';
 
+export type IToolbarItems = {
+  [name: string]: DocumentRegistry.IToolbarItem;
+};
+
 export interface IVPModel extends DocumentRegistry.ICodeModel {
   kernelSpec: Partial<Kernel.IModel> | undefined;
   vpContent: SerializedGraph | null;
   vpActions: ISceneActions | null;
+  toolbarItems: IToolbarItems;
   setKernelSpec(kernel: Kernel.IKernelConnection | null): Promise<void>;
   setVpContent(vpContent: SerializedGraph | null | string): void;
   setVpActions(vpActions: ISceneActions | null): void;
+  setToolbarItems(toolbarItems: DocumentRegistry.IToolbarItem[] | null): void;
   kernelSpecChanged: ISignal<this, IKernelspec>;
   vpContentChanged: ISignal<this, void>;
 }
@@ -105,9 +111,22 @@ export class VPModel extends DocumentModel implements IVPModel {
     this._vpActions = vpActions;
   }
 
+  get toolbarItems(): IToolbarItems {
+    return this._toolbarItems;
+  }
+
+  setToolbarItems(toolbarItems: DocumentRegistry.IToolbarItem[]) {
+    toolbarItems?.forEach(item => {
+      this._toolbarItems[item.name] = item;
+    });
+  }
+
   private _kernelSpec: Partial<Kernel.IModel> | undefined = {};
   private _vpContent: SerializedGraph | null = null;
   private _kernelSpecChanged = new Signal<this, IKernelspec>(this);
   private _vpContentChanged = new Signal<this, void>(this);
   private _vpActions: ISceneActions | null = null;
+  private _toolbarItems: {
+    [name: string]: DocumentRegistry.IToolbarItem;
+  } = {};
 }
