@@ -21,10 +21,10 @@ export namespace vp4jlCommandIDs {
   export const duplicate = 'vp4jl:duplicate';
   export const deleteAll = 'vp4jl:clear';
   export const clearOutput = 'vp4jl:clear-output';
-  export const kernelshutdown = 'vp4jl:kernel-shutdown';
-  export const kernelInterrupt = 'vp4jl:interrupt';
-  export const kernelRestart = 'vp4jl:restart';
-  export const kernelReconnect = 'vp4jl:reconnect';
-  export const kernelChange = 'vp4jl:change-kernel';
-  export const kernelRestartAndRun = 'vp4jl:restart-and-run';
+  export const shutdownKernel = 'vp4jl:shutdown-kernel';
+  export const interruptKernel = 'vp4jl:interrupt-kernel';
+  export const restartKernel = 'vp4jl:restart-kernel';
+  export const reconnectKernel = 'vp4jl:reconnect-kernel';
+  export const changeKernel = 'vp4jl:change-kernel';
+  export const restartKernelAndRun = 'vp4jl:restart-kernel-and-run';
 }

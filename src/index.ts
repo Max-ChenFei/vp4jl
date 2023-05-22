@@ -287,7 +287,7 @@ function activateVp4jlCommands(
     isEnabled
   });
 
-  app.commands.addCommand(cmdIds.kernelInterrupt, {
+  app.commands.addCommand(cmdIds.interruptKernel, {
     label: 'Interrupt Kernel',
     caption: 'Interrupt the kernel',
     execute: args => {
@@ -304,7 +304,7 @@ function activateVp4jlCommands(
     isEnabled
   });
 
-  app.commands.addCommand(cmdIds.kernelRestart, {
+  app.commands.addCommand(cmdIds.restartKernel, {
     label: 'Restart Kernel',
     caption: 'Restart the kernel',
     execute: args => {
@@ -326,7 +326,7 @@ function activateVp4jlCommands(
     isEnabled
   });
 
-  app.commands.addCommand(cmdIds.kernelReconnect, {
+  app.commands.addCommand(cmdIds.reconnectKernel, {
     label: 'Reconnect to Kernel',
     caption: 'Reconnect to the kernel',
     execute: args => {
@@ -343,12 +343,12 @@ function activateVp4jlCommands(
     isEnabled
   });
 
-  app.commands.addCommand(cmdIds.kernelRestartAndRun, {
+  app.commands.addCommand(cmdIds.restartKernelAndRun, {
     label: 'Restart Kernel and Run',
     caption: 'Restart the kernel and re-run the whole file',
     execute: async args => {
       const restarted: boolean = await app.commands.execute(
-        cmdIds.kernelRestart,
+        cmdIds.restartKernel,
         {
           activate: false
         }
@@ -361,7 +361,7 @@ function activateVp4jlCommands(
     isEnabled
   });
 
-  app.commands.addCommand(cmdIds.kernelshutdown, {
+  app.commands.addCommand(cmdIds.shutdownKernel, {
     label: 'Shut Down Kernel',
     caption: 'Shutdown the kernel',
     execute: args => {
@@ -372,7 +372,7 @@ function activateVp4jlCommands(
     },
     isEnabled
   });
-  app.commands.addCommand(cmdIds.kernelChange, {
+  app.commands.addCommand(cmdIds.changeKernel, {
     label: 'Change Kernel…',
     execute: args => {
       const current = getCurrent(tracker, shell, args);
@@ -438,27 +438,27 @@ function activateVp4jlAttachCommandsToGui(
     isEnabled
   });
   mainMenu.kernelMenu.kernelUsers.interruptKernel.add({
-    id: cmdIds.kernelInterrupt,
+    id: cmdIds.interruptKernel,
     isEnabled
   });
   mainMenu.kernelMenu.kernelUsers.restartKernel.add({
-    id: cmdIds.kernelRestart,
+    id: cmdIds.restartKernel,
     isEnabled
   });
   mainMenu.kernelMenu.kernelUsers.reconnectToKernel.add({
-    id: cmdIds.kernelReconnect,
+    id: cmdIds.reconnectKernel,
     isEnabled
   });
   mainMenu.runMenu.codeRunners.restart.add({
-    id: cmdIds.kernelRestartAndRun,
+    id: cmdIds.restartKernelAndRun,
     isEnabled
   });
   mainMenu.kernelMenu.kernelUsers.shutdownKernel.add({
-    id: cmdIds.kernelshutdown,
+    id: cmdIds.shutdownKernel,
     isEnabled
   });
   mainMenu.kernelMenu.kernelUsers.changeKernel.add({
-    id: cmdIds.kernelChange,
+    id: cmdIds.changeKernel,
     isEnabled
   });
 
