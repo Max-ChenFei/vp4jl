@@ -30,10 +30,10 @@ function getToolbarItems(commands: CommandRegistry): IToolbarItemConfig[] {
       factory: (widget: VPWidget) =>
         DocToolbarItems.createSaveButton(commands, widget.context.fileChanged)
     },
+    { name: 'cut', command: vp4jlCommandIDs.cut },
     { name: 'copy', command: vp4jlCommandIDs.copy },
     { name: 'paste', command: vp4jlCommandIDs.paste },
     { name: 'duplicate', command: vp4jlCommandIDs.duplicate },
-    { name: 'cut', command: vp4jlCommandIDs.cut },
     { name: 'delete', command: vp4jlCommandIDs.del },
     { name: 'deleteAll', command: vp4jlCommandIDs.deleteAll },
     { name: 'run', command: vp4jlCommandIDs.run },
