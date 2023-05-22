@@ -20,6 +20,7 @@ export namespace vp4jlCommandIDs {
   export const cut = 'vp4jl:cut';
   export const duplicate = 'vp4jl:duplicate';
   export const clear = 'vp4jl:clear';
+  export const kernelshutdown = 'vp4jl:kernel-shutdown';
   export const kernelInterrupt = 'vp4jl:interrupt';
   export const kernelRestart = 'vp4jl:restart';
   export const kernelRestartAndRun = 'vp4jl:restart-and-run';

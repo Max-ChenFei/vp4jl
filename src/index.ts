@@ -334,6 +334,18 @@ function activateVp4jlCommands(
     icon: fastForwardIcon,
     isEnabled
   });
+
+  app.commands.addCommand(cmdIds.kernelshutdown, {
+    label: 'Shut Down Kernel',
+    caption: 'Shutdown the kernel',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        return current.context.sessionContext.shutdown();
+      }
+    },
+    isEnabled
+  });
 }
 
 function isFocusVPWidget(
@@ -398,6 +410,10 @@ function activateVp4jlAttachCommandsToGui(
   });
   mainMenu.runMenu.codeRunners.restart.add({
     id: cmdIds.kernelRestartAndRun,
+    isEnabled
+  });
+  mainMenu.kernelMenu.kernelUsers.shutdownKernel.add({
+    id: cmdIds.kernelshutdown,
     isEnabled
   });
 
