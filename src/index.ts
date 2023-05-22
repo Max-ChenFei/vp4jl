@@ -17,7 +17,10 @@ import {
   deleteIcon,
   duplicateIcon,
   clearIcon,
-  fastForwardIcon
+  fastForwardIcon,
+  refreshIcon,
+  stopIcon,
+  runIcon
 } from '@jupyterlab/ui-components';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
@@ -182,6 +185,7 @@ function activateVp4jlCommands(
         return console.log(context.path, context.model.toString(), content);
       }
     },
+    icon: args => (args.toolbar ? runIcon : undefined),
     isEnabled
   });
 
@@ -296,6 +300,7 @@ function activateVp4jlCommands(
         return kernel.interrupt();
       }
     },
+    icon: args => (args.toolbar ? stopIcon : undefined),
     isEnabled
   });
 
@@ -308,6 +313,7 @@ function activateVp4jlCommands(
         return sessionDialogs.restart(current.sessionContext);
       }
     },
+    icon: args => (args.toolbar ? refreshIcon : undefined),
     isEnabled
   });
 
@@ -325,8 +331,8 @@ function activateVp4jlCommands(
         await app.commands.execute(cmdIds.run);
       }
     },
-    isEnabled,
-    icon: fastForwardIcon
+    icon: fastForwardIcon,
+    isEnabled
   });
 }
 

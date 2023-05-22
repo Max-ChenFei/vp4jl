@@ -36,12 +36,12 @@ function getToolbarItems(commands: CommandRegistry): IToolbarItemConfig[] {
     { name: 'cut', command: vp4jlCommandIDs.cut },
     { name: 'delete', command: vp4jlCommandIDs.del },
     { name: 'clear', command: vp4jlCommandIDs.clear },
-    { name: 'run', command: 'runmenu:run' },
-    { name: 'interrupt', command: 'kernelmenu:interrupt' },
-    { name: 'restart', command: 'kernelmenu:restart' },
+    { name: 'run', command: vp4jlCommandIDs.run },
+    { name: 'interrupt', command: vp4jlCommandIDs.kernelInterrupt },
+    { name: 'restart', command: vp4jlCommandIDs.kernelRestart },
     {
       name: 'restart-and-run',
-      command: 'runmenu:restart-and-run-all'
+      command: vp4jlCommandIDs.kernelRestartAndRun
     },
     { name: 'spacer', type: 'spacer' },
     {
