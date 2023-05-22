@@ -35,7 +35,7 @@ function getToolbarItems(commands: CommandRegistry): IToolbarItemConfig[] {
     { name: 'duplicate', command: vp4jlCommandIDs.duplicate },
     { name: 'cut', command: vp4jlCommandIDs.cut },
     { name: 'delete', command: vp4jlCommandIDs.del },
-    { name: 'clear', command: vp4jlCommandIDs.clear },
+    { name: 'deleteAll', command: vp4jlCommandIDs.deleteAll },
     { name: 'run', command: vp4jlCommandIDs.run },
     { name: 'interrupt', command: vp4jlCommandIDs.kernelInterrupt },
     { name: 'restart', command: vp4jlCommandIDs.kernelRestart },

@@ -274,8 +274,8 @@ function activateVp4jlCommands(
     }
   });
 
-  app.commands.addCommand(cmdIds.clear, {
-    label: 'Clear',
+  app.commands.addCommand(cmdIds.deleteAll, {
+    label: 'Delete All',
     caption: 'Delete all nodes and edges',
     execute: args => {
       const current = getCurrent(tracker, shell, args);
@@ -314,6 +314,15 @@ function activateVp4jlCommands(
       }
     },
     icon: args => (args.toolbar ? refreshIcon : undefined),
+    isEnabled
+  });
+
+  app.commands.addCommand(cmdIds.clearOutput, {
+    label: 'Clear Output',
+    caption: 'Clear the output',
+    execute: args => {
+      console.log('clear output');
+    },
     isEnabled
   });
 
@@ -420,7 +429,7 @@ function activateVp4jlAttachCommandsToGui(
       { command: cmdIds.duplicate },
       { command: cmdIds.cut },
       { command: cmdIds.del },
-      { command: cmdIds.clear }
+      { command: cmdIds.deleteAll }
     ],
     4
   );
@@ -450,6 +459,16 @@ function activateVp4jlAttachCommandsToGui(
   });
   mainMenu.kernelMenu.kernelUsers.changeKernel.add({
     id: cmdIds.kernelChange,
+    isEnabled
+  });
+
+  mainMenu.kernelMenu.kernelUsers.clearWidget.add({
+    id: cmdIds.clearOutput,
+    isEnabled
+  });
+
+  mainMenu.editMenu.clearers.clearCurrent.add({
+    id: cmdIds.clearOutput,
     isEnabled
   });
 

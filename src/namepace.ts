@@ -19,7 +19,8 @@ export namespace vp4jlCommandIDs {
   export const del = 'vp4jl:delete';
   export const cut = 'vp4jl:cut';
   export const duplicate = 'vp4jl:duplicate';
-  export const clear = 'vp4jl:clear';
+  export const deleteAll = 'vp4jl:clear';
+  export const clearOutput = 'vp4jl:clear-output';
   export const kernelshutdown = 'vp4jl:kernel-shutdown';
   export const kernelInterrupt = 'vp4jl:interrupt';
   export const kernelRestart = 'vp4jl:restart';
