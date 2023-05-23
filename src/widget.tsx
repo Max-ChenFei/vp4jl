@@ -2,8 +2,17 @@ import React from 'react';
 import { SplitPanel } from '@lumino/widgets';
 import { Session } from '@jupyterlab/services';
 import { DocumentWidget } from '@jupyterlab/docregistry';
-import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
+import {
+  ISessionContext,
+  MainAreaWidget,
+  ReactWidget
+} from '@jupyterlab/apputils';
 import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
+import {
+  Toolbar,
+  ToolbarButtonComponent,
+  closeIcon
+} from '@jupyterlab/ui-components';
 import { VPEditor } from 'visual-programming-editor';
 import 'visual-programming-editor/dist/style.css';
 import { IVPContext } from './context';
@@ -60,6 +69,79 @@ export class VPEditorWidget extends ReactWidget {
   private _editor_activated = false;
 }
 
+export class CloseButton extends ReactWidget {
+  constructor(private onClick?: () => void) {
+    super();
+  }
+
+  render(): JSX.Element {
+    return (
+      <ToolbarButtonComponent
+        icon={closeIcon}
+        label="Close"
+        tooltip="Close the output window"
+        onClick={() => {
+          this.onClick?.();
+        }}
+      />
+    );
+  }
+}
+
+class VPOutputAreaToolbar extends Toolbar {
+  constructor() {
+    super();
+    this.addClass('jp-vp-output-area-toolbar');
+    this._createToolbarItems();
+  }
+
+  private _createToolbarItems() {
+    const spacer = Toolbar.createSpacerItem();
+    this.addItem('spacer', spacer);
+    const close = new CloseButton(() => {
+      this.parent?.hide();
+    });
+    this.addItem('close', close);
+  }
+}
+
+export class VPOutputArea extends MainAreaWidget<OutputArea> {
+  constructor(
+    id: string,
+    model: IVPModel,
+    private sessionContext: ISessionContext
+  ) {
+    super({
+      content: new OutputArea({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        rendermime: model.rendermime!,
+        model: new OutputAreaModel()
+      }),
+      toolbar: new VPOutputAreaToolbar()
+    });
+    this.id = id + 'output';
+    this.addClass('jp-vp-output-area');
+    this.title.label = 'Output';
+  }
+
+  public execute(code: string): void {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    OutputArea.execute(code, this.content, this.sessionContext!).catch(
+      reason => {
+        console.error(reason);
+        this.content.model.clear();
+        this.content.model.add({
+          output_type: 'error',
+          ename: 'Error',
+          evalue: reason.message,
+          traceback: []
+        });
+        return;
+      }
+    );
+  }
+}
+
 export class VPMainAreaPanel extends SplitPanel {
   constructor(id: string, model: IVPModel, sessionContext: ISessionContext) {
     super({ orientation: 'vertical', spacing: 1 });
@@ -68,11 +150,7 @@ export class VPMainAreaPanel extends SplitPanel {
     this.addClass('jp-vp-main-area-panel');
     this._vpEditor = new VPEditorWidget(id, model);
     this.addWidget(this._vpEditor);
-    this._outputArea = new OutputArea({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      rendermime: model.rendermime!,
-      model: new OutputAreaModel()
-    });
+    this._outputArea = new VPOutputArea(id, model, sessionContext);
     this.addWidget(this._outputArea);
     this.setRelativeSizes([4, 1]);
   }
@@ -110,20 +188,7 @@ plt.show()
 print("5+5=",5+5)
 print(a)` as string;
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    OutputArea.execute(code, this._outputArea, this.sessionContext!).catch(
-      reason => {
-        console.error(reason);
-        this._outputArea.model.clear();
-        this._outputArea.model.add({
-          output_type: 'error',
-          ename: 'Error',
-          evalue: reason.message,
-          traceback: []
-        });
-        return;
-      }
-    );
+    this._outputArea.execute(code);
   }
 
   get sessionContext(): ISessionContext | undefined {
@@ -131,7 +196,7 @@ print(a)` as string;
   }
 
   private _vpEditor: VPEditorWidget;
-  private _outputArea: OutputArea;
+  private _outputArea: VPOutputArea;
   private _sessionContext: ISessionContext | undefined;
 }
 
