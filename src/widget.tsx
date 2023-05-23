@@ -1,9 +1,9 @@
 import React from 'react';
 import { SplitPanel } from '@lumino/widgets';
 import { Session } from '@jupyterlab/services';
-import { OutputArea } from '@jupyterlab/outputarea';
 import { DocumentWidget } from '@jupyterlab/docregistry';
 import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
+import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
 import { VPEditor } from 'visual-programming-editor';
 import 'visual-programming-editor/dist/style.css';
 import { IVPContext } from './context';
@@ -61,17 +61,17 @@ export class VPEditorWidget extends ReactWidget {
 }
 
 export class VPMainAreaPanel extends SplitPanel {
-  constructor(id: string, model: IVPModel) {
+  constructor(id: string, model: IVPModel, sessionContext: ISessionContext) {
     super({ orientation: 'vertical', spacing: 1 });
     this.id = id + 'panel';
+    this._sessionContext = sessionContext;
     this.addClass('jp-vp-main-area-panel');
     this._vpEditor = new VPEditorWidget(id, model);
     this.addWidget(this._vpEditor);
     this._outputArea = new OutputArea({
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       rendermime: model.rendermime!,
-      contentFactory: OutputArea.defaultContentFactory,
-      model: model.output
+      model: new OutputAreaModel()
     });
     this.addWidget(this._outputArea);
   }
@@ -87,15 +87,58 @@ export class VPMainAreaPanel extends SplitPanel {
       this._vpEditor.deactivate();
     }
   }
+  execute(): void {
+    // Todo: use code from the vpContent
+    const code = `
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots()
+
+fruits = ['apple', 'blueberry', 'cherry', 'orange']
+counts = [40, 100, 30, 55]
+bar_labels = ['red', 'blue', '_red', 'orange']
+bar_colors = ['tab:red', 'tab:blue', 'tab:red', 'tab:orange']
+
+ax.bar(fruits, counts, label=bar_labels, color=bar_colors)
+
+ax.set_ylabel('fruit supply')
+ax.set_title('Fruit supply by kind and color')
+ax.legend(title='Fruit color')
+
+plt.show()
+print("5+5=",5+5)
+print(a)` as string;
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    OutputArea.execute(code, this._outputArea, this.sessionContext!).catch(
+      reason => {
+        console.error(reason);
+        this._outputArea.model.clear();
+        this._outputArea.model.add({
+          output_type: 'error',
+          ename: 'Error',
+          evalue: reason.message,
+          traceback: []
+        });
+        return;
+      }
+    );
+  }
+
+  get sessionContext(): ISessionContext | undefined {
+    return this._sessionContext;
+  }
+
   private _vpEditor: VPEditorWidget;
   private _outputArea: OutputArea;
+  private _sessionContext: ISessionContext | undefined;
 }
 
 export class VPWidget extends DocumentWidget<VPMainAreaPanel, IVPModel> {
   constructor(id: string, context: IVPContext) {
     super({
       context,
-      content: new VPMainAreaPanel(id, context.model)
+      content: new VPMainAreaPanel(id, context.model, context.sessionContext)
     });
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';
@@ -113,6 +156,10 @@ export class VPWidget extends DocumentWidget<VPMainAreaPanel, IVPModel> {
 
   get sessionContext(): ISessionContext {
     return this.context.sessionContext;
+  }
+
+  public execute(): void {
+    this.content.execute();
   }
 
   private _onContextReady() {

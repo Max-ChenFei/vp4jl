@@ -1,11 +1,10 @@
 import { ISharedFile } from '@jupyter/ydoc';
 import { Kernel } from '@jupyterlab/services';
 import { ISignal, Signal } from '@lumino/signaling';
-import { OutputAreaModel } from '@jupyterlab/outputarea';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { DocumentRegistry, DocumentModel } from '@jupyterlab/docregistry';
 import { isSameContent } from './utils';
 import { ISceneActions, SerializedGraph } from 'visual-programming-editor';
-import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
 export type IToolbarItems = {
   [name: string]: DocumentRegistry.IToolbarItem;
@@ -16,7 +15,6 @@ export interface IVPModel extends DocumentRegistry.ICodeModel {
   vpContent: SerializedGraph | null;
   vpActions: ISceneActions | null;
   toolbarItems: IToolbarItems;
-  output: OutputAreaModel;
   rendermime: IRenderMimeRegistry | null;
   setKernelSpec(kernel: Kernel.IKernelConnection | null): Promise<void>;
   setVpContent(vpContent: SerializedGraph | null | string): void;
@@ -126,21 +124,12 @@ export class VPModel extends DocumentModel implements IVPModel {
     });
   }
 
-  get output(): OutputAreaModel {
-    return this._output;
-  }
-
   get rendermime(): IRenderMimeRegistry | null {
     return this._rendermime;
   }
 
   setRendermime(rendermime: IRenderMimeRegistry | null) {
     this._rendermime = rendermime;
-  }
-
-  dispose(): void {
-    super.dispose();
-    this._output.dispose();
   }
 
   private _kernelSpec: Partial<Kernel.IModel> | undefined = {};
@@ -151,6 +140,5 @@ export class VPModel extends DocumentModel implements IVPModel {
   private _toolbarItems: {
     [name: string]: DocumentRegistry.IToolbarItem;
   } = {};
-  private _output: OutputAreaModel = new OutputAreaModel();
   private _rendermime: IRenderMimeRegistry | null = null;
 }

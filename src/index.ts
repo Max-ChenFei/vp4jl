@@ -197,10 +197,7 @@ function activateVp4jlCommands(
     caption: 'Run the visual programming file',
     execute: args => {
       const current = getCurrent(tracker, shell, args);
-      if (current) {
-        const { context, content } = current;
-        return console.log(context.path, context.model.toString(), content);
-      }
+      current?.execute();
     },
     icon: args => (args.toolbar ? runIcon : undefined),
     isEnabled
