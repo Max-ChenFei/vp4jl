@@ -423,6 +423,17 @@ function activateVp4jlCommands(
       return app.commands.execute(cmdIds.hideNodeExtension, void 0);
     }
   });
+
+  app.commands.addCommand(cmdIds.toggleOutput, {
+    label: 'Output Area',
+    execute: args => {
+      const current = getCurrent(tracker, shell, args);
+      if (current) {
+        current.toggleOutput();
+      }
+    },
+    isEnabled
+  });
 }
 
 function isFocusVPWidget(
@@ -514,6 +525,11 @@ function activateVp4jlAttachCommandsToGui(
 
   mainMenu.viewMenu.addItem({
     command: cmdIds.toggleNodeExtension,
+    rank: 9
+  });
+
+  mainMenu.viewMenu.addItem({
+    command: cmdIds.toggleOutput,
     rank: 9
   });
 

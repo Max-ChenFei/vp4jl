@@ -170,6 +170,10 @@ export class VPOutputArea extends MainAreaWidget<OutputArea> {
   public clear(): void {
     this.content.model.clear();
   }
+
+  public toggleOutput(): void {
+    this.isHidden ? this.show() : this.hide();
+  }
 }
 
 export class VPMainAreaPanel extends SplitPanel {
@@ -221,6 +225,10 @@ print(a)` as string;
     this._outputArea.execute(code);
   }
 
+  public toggleOutput(): void {
+    this._outputArea.toggleOutput();
+  }
+
   get sessionContext(): ISessionContext | undefined {
     return this._sessionContext;
   }
@@ -256,6 +264,10 @@ export class VPWidget extends DocumentWidget<VPMainAreaPanel, IVPModel> {
 
   public execute(): void {
     this.content.execute();
+  }
+
+  public toggleOutput(): void {
+    this.content.toggleOutput();
   }
 
   private _onContextReady() {
