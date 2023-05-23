@@ -74,6 +74,7 @@ export class VPMainAreaPanel extends SplitPanel {
       model: new OutputAreaModel()
     });
     this.addWidget(this._outputArea);
+    this.setRelativeSizes([4, 1]);
   }
 
   activate(): void {
