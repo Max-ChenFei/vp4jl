@@ -9,9 +9,11 @@ import {
 } from '@jupyterlab/apputils';
 import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
 import {
+  LabIcon,
   Toolbar,
   ToolbarButtonComponent,
-  closeIcon
+  closeIcon,
+  clearIcon
 } from '@jupyterlab/ui-components';
 import { VPEditor } from 'visual-programming-editor';
 import 'visual-programming-editor/dist/style.css';
@@ -69,23 +71,44 @@ export class VPEditorWidget extends ReactWidget {
   private _editor_activated = false;
 }
 
-export class CloseButton extends ReactWidget {
-  constructor(private onClick?: () => void) {
+export class ToolbarButton extends ReactWidget {
+  constructor(
+    private icon: LabIcon.IMaybeResolvable,
+    private label: string,
+    private tooltip: string,
+    private onClick?: () => void
+  ) {
     super();
   }
 
   render(): JSX.Element {
     return (
       <ToolbarButtonComponent
-        icon={closeIcon}
-        label="Close"
-        tooltip="Close the output window"
-        onClick={() => {
-          this.onClick?.();
-        }}
+        icon={this.icon}
+        label={this.label}
+        tooltip={this.tooltip}
+        onClick={this.onClick}
       />
     );
   }
+}
+
+function createCloseButtion(click?: () => void) {
+  return new ToolbarButton(
+    closeIcon,
+    'Close',
+    'Close the output window',
+    click
+  );
+}
+
+function createClearButtion(click?: () => void) {
+  return new ToolbarButton(
+    clearIcon,
+    'Clear',
+    'Clear the output window',
+    click
+  );
 }
 
 class VPOutputAreaToolbar extends Toolbar {
@@ -96,12 +119,15 @@ class VPOutputAreaToolbar extends Toolbar {
   }
 
   private _createToolbarItems() {
-    const spacer = Toolbar.createSpacerItem();
-    this.addItem('spacer', spacer);
-    const close = new CloseButton(() => {
-      this.parent?.hide();
-    });
-    this.addItem('close', close);
+    this.addItem('spacer', Toolbar.createSpacerItem());
+    this.addItem(
+      'clear',
+      createClearButtion(() => (this.parent as VPOutputArea)?.clear())
+    );
+    this.addItem(
+      'close',
+      createCloseButtion(() => this.parent?.hide())
+    );
   }
 }
 
@@ -139,6 +165,10 @@ export class VPOutputArea extends MainAreaWidget<OutputArea> {
         return;
       }
     );
+  }
+
+  public clear(): void {
+    this.content.model.clear();
   }
 }
 
