@@ -9,3 +9,8 @@
   /* disable paint containment from lumino 2.0 default strict CSS containment */
   contain: style size !important;
 }
+
+.jp-VPMainAreaPanel[data-orientation='vertical'] > .lm-SplitPanel-handle:after {
+  background: #bdbdbd;
+  min-height: 4px !important;
+}

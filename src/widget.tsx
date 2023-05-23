@@ -1,5 +1,7 @@
 import React from 'react';
+import { SplitPanel } from '@lumino/widgets';
 import { Session } from '@jupyterlab/services';
+import { OutputArea } from '@jupyterlab/outputarea';
 import { DocumentWidget } from '@jupyterlab/docregistry';
 import { ISessionContext, ReactWidget } from '@jupyterlab/apputils';
 import { VPEditor } from 'visual-programming-editor';
@@ -7,7 +9,7 @@ import 'visual-programming-editor/dist/style.css';
 import { IVPContext } from './context';
 import { IVPModel, IKernelspec } from './model';
 
-export class VPMainAreaWidget extends ReactWidget {
+export class VPEditorWidget extends ReactWidget {
   constructor(id: string, model: IVPModel) {
     super();
     this.id = id;
@@ -58,11 +60,42 @@ export class VPMainAreaWidget extends ReactWidget {
   private _editor_activated = false;
 }
 
-export class VPWidget extends DocumentWidget<VPMainAreaWidget, IVPModel> {
+export class VPMainAreaPanel extends SplitPanel {
+  constructor(id: string, model: IVPModel) {
+    super({ orientation: 'vertical', spacing: 1 });
+    this.id = id + 'panel';
+    this.addClass('jp-VPMainAreaPanel');
+    this._vpEditor = new VPEditorWidget(id, model);
+    this.addWidget(this._vpEditor);
+    this._outputArea = new OutputArea({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      rendermime: model.rendermime!,
+      contentFactory: OutputArea.defaultContentFactory,
+      model: model.output
+    });
+    this.addWidget(this._outputArea);
+  }
+
+  activate(): void {
+    if (this._vpEditor) {
+      this._vpEditor.activate();
+    }
+  }
+
+  deactivate(): void {
+    if (this._vpEditor) {
+      this._vpEditor.deactivate();
+    }
+  }
+  private _vpEditor: VPEditorWidget;
+  private _outputArea: OutputArea;
+}
+
+export class VPWidget extends DocumentWidget<VPMainAreaPanel, IVPModel> {
   constructor(id: string, context: IVPContext) {
     super({
       context,
-      content: new VPMainAreaWidget(id, context.model)
+      content: new VPMainAreaPanel(id, context.model)
     });
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';

@@ -22,6 +22,7 @@ import {
   stopIcon,
   runIcon
 } from '@jupyterlab/ui-components';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { ICommandPalette, ISessionContextDialogs } from '@jupyterlab/apputils';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { VPWidget } from './widget';
@@ -40,6 +41,7 @@ import { LoadPackageToRegistry } from 'visual-programming-editor';
 const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
   id: 'vp4jl:plugin',
   autoStart: true,
+  requires: [IRenderMimeRegistry],
   provides: IVPTrackerToken,
   activate: activateVp4jl
 };
@@ -98,20 +100,26 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
 ];
 export default plugins;
 
-function activateVp4jl(app: JupyterFrontEnd): IVPTracker {
+function activateVp4jl(
+  app: JupyterFrontEnd,
+  rendermime: IRenderMimeRegistry
+): IVPTracker {
   const vp4jlIDs = gVP4jlIDs;
 
   const tracker = new VPTracker({
     namespace: vp4jlIDs.trackerNamespace
   });
 
-  const widgetFactory = new VPWidgetFactory({
-    name: vp4jlIDs.widgetFactory,
-    modelName: vp4jlIDs.modelFactory,
-    fileTypes: [vp4jlIDs.fileType],
-    defaultFor: [vp4jlIDs.fileType],
-    toolbarFactory: getToolbarFactory(app.commands, vp4jlIDs.widgetFactory)
-  });
+  const widgetFactory = new VPWidgetFactory(
+    {
+      name: vp4jlIDs.widgetFactory,
+      modelName: vp4jlIDs.modelFactory,
+      fileTypes: [vp4jlIDs.fileType],
+      defaultFor: [vp4jlIDs.fileType],
+      toolbarFactory: getToolbarFactory(app.commands, vp4jlIDs.widgetFactory)
+    },
+    rendermime
+  );
   widgetFactory.widgetCreated.connect((sender, widget) => {
     widget.context.pathChanged.connect(() => {
       tracker.save(widget);
