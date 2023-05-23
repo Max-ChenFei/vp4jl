@@ -64,7 +64,7 @@ export class VPMainAreaPanel extends SplitPanel {
   constructor(id: string, model: IVPModel) {
     super({ orientation: 'vertical', spacing: 1 });
     this.id = id + 'panel';
-    this.addClass('jp-VPMainAreaPanel');
+    this.addClass('jp-vp-main-area-panel');
     this._vpEditor = new VPEditorWidget(id, model);
     this.addWidget(this._vpEditor);
     this._outputArea = new OutputArea({
