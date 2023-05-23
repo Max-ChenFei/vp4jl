@@ -1,3 +1,5 @@
+/* stylelint-disable selector-class-pattern */
+
 /*
     See the JupyterLab Developer Guide for useful CSS Patterns:
 
@@ -11,7 +13,7 @@
 }
 
 .jp-vp-main-area-panel[data-orientation='vertical']
-  > .lm-SplitPanel-handle:after {
+  .lm-SplitPanel-handle::after {
   background: #bdbdbd;
   min-height: 4px !important;
 }
