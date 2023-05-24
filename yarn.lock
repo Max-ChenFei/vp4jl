@@ -6644,6 +6644,11 @@ react-filepond@^7.1.2:
   resolved "https://registry.yarnpkg.com/react-filepond/-/react-filepond-7.1.2.tgz#8f04d06396a59b5980dda479c095ed23e6d1f68b"
   integrity sha512-vrlx9o/n+jGikh6jLey+PpUGYtEZn8MdeB6JFeX/5/N/Mu75IHG+MFQbv8R27bNXvS41mDtV9Fo5DG+s6siVIA==
 
+react-icons@^4.8.0:
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.8.0.tgz#621e900caa23b912f737e41be57f27f6b2bff445"
+  integrity sha512-N6+kOLcihDiAnj5Czu637waJqSnwlMNROzVZMhfX68V/9bu9qHaMIJC4UdozWoOk57gahFCNHwVvWzm0MTzRjg==
+
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -7730,10 +7735,10 @@ validate.io-number@^1.0.3:
   resolved "https://registry.yarnpkg.com/validate.io-number/-/validate.io-number-1.0.3.tgz#f63ffeda248bf28a67a8d48e0e3b461a1665baf8"
   integrity sha512-kRAyotcbNaSYoDnXvb4MHg/0a1egJdLwS6oJ38TJY7aw9n93Fl/3blIXdyYvPOp55CNxywooG/3BcrwNrBpcSg==
 
-visual-programming-editor@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/visual-programming-editor/-/visual-programming-editor-0.2.4.tgz#5d695bc552d1f6d2930e5fd421e7f69ee55b13c9"
-  integrity sha512-RrAWXKAomupzwioBfVCiIZjowvnLQTlf45kQhz1Ewga/iJZcHl4KIV8iaKerTzYpli76zIuk90eAIae1pg+P6A==
+visual-programming-editor@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/visual-programming-editor/-/visual-programming-editor-0.4.2.tgz#54cda2a4afd6b2e195b94364830d67bb555bfb76"
+  integrity sha512-+Z5k0PppCXiYV1M+VHh8cKfsbj0bvdKvnzODgrJvLjy13E2UXucNF6a3Q0x7zV4Kf3LMFmv8HVDhT6IzWDB6Bg==
   dependencies:
     "@emotion/react" "^11.10.6"
     "@emotion/styled" "^11.10.6"
@@ -7743,6 +7748,7 @@ visual-programming-editor@^0.2.4:
     filepond "^4.30.4"
     filepond-plugin-zipper "^2.0.0"
     react-filepond "^7.1.2"
+    react-icons "^4.8.0"
     reactflow "^11.7.0"
 
 vscode-jsonrpc@8.1.0, vscode-jsonrpc@^8.0.2:
