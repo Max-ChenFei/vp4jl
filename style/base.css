@@ -1,3 +1,5 @@
+/* stylelint-disable selector-class-pattern */
+
 /*
     See the JupyterLab Developer Guide for useful CSS Patterns:
 
@@ -8,4 +10,10 @@
 
   /* disable paint containment from lumino 2.0 default strict CSS containment */
   contain: style size !important;
+}
+
+.jp-vp-main-area-panel[data-orientation='vertical']
+  .lm-SplitPanel-handle::after {
+  background: #bdbdbd;
+  min-height: 4px !important;
 }

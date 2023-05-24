@@ -31,4 +31,5 @@ export namespace vp4jlCommandIDs {
   export const showNodeExtension = 'vp4jl:show-node-extension';
   export const hideNodeExtension = 'vp4jl:hide-node-extension';
   export const toggleNodeExtension = 'vp4jl:toggle-node-extension';
+  export const toggleOutput = 'vp4jl:toggle-output';
 }

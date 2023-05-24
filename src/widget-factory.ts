@@ -1,4 +1,5 @@
 import { DocumentRegistry, ABCWidgetFactory } from '@jupyterlab/docregistry';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { IVPModel } from './model';
 import { VPWidget } from './widget';
 import { IVPContext } from './context';
@@ -9,12 +10,18 @@ export class VPWidgetFactory extends ABCWidgetFactory<VPWidget, IVPModel> {
   private _widgets: VPWidget[] = [];
   private _widgetId = 0;
   private _onMouseDown = this.deactivateWidgetIfMouseDownOut.bind(this);
+  private _rendermime: IRenderMimeRegistry;
 
-  constructor(options: DocumentRegistry.IWidgetFactoryOptions<VPWidget>) {
+  constructor(
+    options: DocumentRegistry.IWidgetFactoryOptions<VPWidget>,
+    rendermime: IRenderMimeRegistry
+  ) {
     super(options);
+    this._rendermime = rendermime;
   }
 
   protected createNewWidget(context: IVPContext): VPWidget {
+    context.model.setRendermime(this._rendermime);
     const w = new VPWidget(`vp_widget_${++this._widgetId}`, context);
     this.onWidgetCreated(w);
     w.disposed.connect(w => {
