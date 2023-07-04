@@ -1,16 +1,5 @@
 {
-  "nodes": {
-    "getter": {
-      "type": "getter",
-      "category": "getter",
-      "tooltip": "Return the value",
-      "outputs": {
-        "getter": {
-          "tooltip": "getter handle"
-        }
-      }
-    }
-  },
+  "nodes": {},
   "types": {
     "EDataType": {
       "options": {
@@ -19,7 +8,8 @@
         "boolean": "boolean",
         "string": "string",
         "exec": "exec",
-        "any": "any"
+        "any": "any",
+        "ndarray": "ndarray"
       },
       "default": "float",
       "widget": "EnumSelect"
