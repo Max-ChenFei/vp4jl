@@ -7,15 +7,18 @@
       "tooltip": "Addition",
       "inputs": {
         "input1": {
-          "tooltip": "input 1"
+          "tooltip": "input 1",
+          "dataType": "float"
         },
         "input2": {
-          "tooltip": "input 2"
+          "tooltip": "input 2",
+          "dataType": "float"
         }
       },
       "outputs": {
         "output": {
-          "tooltip": "output"
+          "tooltip": "output",
+          "dataType": "float"
         }
       }
     }
