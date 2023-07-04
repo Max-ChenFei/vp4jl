@@ -41,6 +41,34 @@ def loadNodeExtensions():
             insertToObj(register, os.path.join(
                 relativeFolder, dir).split(os.sep), {'isPackage': True, 'subpackages': {}})
 
+def loadNodeExtension(name):
+    nodes_foler = NODE_TYPE_FOLDER
+    register = NODE_TYPE_REGISTER
+    target_path = os.path.join(nodes_foler, name)
+    if(os.path.isfile(target_path + ".json")):
+        with open(target_path + ".json", "r") as f:
+            content = json.load(f)
+            if content is not None:
+                insertToObj(register, [name], content)
+    elif(os.path.isdir(target_path)):
+        for folder, dirs, files in os.walk(target_path):
+            relativeFolder = folder[len(nodes_foler) + 1:]
+            for file in files:
+                path = os.path.join(folder, file)
+                content = None
+                try:
+                    with open(path, "r") as f:
+                        content = json.load(f)
+                except:
+                    print("Error reading file: " + path)
+                    continue
+                if content is not None:
+                    insertToObj(register, os.path.join(
+                        relativeFolder, os.path.splitext(file)[0]).split(os.sep), content)
+            for dir in dirs:
+                insertToObj(register, os.path.join(
+                    relativeFolder, dir).split(os.sep), {'isPackage': True, 'subpackages': {}})
+
 
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
@@ -54,6 +82,7 @@ class RouteHandler(APIHandler):
         }))
 
     def addNewExtension(self, files):
+        pkgs = {}
         for file in files:
             if (file['content_type'] == 'text/plain' or file['content_type'] == 'application/json'):
                 with open(os.path.join(NODE_TYPE_FOLDER, file['filename']), 'w') as f:
@@ -64,8 +93,13 @@ class RouteHandler(APIHandler):
                 with zipfile.ZipFile(os.path.join(NODE_TYPE_FOLDER, file['filename']), 'r') as zip_ref:
                     zip_ref.extractall(NODE_TYPE_FOLDER)
                 os.remove(os.path.join(NODE_TYPE_FOLDER, file['filename']))
+            name = file['filename'].split('.')[0]
+            loadNodeExtension(name)
+            if(NODE_TYPE_REGISTER[name]):
+                pkgs[name] = NODE_TYPE_REGISTER[name]
         self.finish(json.dumps({
-            "status": "ok"
+            "status": "ok",
+            "packages": pkgs,
         }))
 
     def enableExtension(self, path, enable):

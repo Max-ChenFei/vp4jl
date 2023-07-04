@@ -7,7 +7,8 @@ import { ReactWidget } from '@jupyterlab/apputils';
 import {
   NodeLibraryList,
   nodeConfigRegistry,
-  Progress
+  Progress,
+  LoadPackageToRegistry
 } from 'visual-programming-editor';
 import { vp4jlIDs } from './namepace';
 import { requestAPI } from './request';
@@ -15,11 +16,13 @@ import { requestToken } from './request-token';
 
 function NodeExtensionWidget({
   fetching,
+  onInstallNodeExtension,
   uninstallNodeExtension,
   enableNodeExtension,
   url
 }: {
   fetching: boolean;
+  onInstallNodeExtension: (data: any) => void;
   uninstallNodeExtension: (name: string) => void;
   enableNodeExtension: (name: string, enable: boolean) => void;
   url?: string;
@@ -30,6 +33,7 @@ function NodeExtensionWidget({
       <NodeLibraryList
         title="INSTALLED"
         nodeExtensions={{ ...nodeConfigRegistry.getAllNodeConfigs() }}
+        onInstall={onInstallNodeExtension}
         onUninstall={(name: string) => {
           uninstallNodeExtension(name);
         }}
@@ -57,6 +61,14 @@ export class NodeExtension extends ReactWidget {
     this.addClass('jp-NodeExtension');
     this.addClass('lm-StackedPanel-child');
     this.addClass('p-StackedPanel-child');
+  }
+
+  private installNodeExtension(data: string) {
+    const obj = JSON.parse(data);
+    for (const name in obj.packages) {
+      LoadPackageToRegistry(name, obj.packages[name]);
+    }
+    this.update();
   }
 
   private uninstallNodeExtension(name: string) {
@@ -117,6 +129,7 @@ export class NodeExtension extends ReactWidget {
     return (
       <NodeExtensionWidget
         fetching={this.fetching}
+        onInstallNodeExtension={this.installNodeExtension.bind(this)}
         uninstallNodeExtension={this.uninstallNodeExtension.bind(this)}
         enableNodeExtension={this.enableNodeExtension.bind(this)}
         url={this.requestUrl}
