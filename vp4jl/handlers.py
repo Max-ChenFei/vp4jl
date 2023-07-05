@@ -51,6 +51,7 @@ def loadNodeExtension(name):
             if content is not None:
                 insertToObj(register, [name], content)
     elif(os.path.isdir(target_path)):
+        insertToObj(register, [name], {'isPackage': True, 'subpackages': {}})
         for folder, dirs, files in os.walk(target_path):
             relativeFolder = folder[len(nodes_foler) + 1:]
             for file in files:
