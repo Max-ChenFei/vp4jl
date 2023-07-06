@@ -5,6 +5,11 @@
 
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
+:root {
+  --vp-ui-font-family: var(--jp-ui-font-family) !important;
+  --vp-ui-font-color-blue: var(--jp-content-link-color) !important;
+}
+
 .jp-vp-toolbar {
   padding: 2px 5px 2px 2px;
 
