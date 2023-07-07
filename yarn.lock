@@ -10663,7 +10663,7 @@ visual-programming-editor@^8.1.1:
     ts-jest: ^26.0.0
     typescript: ~5.0.2
     util: ^0.12.5
-    visual-programming-editor: ^7.8.0
+    visual-programming-editor: ^7.9.1
     yjs: ^13.5.40
   languageName: unknown
   linkType: soft

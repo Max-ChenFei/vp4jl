@@ -8,6 +8,7 @@
 :root {
   --vp-ui-font-family: var(--jp-ui-font-family) !important;
   --vp-ui-font-color-blue: var(--jp-content-link-color) !important;
+  --vp-ui-font-size1: var(--jp-ui-font-size1) !important;
 }
 
 .jp-vp-toolbar {
