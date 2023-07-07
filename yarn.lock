@@ -11016,9 +11016,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"visual-programming-editor@npm:^7.8.0":
-  version: 7.8.0
-  resolution: "visual-programming-editor@npm:7.8.0"
+"visual-programming-editor@npm:^7.9.1":
+  version: 7.9.1
+  resolution: "visual-programming-editor@npm:7.9.1"
   dependencies:
     "@emotion/react": ^11.10.6
     "@emotion/styled": ^11.10.6
@@ -11027,13 +11027,15 @@ __metadata:
     "@mui/material": ^5.11.15
     filepond: ^4.30.4
     filepond-plugin-zipper: ^2.0.0
+    lodash: ^4.17.21
+    lodash.debounce: ^4.0.8
     react-filepond: ^7.1.2
     react-icons: ^4.8.0
     reactflow: ^11.7.0
   peerDependencies:
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: 2077acfff45d1e35067625b0ad0ecdef7f3c9615fba989de9635ad78ea783df9871e3e051b4648a6418be12bb7067cf43ce11f7532994e39efadb1d28b6ecb68
+  checksum: c0911128242b50420569c448b857968034df0e251cb44887309912b74d2443389ec6aebdf5f75f2c867a9d6e41b177cff452e6d53c215012643b4b41b1dd3f1d
   languageName: node
   linkType: hard
 
@@ -11083,7 +11085,7 @@ __metadata:
     ts-jest: ^26.0.0
     typescript: ~5.0.2
     util: ^0.12.5
-    visual-programming-editor: ^7.8.0
+    visual-programming-editor: ^7.9.1
     yjs: ^13.5.40
   languageName: unknown
   linkType: soft
