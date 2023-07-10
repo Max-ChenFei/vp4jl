@@ -11016,9 +11016,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"visual-programming-editor@npm:^7.9.1":
-  version: 7.9.1
-  resolution: "visual-programming-editor@npm:7.9.1"
+"visual-programming-editor@npm:^8.0.8":
+  version: 8.0.8
+  resolution: "visual-programming-editor@npm:8.0.8"
   dependencies:
     "@emotion/react": ^11.10.6
     "@emotion/styled": ^11.10.6
@@ -11035,7 +11035,7 @@ __metadata:
   peerDependencies:
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: c0911128242b50420569c448b857968034df0e251cb44887309912b74d2443389ec6aebdf5f75f2c867a9d6e41b177cff452e6d53c215012643b4b41b1dd3f1d
+  checksum: 08da6877032c0d315be2b3c09e51844db111b2fed23a92118eac099bdc27195c97cf5de06c4a3cdcc5a07e923d3cc51e9f058b9a04a8493881ba78023a758117
   languageName: node
   linkType: hard
 
@@ -11085,7 +11085,7 @@ __metadata:
     ts-jest: ^26.0.0
     typescript: ~5.0.2
     util: ^0.12.5
-    visual-programming-editor: ^7.9.1
+    visual-programming-editor: ^8.0.8
     yjs: ^13.5.40
   languageName: unknown
   linkType: soft
