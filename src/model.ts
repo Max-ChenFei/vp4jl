@@ -89,7 +89,6 @@ export class VPModel extends DocumentModel implements IVPModel {
   set vpContent(vpContent: SerializedGraph | null) {
     if (!isSameContent(this._vpContent, vpContent)) {
       this._vpContent = vpContent;
-      this._vpContentChanged.emit();
       this._setModelContent();
     }
   }
