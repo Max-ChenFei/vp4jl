@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.2
+
+([Full Changelog](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/compare/v0.1.1...0b58e4bc4ad0b53bd2a65b84f1a1f7edc38266d3))
+
+### Enhancements made
+
+- Cleanup [#105](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/105) ([@Max-ChenFei](https://github.com/Max-ChenFei))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/graphs/contributors?from=2023-08-04&to=2023-08-04&type=c))
+
+[@Max-ChenFei](https://github.com/search?q=repo%3AMax-ChenFei%2FVisualProgramming4JupyterLab+involves%3AMax-ChenFei+updated%3A2023-08-04..2023-08-04&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.1
 
 ([Full Changelog](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/compare/308159c55b7a3512b4286d71f3acf96b87c20435...4151f7b1b7427d82dca5f0673b0f762d3ca2150e))
@@ -55,5 +71,3 @@
 ([GitHub contributors page for this release](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/graphs/contributors?from=2023-04-17&to=2023-08-04&type=c))
 
 [@Max-ChenFei](https://github.com/search?q=repo%3AMax-ChenFei%2FVisualProgramming4JupyterLab+involves%3AMax-ChenFei+updated%3A2023-04-17..2023-08-04&type=Issues) | [@xp1632](https://github.com/search?q=repo%3AMax-ChenFei%2FVisualProgramming4JupyterLab+involves%3Axp1632+updated%3A2023-04-17..2023-08-04&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
