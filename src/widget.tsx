@@ -149,18 +149,21 @@ export class VPOutputArea extends MainAreaWidget<OutputArea> {
     this.title.label = 'Output';
   }
 
+  public showErrorMsg(msg: string): void {
+    this.content.model.clear();
+    this.content.model.add({
+      output_type: 'error',
+      ename: 'Error',
+      evalue: msg,
+      traceback: []
+    });
+  }
+
   public execute(code: string): void {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     OutputArea.execute(code, this.content, this.sessionContext!).catch(
       reason => {
-        console.error(reason);
-        this.content.model.clear();
-        this.content.model.add({
-          output_type: 'error',
-          ename: 'Error',
-          evalue: reason.message,
-          traceback: []
-        });
+        this.showErrorMsg(reason.message);
         return;
       }
     );
@@ -179,6 +182,7 @@ export class VPMainAreaPanel extends SplitPanel {
   constructor(id: string, model: IVPModel, sessionContext: ISessionContext) {
     super({ orientation: 'vertical', spacing: 1 });
     this.id = id + 'panel';
+    this._model = model;
     this._sessionContext = sessionContext;
     this.addClass('jp-vp-main-area-panel');
     this._vpEditor = new VPEditorWidget(id, model);
@@ -187,6 +191,7 @@ export class VPMainAreaPanel extends SplitPanel {
     this.addWidget(this._outputArea);
     this.setRelativeSizes([4, 1]);
   }
+  private _model: IVPModel | undefined = undefined;
 
   activate(): void {
     if (this._vpEditor) {
@@ -200,28 +205,15 @@ export class VPMainAreaPanel extends SplitPanel {
     }
   }
   execute(): void {
-    // Todo: use code from the vpContent
-    const code = `
-import matplotlib.pyplot as plt
-
-fig, ax = plt.subplots()
-
-fruits = ['apple', 'blueberry', 'cherry', 'orange']
-counts = [40, 100, 30, 55]
-bar_labels = ['red', 'blue', '_red', 'orange']
-bar_colors = ['tab:red', 'tab:blue', 'tab:red', 'tab:orange']
-
-ax.bar(fruits, counts, label=bar_labels, color=bar_colors)
-
-ax.set_ylabel('fruit supply')
-ax.set_title('Fruit supply by kind and color')
-ax.legend(title='Fruit color')
-
-plt.show()
-print("5+5=",5+5)
-print(a)` as string;
-
-    this._outputArea.execute(code);
+    const sourceCode = this._model?.vpActions?.sourceCode();
+    if (!sourceCode) {
+      return;
+    }
+    if (sourceCode.hasError) {
+      this._outputArea.showErrorMsg(sourceCode.result);
+    } else {
+      this._outputArea.execute(sourceCode.result);
+    }
   }
 
   public toggleOutput(): void {
