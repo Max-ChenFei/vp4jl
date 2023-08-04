@@ -9,7 +9,7 @@
 ### Enhancements made
 
 - Fix/node library management [#89](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/89) ([@Max-ChenFei](https://github.com/Max-ChenFei))
-- Paste or duplicate the nodes near the old node using the command directly, not mouse pos,  [#84](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/84) ([@Max-ChenFei](https://github.com/Max-ChenFei))
+- Paste or duplicate the nodes near the old node using the command directly, not mouse pos, [#84](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/84) ([@Max-ChenFei](https://github.com/Max-ChenFei))
 - Feat/output area [#82](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/82) ([@Max-ChenFei](https://github.com/Max-ChenFei))
 - Add toggle node extension panel command and add to menu [#80](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/80) ([@Max-ChenFei](https://github.com/Max-ChenFei))
 - Fix/run and kernel menu [#79](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/79) ([@Max-ChenFei](https://github.com/Max-ChenFei))
@@ -41,7 +41,7 @@
 
 ### Bugs fixed
 
-- Remove unnecessary update  [#97](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/97) ([@Max-ChenFei](https://github.com/Max-ChenFei))
+- Remove unnecessary update [#97](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/97) ([@Max-ChenFei](https://github.com/Max-ChenFei))
 - Node-library-management [#92](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/92) ([@Max-ChenFei](https://github.com/Max-ChenFei))
 - Fix/node library management [#89](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/89) ([@Max-ChenFei](https://github.com/Max-ChenFei))
 - Fix/close menu on switch tab [#30](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/30) ([@Max-ChenFei](https://github.com/Max-ChenFei))
