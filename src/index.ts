@@ -236,7 +236,7 @@ function activateVp4jlCommands(
     execute: args => {
       const current = getCurrent(tracker, shell, args);
       if (current) {
-        current.model.vpActions?.pasteFromClipboard(true);
+        current.model.vpActions?.pasteFromClipboard();
       }
     },
     icon: args => (args.toolbar ? pasteIcon : undefined),
@@ -281,7 +281,7 @@ function activateVp4jlCommands(
     execute: args => {
       const current = getCurrent(tracker, shell, args);
       if (current) {
-        current.model.vpActions?.duplicateSelectedNodes(true);
+        current.model.vpActions?.duplicateSelectedNodes();
       }
     },
     icon: args => (args.toolbar ? duplicateIcon : undefined),
