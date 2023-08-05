@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.3
+
+([Full Changelog](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/compare/v0.1.2...1a66fb4a0938eb1e0d4b8d986595f698db398dda))
+
+### Bugs fixed
+
+- Fix/kernel selection when reboot [#108](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/pull/108) ([@Max-ChenFei](https://github.com/Max-ChenFei))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/graphs/contributors?from=2023-08-04&to=2023-08-05&type=c))
+
+[@Max-ChenFei](https://github.com/search?q=repo%3AMax-ChenFei%2FVisualProgramming4JupyterLab+involves%3AMax-ChenFei+updated%3A2023-08-04..2023-08-05&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.2
 
 ([Full Changelog](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/compare/v0.1.1...0b58e4bc4ad0b53bd2a65b84f1a1f7edc38266d3))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/graphs/contributors?from=2023-08-04&to=2023-08-04&type=c))
 
 [@Max-ChenFei](https://github.com/search?q=repo%3AMax-ChenFei%2FVisualProgramming4JupyterLab+involves%3AMax-ChenFei+updated%3A2023-08-04..2023-08-04&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.1
 
