@@ -21,7 +21,7 @@ const TOOLBAR_CELLTYPE_DROPDOWN_CLASS = 'jp-Notebook-toolbarCellTypeDropdown';
 
 /**
  * A toolbar widget that switches cell types.
- * Only add a new visCode option in the dropdown to the code from
+ * Only add a new `visual code` option in the dropdown to the code from
  * https://github.com/jupyterlab/jupyterlab/blob/a0d07f17e85acd967e722a5c5ed54529a361e5cf/packages/notebook/src/default-toolbar.tsx#L316
  */
 class CellTypeSwitcher extends ReactWidget {
@@ -87,7 +87,7 @@ class CellTypeSwitcher extends ReactWidget {
       >
         <option value="-">-</option>
         <option value="code">{this._trans.__('Code')}</option>
-        <option value="visCode">{'Visual Code'}</option>
+        <option value="visual code">{'Visual Code'}</option>
         <option value="markdown">{this._trans.__('Markdown')}</option>
         <option value="raw">{this._trans.__('Raw')}</option>
       </HTMLSelect>
