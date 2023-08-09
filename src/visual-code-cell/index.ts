@@ -1,5 +1,6 @@
 import { IToolbarWidgetRegistry } from '@jupyterlab/apputils';
 import {
+  ILabShell,
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
@@ -7,8 +8,9 @@ import { INotebookWidgetFactory, NotebookPanel } from '@jupyterlab/notebook';
 import createCellTypeItem from './cell-type-item';
 import { ContentFactory } from './content-factory';
 import { IEditorServices } from '@jupyterlab/codeeditor';
+import { VPNotebook } from './notebook';
 
-export const vp4jlVpCell: JupyterFrontEndPlugin<void> = {
+const vp4jlVpCell: JupyterFrontEndPlugin<void> = {
   id: 'vp4jlVpCell',
   autoStart: true,
   requires: [IToolbarWidgetRegistry, IEditorServices, INotebookWidgetFactory],
@@ -31,3 +33,25 @@ function activateVp4jlVpCell(
     editorFactory
   });
 }
+
+const vp4jlCloseMenuWhenCloseTab: JupyterFrontEndPlugin<void> = {
+  id: 'vp4jl:CloseMenuWhenCloseTab',
+  autoStart: true,
+  requires: [ILabShell],
+  activate: activateVp4jlCloseMenuWhenCloseTab
+};
+
+function activateVp4jlCloseMenuWhenCloseTab(
+  app: JupyterFrontEnd,
+  labShell: ILabShell
+) {
+  // close the context menu when switch the tab
+  labShell.currentChanged.connect((_, args) => {
+    const content = (args.oldValue as any).content;
+    if (content instanceof VPNotebook) {
+      content.closeMenus();
+    }
+  });
+}
+
+export default [vp4jlVpCell, vp4jlCloseMenuWhenCloseTab];
