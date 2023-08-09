@@ -47,8 +47,9 @@ function activateVp4jlCloseMenuWhenCloseTab(
 ) {
   // close the context menu when switch the tab
   labShell.currentChanged.connect((_, args) => {
-    const content = (args.oldValue as any).content;
-    if (content instanceof VPNotebook) {
+    const NotebookPanel = args.oldValue as any;
+    const content = NotebookPanel?.content;
+    if (content && content instanceof VPNotebook) {
       content.closeMenus();
     }
   });

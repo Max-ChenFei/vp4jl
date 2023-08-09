@@ -82,7 +82,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
     this.host.removeEventListener('blur', this, true);
     this.host.removeEventListener('scroll', this, true);
     Signal.clearData(this);
-    this.host.removeChild(this._editor);
   }
 
   /**
