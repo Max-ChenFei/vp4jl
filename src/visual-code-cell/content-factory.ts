@@ -1,14 +1,12 @@
 import { CodeCell } from '@jupyterlab/cells';
 import { NotebookPanel } from '@jupyterlab/notebook';
-import { VisualCodeEditorFactory } from './visual-code-editor';
+import { VisualCodeEditorFactory } from './editor-factory';
 
 export class ContentFactory extends NotebookPanel.ContentFactory {
   constructor(options: any) {
     super(options);
     this._editorFactories['code'] = options.editorFactory;
-    this._editorFactories['visual code'] = VisualCodeEditorFactory(
-      options.host as HTMLElement
-    ) as any;
+    this._editorFactories['visual code'] = VisualCodeEditorFactory;
   }
   createCodeCell(options: CodeCell.IOptions): CodeCell {
     console.log('createCodeCell', options.model.metadata);
