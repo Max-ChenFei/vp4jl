@@ -37,7 +37,7 @@ import { VPWidgetFactory } from './widget-factory';
 import { getToolbarFactory } from './toolbar-factory';
 import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { LoadPackageToRegistry } from 'visual-programming-editor';
-import { vp4jlVpCell } from './vpcell';
+import { vp4jlVpCell } from './visual-code-cell';
 
 const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
   id: 'vp4jl:plugin',

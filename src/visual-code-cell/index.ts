@@ -5,24 +5,29 @@ import {
 } from '@jupyterlab/application';
 import { INotebookWidgetFactory, NotebookPanel } from '@jupyterlab/notebook';
 import createCellTypeItem from './cell-type-item';
+import { ContentFactory } from './content-factory';
+import { IEditorServices } from '@jupyterlab/codeeditor';
 
-const vp4jlVpCell: JupyterFrontEndPlugin<void> = {
+export const vp4jlVpCell: JupyterFrontEndPlugin<void> = {
   id: 'vp4jlVpCell',
   autoStart: true,
-  requires: [IToolbarWidgetRegistry, INotebookWidgetFactory],
+  requires: [IToolbarWidgetRegistry, IEditorServices, INotebookWidgetFactory],
   activate: activateVp4jlVpCell
 };
-
-export default vp4jlVpCell;
 
 function activateVp4jlVpCell(
   app: JupyterFrontEnd,
   toolbarRegistry: IToolbarWidgetRegistry,
-  notebookFactory: any
+  editorServices: IEditorServices,
+  notebookWidgetFactory: any
 ) {
-  // https://github.com/jupyterlab/jupyterlab/blob/a0d07f17e85acd967e722a5c5ed54529a361e5cf/packages/notebook-extension/src/index.ts#L321
   const FACTORY = 'Notebook';
   toolbarRegistry.addFactory<NotebookPanel>(FACTORY, 'cellType', panel =>
     createCellTypeItem(panel)
   );
+
+  const editorFactory = editorServices.factoryService.newInlineEditor;
+  notebookWidgetFactory.contentFactory = new ContentFactory({
+    editorFactory
+  });
 }

@@ -63,6 +63,7 @@
     "@jupyterlab/mainmenu": "^4.0.0",
     "@jupyterlab/services": "^7.0.0",
     "@lumino/messaging": "^2.0.0",
+    "@lumino/signaling": "^2.1.2",
     "crypto": "^1.0.1",
     "filepond": "^4.30.4",
     "react": "^18.2.0",

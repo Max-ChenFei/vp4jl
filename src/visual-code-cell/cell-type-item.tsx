@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Notebook, NotebookActions } from '@jupyterlab/notebook';
+import { Notebook } from '@jupyterlab/notebook';
 import { HTMLSelect } from '@jupyterlab/ui-components';
 import { ReactWidget } from '@jupyterlab/apputils';
 import {
@@ -7,8 +7,8 @@ import {
   TranslationBundle,
   nullTranslator
 } from '@jupyterlab/translation';
-import * as nbformat from '@jupyterlab/nbformat';
 import { NotebookPanel } from '@jupyterlab/notebook';
+import { changeCellType } from './actions';
 
 /**
  * The class name added to toolbar cell type dropdown wrapper.
@@ -46,10 +46,18 @@ class CellTypeSwitcher extends ReactWidget {
    */
   handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (event.target.value !== '-') {
-      NotebookActions.changeCellType(
-        this._notebook,
-        event.target.value as nbformat.CellType
-      );
+      let changeTo = event.target.value;
+      this._notebook.widgets.forEach((child, index) => {
+        if (this._notebook.isSelectedOrActive(child)) {
+          if (changeTo === 'visual code') {
+            child.model.setMetadata('changeTo', changeTo);
+            changeTo = 'code';
+          } else {
+            child.model.deleteMetadata('changeTo');
+          }
+        }
+      });
+      changeCellType(this._notebook, changeTo);
       this._notebook.activate();
     }
   };
@@ -68,14 +76,24 @@ class CellTypeSwitcher extends ReactWidget {
     if (this._notebook.activeCell) {
       value = this._notebook.activeCell.model.type;
     }
+    let multipleSelected = false;
     for (const widget of this._notebook.widgets) {
       if (this._notebook.isSelectedOrActive(widget)) {
         if (widget.model.type !== value) {
           value = '-';
+          multipleSelected = true;
           break;
         }
       }
     }
+
+    if (
+      !multipleSelected &&
+      this._notebook.activeCell?.model.getMetadata('changeTo') === 'visual code'
+    ) {
+      value = 'visual code';
+    }
+
     return (
       <HTMLSelect
         className={TOOLBAR_CELLTYPE_DROPDOWN_CLASS}
