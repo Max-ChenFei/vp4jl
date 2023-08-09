@@ -4,7 +4,7 @@ import { UUID } from '@lumino/coreutils';
 import { Signal } from '@lumino/signaling';
 import { createVPWidget } from './widget';
 
-const EDITOR_CLASS = 'jp-VPEditor';
+export const EDITOR_CLASS = 'jp-VPEditor';
 
 export class VisualCodeEditor implements CodeEditor.IEditor {
   constructor(options: any) {
@@ -12,7 +12,7 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
     host.classList.add(EDITOR_CLASS);
     host.classList.add('jp-Editor');
     host.addEventListener('focus', this, false);
-    host.addEventListener('blur', this, true);
+    host.addEventListener('blur', this, false);
 
     this._uuid = options.uuid ?? UUID.uuid4();
     this._model = options.model;
@@ -45,7 +45,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Get the number of lines in the editor.
    */
   get lineCount(): number {
-    console.log('lineCount');
     return 0;
   }
 
@@ -57,12 +56,10 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
   }
 
   get lineHeight(): number {
-    console.log('lineheight');
     return 0;
   }
 
   get charWidth(): number {
-    console.log('charWidth');
     return 0;
   }
 
@@ -136,7 +133,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Find an offset for the given position.
    */
   getOffsetAt(position: CodeEditor.IPosition): number {
-    console.log('getOffsetAt', position);
     return 0;
   }
 
@@ -144,7 +140,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Find a position for the given offset.
    */
   getPositionAt(offset: number): CodeEditor.IPosition {
-    console.log('getPositionAt', offset);
     return { line: 0, column: 0 };
   }
 
@@ -153,7 +148,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    */
   undo(): void {
     console.error('undo not implemented yet');
-    // this.model.sharedModel.undo();
   }
 
   /**
@@ -161,7 +155,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    */
   redo(): void {
     console.error('redo not implemented yet');
-    // this.model.sharedModel.redo();
   }
 
   /**
@@ -175,7 +168,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Brings browser focus to this editor text.
    */
   focus(): void {
-    console.log('focus');
     this._editor.focus();
   }
 
@@ -190,7 +182,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Explicitly blur the editor.
    */
   blur(): void {
-    console.log('blur');
     this._editor.contentDOM.blur();
   }
 
@@ -203,23 +194,18 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
     to: { line: number; ch: number },
     separator?: string
   ): string {
-    console.log('getRange');
     return '';
   }
 
   /**
    * Reveal the given position in the editor.
    */
-  revealPosition(position: CodeEditor.IPosition): void {
-    console.log('revealPosition');
-  }
+  revealPosition(position: CodeEditor.IPosition): void {}
 
   /**
    * Reveal the given selection in the editor.
    */
-  revealSelection(selection: CodeEditor.IRange): void {
-    console.log('revealSelection');
-  }
+  revealSelection(selection: CodeEditor.IRange): void {}
 
   /**
    * Get the window coordinates given a cursor position.
@@ -227,7 +213,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
   getCoordinateForPosition(
     position: CodeEditor.IPosition
   ): CodeEditor.ICoordinate {
-    console.log('getCoordinateForPosition');
     return {
       top: 0,
       left: 0,
@@ -299,9 +284,7 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Cursors will be removed or added, as necessary.
    * Passing an empty array resets a cursor position to the start of a document.
    */
-  setSelections(selections: CodeEditor.IRange[]): void {
-    console.log('setSelections');
-  }
+  setSelections(selections: CodeEditor.IRange[]): void {}
 
   /**
    * Replaces the current selection with the given text.
@@ -316,7 +299,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Get a list of tokens for the current editor text content.
    */
   getTokens(): CodeEditor.IToken[] {
-    console.log('getTokens');
     return [];
   }
 
@@ -324,7 +306,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Get the token at a given editor position.
    */
   getTokenAt(offset: number): CodeEditor.IToken {
-    console.log('getTokenAt');
     return { value: '', offset: 0, type: '' };
   }
 
