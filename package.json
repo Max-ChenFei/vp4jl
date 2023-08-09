@@ -61,6 +61,7 @@
     "@jupyterlab/docmanager-extension": "^4.0.0",
     "@jupyterlab/launcher": "^4.0.0",
     "@jupyterlab/mainmenu": "^4.0.0",
+    "@jupyterlab/notebook": "^4.0.4",
     "@jupyterlab/services": "^7.0.0",
     "@lumino/messaging": "^2.0.0",
     "@lumino/signaling": "^2.1.2",

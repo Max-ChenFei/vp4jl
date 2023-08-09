@@ -1,16 +1,19 @@
 import { CodeCell } from '@jupyterlab/cells';
-import { NotebookPanel } from '@jupyterlab/notebook';
+import { NotebookPanel, Notebook } from '@jupyterlab/notebook';
 import { VisualCodeEditorFactory } from './editor-factory';
-
+import { VPNotebook } from './notebook';
 export class ContentFactory extends NotebookPanel.ContentFactory {
   constructor(options: any) {
     super(options);
     this._editorFactories['code'] = options.editorFactory;
     this._editorFactories['visual code'] = VisualCodeEditorFactory;
   }
-  createCodeCell(options: CodeCell.IOptions): CodeCell {
-    console.log('createCodeCell', options.model.metadata);
 
+  createNotebook(options: Notebook.IOptions): Notebook {
+    return new VPNotebook(options);
+  }
+
+  createCodeCell(options: CodeCell.IOptions): CodeCell {
     const opts = options;
     if (options.model.getMetadata('changeTo') === 'visual code') {
       opts.contentFactory = new ContentFactory({

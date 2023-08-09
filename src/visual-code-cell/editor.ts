@@ -1,40 +1,22 @@
-/* eslint-disable @typescript-eslint/ban-types */
-// Copyright (c) Jupyter Development Team.
-// Distributed under the terms of the Modified BSD License.
-
-import { insertNewlineAndIndent } from '@codemirror/commands';
-// import { Command, EditorView } from '@codemirror/view';
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { CodeEditor } from '@jupyterlab/codeeditor';
 import { UUID } from '@lumino/coreutils';
 import { Signal } from '@lumino/signaling';
 import { createVPWidget } from './widget';
 
-/**
- * The class name added to CodeMirrorWidget instances.
- */
 const EDITOR_CLASS = 'jp-VPEditor';
 
-/**
- * CodeMirror editor.
- */
 export class VisualCodeEditor implements CodeEditor.IEditor {
-  /**
-   * Construct a CodeMirror editor.
-   */
   constructor(options: any) {
     const host = (this.host = options.host);
     host.classList.add(EDITOR_CLASS);
     host.classList.add('jp-Editor');
-    host.addEventListener('focus', this, true);
+    host.addEventListener('focus', this, false);
     host.addEventListener('blur', this, true);
-    host.addEventListener('scroll', this, true);
 
     this._uuid = options.uuid ?? UUID.uuid4();
-
-    const model = (this._model = options.model);
-    console.log('CodeMirrorEditor', model);
-    this._editor = createVPWidget(this._uuid, model, host);
-    // model.mimeTypeChanged.connect(this._onMimeTypeChanged, this);
+    this._model = options.model;
+    this._editor = createVPWidget(this._uuid, this._model, host);
   }
 
   /**
@@ -47,35 +29,24 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    */
   readonly host: HTMLElement;
 
-  /**
-   * The uuid of this editor;
-   */
   get uuid(): string {
     return this._uuid;
   }
+
   set uuid(value: string) {
     this._uuid = value;
   }
 
-  /**
-   * Get the codemirror editor wrapped by the editor.
-   */
   get editor(): any {
     return this._editor;
-  }
-
-  /**
-   * Get the codemirror doc wrapped by the widget.
-   */
-  get doc(): Text {
-    throw new Error('Method not implemented yet');
   }
 
   /**
    * Get the number of lines in the editor.
    */
   get lineCount(): number {
-    throw new Error('Method not implemented yet');
+    console.log('lineCount');
+    return 0;
   }
 
   /**
@@ -85,18 +56,14 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
     return this._model;
   }
 
-  /**
-   * The height of a line in the editor in pixels.
-   */
   get lineHeight(): number {
-    throw new Error('Method not implemented yet');
+    console.log('lineheight');
+    return 0;
   }
 
-  /**
-   * The widget of a character in the editor in pixels.
-   */
   get charWidth(): number {
-    throw new Error('Method not implemented yet');
+    console.log('charWidth');
+    return 0;
   }
 
   /**
@@ -117,9 +84,7 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
     this.host.removeEventListener('focus', this, true);
     this.host.removeEventListener('blur', this, true);
     this.host.removeEventListener('scroll', this, true);
-    // this._configurator.dispose();
     Signal.clearData(this);
-    // this.editor.destroy();
     this.host.removeChild(this._editor);
   }
 
@@ -127,24 +92,21 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Get a config option for the editor.
    */
   getOption(option: string): unknown {
-    // return this._configurator.getOption(option);
-    throw new Error('Method not implemented yet');
+    return this._options[option];
   }
 
   /**
    * Whether the option exists or not.
    */
   hasOption(option: string): boolean {
-    throw new Error('Method not implemented yet');
-    // return this._configurator.hasOption(option);
+    return Object.keys(this._options).indexOf(option) > -1;
   }
 
   /**
    * Set a config option for the editor.
    */
   setOption(option: string, value: unknown): void {
-    throw new Error('Method not implemented yet');
-    // this._configurator.setOption(option, value);
+    this._options[option] = value;
   }
 
   /**
@@ -156,65 +118,50 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * is set.
    */
   setOptions(options: Record<string, any>): void {
-    throw new Error('Method not implemented yet');
-    // this._configurator.setOptions(options);
+    for (const key in options) {
+      this._options[key] = options[key];
+    }
   }
 
-  /**
-   * Inject an extension into the editor
-   *
-   * @alpha
-   * @experimental
-   * @param ext CodeMirror 6 extension
-   */
-  injectExtension(ext: any): void {
-    throw new Error('Method not implemented yet');
-    // this._configurator.injectExtension(this._editor, ext);
-  }
+  injectExtension(ext: any): void {}
 
   /**
    * Returns the content for the given line number.
    */
   getLine(line: number): string | undefined {
-    throw new Error('Method not implemented yet');
-    // TODO: CM6 remove +1 when CM6 first line number has propagated
-    // line = line + 1;
-    // return line <= this.doc.lines ? this.doc.line(line).text : undefined;
+    return undefined;
   }
 
   /**
    * Find an offset for the given position.
    */
   getOffsetAt(position: CodeEditor.IPosition): number {
-    throw new Error('Method not implemented yet');
-    // TODO: CM6 remove +1 when CM6 first line number has propagated
-    // return this.doc.line(position.line + 1).from + position.column;
+    console.log('getOffsetAt', position);
+    return 0;
   }
 
   /**
    * Find a position for the given offset.
    */
   getPositionAt(offset: number): CodeEditor.IPosition {
-    throw new Error('Method not implemented yet');
-    // // TODO: CM6 remove -1 when CM6 first line number has propagated
-    // const line = this.doc.lineAt(offset);
-    // return { line: line.number - 1, column: offset - line.from };
+    console.log('getPositionAt', offset);
+    return { line: 0, column: 0 };
   }
 
   /**
    * Undo one edit (if any undo events are stored).
    */
   undo(): void {
-    throw new Error('Method not implemented yet');
-    this.model.sharedModel.undo();
+    console.error('undo not implemented yet');
+    // this.model.sharedModel.undo();
   }
 
   /**
    * Redo one undone edit.
    */
   redo(): void {
-    throw new Error('Method not implemented yet');
-    this.model.sharedModel.redo();
+    console.error('redo not implemented yet');
+    // this.model.sharedModel.redo();
   }
 
   /**
@@ -228,6 +175,7 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Brings browser focus to this editor text.
    */
   focus(): void {
+    console.log('focus');
     this._editor.focus();
   }
 
@@ -242,32 +190,12 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Explicitly blur the editor.
    */
   blur(): void {
+    console.log('blur');
     this._editor.contentDOM.blur();
   }
 
   get state(): any {
     throw new Error('Method not implemented yet');
-    return this._editor.state;
-  }
-
-  firstLine(): number {
-    // TODO: return 1 when CM6 first line number has propagated
-    return 0;
-  }
-
-  lastLine(): number {
-    throw new Error('Method not implemented yet');
-    // return this.doc.lines - 1;
-  }
-
-  cursorCoords(
-    where: boolean,
-    mode?: 'window' | 'page' | 'local'
-  ): { left: number; top: number; bottom: number } {
-    const selection = this.state.selection.main;
-    const pos = where ? selection.from : selection.to;
-    const rect = this.editor.coordsAtPos(pos);
-    return rect as { left: number; top: number; bottom: number };
   }
 
   getRange(
@@ -275,31 +203,22 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
     to: { line: number; ch: number },
     separator?: string
   ): string {
-    const fromOffset = this.getOffsetAt(this._toPosition(from));
-    const toOffset = this.getOffsetAt(this._toPosition(to));
-    return this.state.sliceDoc(fromOffset, toOffset);
+    console.log('getRange');
+    return '';
   }
 
   /**
    * Reveal the given position in the editor.
    */
   revealPosition(position: CodeEditor.IPosition): void {
-    // const offset = this.getOffsetAt(position);
-    // this._editor.dispatch({
-    //   effects: EditorView.scrollIntoView(offset)
-    // });
+    console.log('revealPosition');
   }
 
   /**
    * Reveal the given selection in the editor.
    */
   revealSelection(selection: CodeEditor.IRange): void {
-    throw new Error('Method not implemented yet');
-    // const start = this.getOffsetAt(selection.start);
-    // const end = this.getOffsetAt(selection.end);
-    // this._editor.dispatch({
-    //   effects: EditorView.scrollIntoView(EditorSelection.range(start, end))
-    // });
+    console.log('revealSelection');
   }
 
   /**
@@ -308,9 +227,18 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
   getCoordinateForPosition(
     position: CodeEditor.IPosition
   ): CodeEditor.ICoordinate {
-    const offset = this.getOffsetAt(position);
-    const rect = this.editor.coordsAtPos(offset);
-    return rect as CodeEditor.ICoordinate;
+    console.log('getCoordinateForPosition');
+    return {
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+      height: 0,
+      width: 0,
+      x: 0,
+      y: 0,
+      toJSON: () => ''
+    };
   }
 
   /**
@@ -324,19 +252,14 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
   getPositionForCoordinate(
     coordinate: CodeEditor.ICoordinate
   ): CodeEditor.IPosition | null {
-    const offset = this.editor.posAtCoords({
-      x: coordinate.left,
-      y: coordinate.top
-    });
-    return this.getPositionAt(offset!) || null;
+    return null;
   }
 
   /**
    * Returns the primary position of the cursor, never `null`.
    */
   getCursorPosition(): CodeEditor.IPosition {
-    const offset = this.state.selection.main.head;
-    return this.getPositionAt(offset);
+    return { line: 0, column: 0 };
   }
 
   /**
@@ -348,19 +271,7 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
   setCursorPosition(
     position: CodeEditor.IPosition,
     options?: { bias?: number; origin?: string; scroll?: boolean }
-  ): void {
-    const offset = this.getOffsetAt(position);
-    this.editor.dispatch({
-      selection: { anchor: offset },
-      scrollIntoView: true
-    });
-    // If the editor does not have focus, this cursor change
-    // will get screened out in _onCursorsChanged(). Make an
-    // exception for this method.
-    if (!this.editor.hasFocus) {
-      this.model.selections.set(this.uuid, this.getSelections());
-    }
-  }
+  ): void {}
 
   /**
    * Returns the primary selection, never `null`.
@@ -381,19 +292,6 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    */
   getSelections(): CodeEditor.ITextSelection[] {
     throw new Error('Method not implemented yet');
-    // const selections = this.state.selection.ranges; //= [{anchor: number, head: number}]
-    // if (selections.length > 0) {
-    //   const sel = selections.map(r => ({
-    //     anchor: this._toCodeMirrorPosition(this.getPositionAt(r.from)),
-    //     head: this._toCodeMirrorPosition(this.getPositionAt(r.to))
-    //   }));
-    //   return sel.map(selection => this._toSelection(selection));
-    // }
-    // const cursor = this._toCodeMirrorPosition(
-    //   this.getPositionAt(this.state.selection.main.head)
-    // );
-    // const selection = this._toSelection({ anchor: cursor, head: cursor });
-    // return [selection];
   }
 
   /**
@@ -402,16 +300,7 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Passing an empty array resets a cursor position to the start of a document.
    */
   setSelections(selections: CodeEditor.IRange[]): void {
-    throw new Error('Method not implemented yet');
-    // const sel = selections.length
-    //   ? selections.map(r =>
-    //       EditorSelection.range(
-    //         this.getOffsetAt(r.start),
-    //         this.getOffsetAt(r.end)
-    //       )
-    //     )
-    //   : [EditorSelection.range(0, 0)];
-    // this.editor.dispatch({ selection: EditorSelection.create(sel) });
+    console.log('setSelections');
   }
 
   /**
@@ -421,76 +310,22 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    *
    * @param text The text to be inserted.
    */
-  replaceSelection(text: string): void {
-    throw new Error('Method not implemented yet');
-    const firstSelection = this.getSelections()[0];
-    this.model.sharedModel.updateSource(
-      this.getOffsetAt(firstSelection.start),
-      this.getOffsetAt(firstSelection.end),
-      text
-    );
-    const newPosition = this.getPositionAt(
-      this.getOffsetAt(firstSelection.start) + text.length
-    );
-    this.setSelection({ start: newPosition, end: newPosition });
-  }
+  replaceSelection(text: string): void {}
 
   /**
    * Get a list of tokens for the current editor text content.
    */
   getTokens(): CodeEditor.IToken[] {
-    throw new Error('Method not implemented yet');
-    // const tokens: CodeEditor.IToken[] = [];
-    // const tree = ensureSyntaxTree(this.state, this.doc.length);
-    // if (tree) {
-    //   tree.iterate({
-    //     enter: (ref: SyntaxNodeRef) => {
-    //       if (ref.node.firstChild === null) {
-    //         tokens.push({
-    //           value: this.state.sliceDoc(ref.from, ref.to),
-    //           offset: ref.from,
-    //           type: ref.name
-    //         });
-    //       }
-    //       return true;
-    //     }
-    //   });
-    // }
-    // return tokens;
+    console.log('getTokens');
+    return [];
   }
 
   /**
    * Get the token at a given editor position.
    */
   getTokenAt(offset: number): CodeEditor.IToken {
-    throw new Error('Method not implemented yet');
-    // const tree = ensureSyntaxTree(this.state, offset);
-    // let token: CodeEditor.IToken | null = null;
-    // if (tree) {
-    //   tree.iterate({
-    //     enter: (ref: SyntaxNodeRef) => {
-    //       // If a token has already been discovered, stop iterating.
-    //       if (token) {
-    //         return false;
-    //       }
-    //       // If it is not a leaf, keep iterating.
-    //       if (ref.node.firstChild) {
-    //         return true;
-    //       }
-    //       // If the relevant leaf token has been found, stop iterating.
-    //       if (offset >= ref.from && offset <= ref.to) {
-    //         token = {
-    //           value: this.state.sliceDoc(ref.from, ref.to),
-    //           offset: ref.from,
-    //           type: ref.name
-    //         };
-    //         return false;
-    //       }
-    //       return true;
-    //     }
-    //   });
-    // }
-    // return token || { offset, value: '' };
+    console.log('getTokenAt');
+    return { value: '', offset: 0, type: '' };
   }
 
   /**
@@ -503,136 +338,18 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
   /**
    * Insert a new indented line at the current cursor position.
    */
-  newIndentedLine(): void {
-    insertNewlineAndIndent({
-      state: this.state,
-      dispatch: this.editor.dispatch
-    });
-  }
+  newIndentedLine(): void {}
 
   /**
    * Execute a codemirror command on the editor.
    *
    * @param command - The name of the command to execute.
    */
-  execCommand(command: any): void {
-    // command(this.editor);
-  }
+  execCommand(command: any): void {}
 
-  protected onConfigChanged(
-    configurator: any,
-    changes: Record<string, any>
-  ): void {
-    throw new Error('Method not implemented yet');
-    configurator.reconfigureExtensions(this._editor, changes);
-  }
-
-  /**
-   * Handle keydown events from the editor.
-   */
   protected onKeydown(event: KeyboardEvent): boolean {
     return false;
-    // const position = this.state.selection.main.head;
-    // if (position === 0 && event.keyCode === UP_ARROW) {
-    //   if (!event.shiftKey) {
-    //     this.edgeRequested.emit('top');
-    //   }
-    //   return false;
-    // }
-    // const line = this.doc.lineAt(position).number;
-    // if (line === 1 && event.keyCode === UP_ARROW) {
-    //   if (!event.shiftKey) {
-    //     this.edgeRequested.emit('topLine');
-    //   }
-    //   return false;
-    // }
-    // const length = this.doc.length;
-    // if (position === length && event.keyCode === DOWN_ARROW) {
-    //   if (!event.shiftKey) {
-    //     this.edgeRequested.emit('bottom');
-    //   }
-    //   return false;
-    // }
-    // return false;
   }
-
-  /**
-   * Handles a mime type change.
-   */
-  //   private _onMimeTypeChanged(): void {
-  // TODO: should we provide a hook for when the mode is done being set?
-  // this._languages
-  //   .getLanguage(this._model.mimeType)
-  //   .then(language => {
-  //     this._editor.dispatch({
-  //       effects: this._language.reconfigure(language?.support ?? [])
-  //     });
-  //   })
-  //   .catch(reason => {
-  //     console.log(
-  //       `Failed to load language for '${this._model.mimeType}'.`,
-  //       reason
-  //     );
-  //     this._editor.dispatch({
-  //       effects: this._language.reconfigure([])
-  //     });
-  //   });
-  //   }
-
-  /**
-   * Handles a cursor activity event.
-   */
-  //   private _onCursorActivity(): void {
-  //     // Only add selections if the editor has focus. This avoids unwanted
-  //     // triggering of cursor activity due to collaborator actions.
-  //     if (this._editor.hasFocus) {
-  //       const selections = this.getSelections();
-  //       this.model.selections.set(this.uuid, selections);
-  //     }
-  //   }
-
-  /**
-   * Converts a code mirror selection to an editor selection.
-   */
-  //   private _toSelection(selection: {
-  //     anchor: { line: number; ch: number };
-  //     head: { line: number; ch: number };
-  //   }): CodeEditor.ITextSelection {
-  //     return {
-  //       uuid: this.uuid,
-  //       start: this._toPosition(selection.anchor),
-  //       end: this._toPosition(selection.head)
-  //     };
-  //   }
-
-  /**
-   * Convert a code mirror position to an editor position.
-   */
-  private _toPosition(position: { line: number; ch: number }) {
-    return {
-      line: position.line,
-      column: position.ch
-    };
-  }
-
-  //   /**
-  //    * Convert an editor position to a code mirror position.
-  //    */
-  //   private _toCodeMirrorPosition(position: CodeEditor.IPosition) {
-  //     return {
-  //       line: position.line,
-  //       ch: position.column
-  //     };
-  //   }
-
-  //   /**
-  //    * Handles document changes.
-  //    */
-  //   private _onDocChanged(update: ViewUpdate) {
-  //     // if (update.transactions.length && update.transactions[0].selection) {
-  //     //   this._onCursorActivity();
-  //     // }
-  //   }
 
   /**
    * Handle the DOM events for the editor.
@@ -657,30 +374,17 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
     }
   }
 
-  /**
-   * Handle `focus` events for the editor.
-   */
   private _evtFocus(event: FocusEvent): void {
     this.host.classList.add('jp-mod-focused');
-
-    // Update the selections on editor gaining focus because
-    // the onCursorActivity function filters usual cursor events
-    // based on the editor's focus.
-    // this._onCursorActivity();
   }
 
-  /**
-   * Handle `blur` events for the editor.
-   */
   private _evtBlur(event: FocusEvent): void {
     this.host.classList.remove('jp-mod-focused');
   }
 
-  //   private _configurator: IExtensionsHandler;
   private _editor: any;
   private _isDisposed = false;
-  //   private _language = new Compartment();
-  //   private _languages: IEditorLanguageRegistry;
   private _model: CodeEditor.IModel;
   private _uuid = '';
+  private _options: Record<string, any> = {};
 }
