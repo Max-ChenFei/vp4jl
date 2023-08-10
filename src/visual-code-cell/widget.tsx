@@ -105,6 +105,11 @@ export class VPWidget extends ReactWidget {
         onContentChange={this.setContent.bind(this)}
         activated={this._editor_activated}
         onSceneActionsInit={this.setSceneActions.bind(this)}
+        option={{
+          minimap: {
+            collapsed: true
+          }
+        }}
       />
     );
   }
