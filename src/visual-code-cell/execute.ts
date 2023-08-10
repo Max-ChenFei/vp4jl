@@ -14,7 +14,11 @@ export async function execute(
 ): Promise<KernelMessage.IExecuteReplyMsg | void> {
   console.log('execute');
   const model = cell.model;
-  const code = model.sharedModel.getSource();
+  const isVisualCode = model.getMetadata('code type') === 'visual code';
+  const code =
+    isVisualCode && cell.editor
+      ? (cell.editor as any).editor.getCode()
+      : model.sharedModel.getSource();
   if (!code.trim() || !sessionContext.session?.kernel) {
     model.sharedModel.transact(() => {
       model.clearExecution();

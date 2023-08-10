@@ -15,7 +15,7 @@ export class ContentFactory extends NotebookPanel.ContentFactory {
 
   createCodeCell(options: CodeCell.IOptions): CodeCell {
     const opts = options;
-    if (options.model.getMetadata('changeTo') === 'visual code') {
+    if (options.model.getMetadata('code type') === 'visual code') {
       opts.contentFactory = new ContentFactory({
         editorFactory: this._editorFactories['visual code']
       });

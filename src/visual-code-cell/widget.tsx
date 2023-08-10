@@ -1,10 +1,26 @@
 import React from 'react';
 import { ReactWidget } from '@jupyterlab/apputils';
 import { Widget } from '@lumino/widgets';
-import { VPEditor, ISceneActions } from 'visual-programming-editor';
+import { CodeEditor } from '@jupyterlab/codeeditor';
+import {
+  VPEditor,
+  ISceneActions,
+  SerializedGraph
+} from 'visual-programming-editor';
+
+type ISharedText = any;
+
+function isSerializedGraph(object: any): boolean {
+  return (
+    object &&
+    typeof object === 'object' &&
+    Array.isArray(object.nodes) &&
+    Array.isArray(object.edges)
+  );
+}
 
 export class VPWidget extends ReactWidget {
-  constructor(id: string, model: any) {
+  constructor(id: string, model: CodeEditor.IModel) {
     super();
     this.id = id;
     this.node.style.width = '100%';
@@ -23,13 +39,14 @@ export class VPWidget extends ReactWidget {
         e.stopPropagation();
       }
     });
-    // this._model = model;
-    // this._model.vpContentChanged.connect(this.update, this);
+    this._model = model;
+    this.sharedModel.changed.connect(this.update, this);
   }
 
-  // get model(): any {
-  //   return this._model;
-  // }
+  get sharedModel(): ISharedText {
+    return this._model.sharedModel;
+  }
+
   setSceneActions(actions: ISceneActions | null): void {
     this._sceneActions = actions;
   }
@@ -57,19 +74,46 @@ export class VPWidget extends ReactWidget {
     }
   }
 
+  get content(): SerializedGraph {
+    let source = undefined;
+    try {
+      source = JSON.parse(this.sharedModel.getSource());
+    } catch (e) {
+      source = undefined;
+    }
+
+    return isSerializedGraph(source) ? source : null;
+  }
+
+  setContent(newContent: string) {
+    if (this.sharedModel.getSource() !== newContent) {
+      this.sharedModel.setSource(newContent);
+    }
+  }
+
+  getCode(): string {
+    const sourceCode = this._sceneActions?.sourceCode();
+    return sourceCode.result || '';
+    // if (sourceCode.hasError) {
+    //   this._outputArea.showErrorMsg(sourceCode.result);
+    // } else {
+    //   this._outputArea.execute(sourceCode.result);
+    // }
+  }
+
   render(): JSX.Element {
     return (
       <VPEditor
         id={this.id}
-        // content={this._model.vpContent}
-        // onContentChange={this._model.setVpContent.bind(this._model)}
+        content={this.content}
+        onContentChange={this.setContent.bind(this)}
         activated={this._editor_activated}
         onSceneActionsInit={this.setSceneActions.bind(this)}
       />
     );
   }
 
-  // private _model: any;
+  private _model: CodeEditor.IModel;
   private _editor_activated = false;
   private _sceneActions: any | null = null;
 }

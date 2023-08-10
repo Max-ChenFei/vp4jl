@@ -50,10 +50,10 @@ class CellTypeSwitcher extends ReactWidget {
       this._notebook.widgets.forEach((child, index) => {
         if (this._notebook.isSelectedOrActive(child)) {
           if (changeTo === 'visual code') {
-            child.model.setMetadata('changeTo', changeTo);
+            child.model.setMetadata('code type', changeTo);
             changeTo = 'code';
           } else {
-            child.model.deleteMetadata('changeTo');
+            child.model.deleteMetadata('code type');
           }
         }
       });
@@ -89,7 +89,8 @@ class CellTypeSwitcher extends ReactWidget {
 
     if (
       !multipleSelected &&
-      this._notebook.activeCell?.model.getMetadata('changeTo') === 'visual code'
+      this._notebook.activeCell?.model.getMetadata('code type') ===
+        'visual code'
     ) {
       value = 'visual code';
     }
