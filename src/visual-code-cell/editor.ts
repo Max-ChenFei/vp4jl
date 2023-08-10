@@ -146,14 +146,14 @@ export class VisualCodeEditor implements CodeEditor.IEditor {
    * Undo one edit (if any undo events are stored).
    */
   undo(): void {
-    console.error('undo not implemented yet');
+    this.model.sharedModel.undo();
   }
 
   /**
    * Redo one undone edit.
    */
   redo(): void {
-    console.error('redo not implemented yet');
+    this.model.sharedModel.redo();
   }
 
   /**
