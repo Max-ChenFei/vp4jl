@@ -5,7 +5,8 @@ import { CodeEditor } from '@jupyterlab/codeeditor';
 import {
   VPEditor,
   ISceneActions,
-  SerializedGraph
+  SerializedGraph,
+  SourceCodeExec
 } from 'visual-programming-editor';
 
 type ISharedText = any;
@@ -91,14 +92,9 @@ export class VPWidget extends ReactWidget {
     }
   }
 
-  getCode(): string {
+  getCode(): SourceCodeExec {
     const sourceCode = this._sceneActions?.sourceCode();
-    return sourceCode.result || '';
-    // if (sourceCode.hasError) {
-    //   this._outputArea.showErrorMsg(sourceCode.result);
-    // } else {
-    //   this._outputArea.execute(sourceCode.result);
-    // }
+    return sourceCode || { hasError: false, result: '' };
   }
 
   render(): JSX.Element {

@@ -12,13 +12,27 @@ export async function execute(
   sessionContext: ISessionContext,
   metadata?: JSONObject
 ): Promise<KernelMessage.IExecuteReplyMsg | void> {
-  console.log('execute');
   const model = cell.model;
   const isVisualCode = model.getMetadata('code type') === 'visual code';
-  const code =
-    isVisualCode && cell.editor
-      ? (cell.editor as any).editor.getCode()
-      : model.sharedModel.getSource();
+  let code = '';
+  if (isVisualCode && cell.editor) {
+    const result = (cell.editor as any).editor.getCode();
+    if (result.hasError) {
+      cell.outputArea.model.clear();
+      cell.outputArea.model.add({
+        output_type: 'error',
+        ename: 'Error',
+        evalue: result.result,
+        traceback: []
+      });
+      return;
+    } else {
+      code = result.result;
+    }
+  } else {
+    code = model.sharedModel.getSource();
+  }
+
   if (!code.trim() || !sessionContext.session?.kernel) {
     model.sharedModel.transact(() => {
       model.clearExecution();
