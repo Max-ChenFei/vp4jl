@@ -117,6 +117,9 @@ export class VPWidget extends ReactWidget {
 export function createVPWidget(id: string, model: any, host: HTMLElement): any {
   const editor = new VPWidget(id, model);
   host.style.height = '300px';
+  host.style.overflow = 'auto';
+  host.style.resize = 'vertical';
+
   window.requestAnimationFrame(() => {
     if (host.isConnected) {
       Widget.attach(editor, host);
