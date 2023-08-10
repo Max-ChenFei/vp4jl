@@ -26,7 +26,7 @@ export class VPWidget extends ReactWidget {
     this.id = id;
     this.node.style.width = '100%';
     this.node.style.height = '100%';
-    this.node.addEventListener('contextmenu', function (e) {
+    this.node.addEventListener('contextmenu', e => {
       e.preventDefault();
       e.stopPropagation();
     });
