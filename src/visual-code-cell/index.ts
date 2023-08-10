@@ -9,6 +9,7 @@ import createCellTypeItem from './cell-type-item';
 import { ContentFactory } from './content-factory';
 import { IEditorServices } from '@jupyterlab/codeeditor';
 import { VPNotebook } from './notebook';
+import { enhanceCodeCellExecute } from './execute';
 
 const vp4jlVpCell: JupyterFrontEndPlugin<void> = {
   id: 'vp4jlVpCell',
@@ -32,6 +33,8 @@ function activateVp4jlVpCell(
   notebookWidgetFactory.contentFactory = new ContentFactory({
     editorFactory
   });
+
+  enhanceCodeCellExecute();
 }
 
 const vp4jlCloseMenuWhenCloseTab: JupyterFrontEndPlugin<void> = {
