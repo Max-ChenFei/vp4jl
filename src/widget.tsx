@@ -1,13 +1,13 @@
 import React from 'react';
 import { SplitPanel } from '@lumino/widgets';
 import { Session } from '@jupyterlab/services';
-import { DocumentWidget } from '@jupyterlab/docregistry';
+import { DocumentRegistry, DocumentWidget } from '@jupyterlab/docregistry';
 import {
   ISessionContext,
   MainAreaWidget,
   ReactWidget
 } from '@jupyterlab/apputils';
-import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
+import { OutputArea } from '@jupyterlab/outputarea';
 import {
   LabIcon,
   Toolbar,
@@ -140,7 +140,7 @@ export class VPOutputArea extends MainAreaWidget<OutputArea> {
       content: new OutputArea({
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         rendermime: model.rendermime!,
-        model: new OutputAreaModel()
+        model: model.outputAreaModel!
       }),
       toolbar: new VPOutputAreaToolbar()
     });
@@ -244,6 +244,8 @@ export class VPWidget extends DocumentWidget<VPMainAreaPanel, IVPModel> {
     this.context.ready.then(this._onContextReady.bind(this));
     this.model.kernelSpecChanged.connect(this._changeKernel, this);
     this.sessionContext.kernelChanged.connect(this._setModelKernelSpec, this);
+
+    this.context.saveState.connect(this._onSave, this);
   }
 
   get model(): IVPModel {
@@ -282,5 +284,14 @@ export class VPWidget extends DocumentWidget<VPMainAreaPanel, IVPModel> {
     args: Session.ISessionConnection.IKernelChangedArgs
   ): void {
     void this.model.setKernelSpec(args.newValue);
+  }
+
+  private _onSave(
+    sender: DocumentRegistry.Context,
+    state: DocumentRegistry.SaveState
+  ): void {
+    if (state === 'started' && this.model) {
+      this.model.saveOutputModel();
+    }
   }
 }
