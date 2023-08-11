@@ -21,10 +21,10 @@ def insertToObj(obj, path, value):
 
 
 def loadNodeExtensions():
-    nodes_foler = NODE_TYPE_FOLDER
+    nodes_folder = NODE_TYPE_FOLDER
     register = NODE_TYPE_REGISTER
-    for folder, dirs, files in os.walk(nodes_foler):
-        relativeFolder = folder[len(nodes_foler) + 1:]
+    for folder, dirs, files in os.walk(nodes_folder):
+        relativeFolder = folder[len(nodes_folder) + 1:]
         for file in files:
             path = os.path.join(folder, file)
             content = None
@@ -42,9 +42,9 @@ def loadNodeExtensions():
                 relativeFolder, dir).split(os.sep), {'isPackage': True, 'subpackages': {}})
 
 def loadNodeExtension(name):
-    nodes_foler = NODE_TYPE_FOLDER
+    nodes_folder = NODE_TYPE_FOLDER
     register = NODE_TYPE_REGISTER
-    target_path = os.path.join(nodes_foler, name)
+    target_path = os.path.join(nodes_folder, name)
     if(os.path.isfile(target_path + ".json")):
         with open(target_path + ".json", "r") as f:
             content = json.load(f)
@@ -53,7 +53,7 @@ def loadNodeExtension(name):
     elif(os.path.isdir(target_path)):
         insertToObj(register, [name], {'isPackage': True, 'subpackages': {}})
         for folder, dirs, files in os.walk(target_path):
-            relativeFolder = folder[len(nodes_foler) + 1:]
+            relativeFolder = folder[len(nodes_folder) + 1:]
             for file in files:
                 path = os.path.join(folder, file)
                 content = None
