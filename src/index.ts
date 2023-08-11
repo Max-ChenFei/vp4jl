@@ -598,9 +598,8 @@ function fetchNodeExtensions() {
       });
     })
     .catch(reason => {
-      console.error(
-        `The vp4jl server extension appears to be missing.\n${reason}`
-      );
+      console.error(`The vp4jl server error:\n${reason}`);
+      console.error(`The vp4jl server error:\n${reason}`);
     });
 }
 
