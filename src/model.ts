@@ -5,6 +5,7 @@ import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { DocumentRegistry, DocumentModel } from '@jupyterlab/docregistry';
 import { isSameContent } from './utils';
 import { ISceneActions, SerializedGraph } from 'visual-programming-editor';
+import { IOutputAreaModel, OutputAreaModel } from '@jupyterlab/outputarea';
 
 export type IToolbarItems = {
   [name: string]: DocumentRegistry.IToolbarItem;
@@ -14,6 +15,7 @@ export interface IVPModel extends DocumentRegistry.ICodeModel {
   kernelSpec: Partial<Kernel.IModel> | undefined;
   vpContent: SerializedGraph | null;
   vpActions: ISceneActions | null;
+  outputAreaModel: IOutputAreaModel;
   toolbarItems: IToolbarItems;
   rendermime: IRenderMimeRegistry | null;
   setKernelSpec(kernel: Kernel.IKernelConnection | null): Promise<void>;
@@ -23,6 +25,8 @@ export interface IVPModel extends DocumentRegistry.ICodeModel {
   setRendermime(rendermime: IRenderMimeRegistry | null): void;
   kernelSpecChanged: ISignal<this, IKernelspec>;
   vpContentChanged: ISignal<this, void>;
+  outputAreaModelChanged: ISignal<this, void>;
+  saveOutputModel: () => void;
 }
 
 export type IKernelspec = Partial<Kernel.IModel> | undefined;
@@ -35,6 +39,13 @@ export class VPModel extends DocumentModel implements IVPModel {
 
   private _setProperties() {
     const model = JSON.parse(this.toString());
+    if (
+      model.output &&
+      !isSameContent(this._outputAreaModel.toJSON(), model.output)
+    ) {
+      this._outputAreaModel.fromJSON(model.output ?? []);
+      this._outputAreaModelChanged.emit();
+    }
     this.kernelSpec = model.kernelSpec;
     this.vpContent = model.vpContent;
   }
@@ -42,7 +53,19 @@ export class VPModel extends DocumentModel implements IVPModel {
   private _setModelContent() {
     const content = JSON.stringify({
       vpContent: this.vpContent,
-      kernelSpec: this.kernelSpec
+      kernelSpec: this.kernelSpec,
+      output: this._outputAreaModel?.toJSON()
+    });
+    if (this.toString() !== content) {
+      this.fromString(content);
+    }
+  }
+
+  public saveOutputModel() {
+    const content = JSON.stringify({
+      vpContent: this.vpContent,
+      kernelSpec: this.kernelSpec,
+      output: this._outputAreaModel?.toJSON()
     });
     if (this.toString() !== content) {
       this.fromString(content);
@@ -93,6 +116,10 @@ export class VPModel extends DocumentModel implements IVPModel {
     }
   }
 
+  get outputAreaModel(): IOutputAreaModel {
+    return this._outputAreaModel;
+  }
+
   get vpContent(): SerializedGraph | null {
     return this._vpContent;
   }
@@ -131,6 +158,10 @@ export class VPModel extends DocumentModel implements IVPModel {
     this._rendermime = rendermime;
   }
 
+  get outputAreaModelChanged(): ISignal<this, void> {
+    return this._outputAreaModelChanged;
+  }
+
   private _kernelSpec: Partial<Kernel.IModel> | undefined = {};
   private _vpContent: SerializedGraph | null = null;
   private _kernelSpecChanged = new Signal<this, IKernelspec>(this);
@@ -140,4 +171,6 @@ export class VPModel extends DocumentModel implements IVPModel {
     [name: string]: DocumentRegistry.IToolbarItem;
   } = {};
   private _rendermime: IRenderMimeRegistry | null = null;
+  private _outputAreaModel: IOutputAreaModel = new OutputAreaModel();
+  private _outputAreaModelChanged = new Signal<this, void>(this);
 }
