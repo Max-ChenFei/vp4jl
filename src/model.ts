@@ -116,12 +116,12 @@ export class VPModel extends DocumentModel implements IVPModel {
     }
   }
 
-  get outputAreaModel(): IOutputAreaModel {
-    return this._outputAreaModel;
-  }
-
   get vpContent(): SerializedGraph | null {
     return this._vpContent;
+  }
+
+  get outputAreaModel(): IOutputAreaModel {
+    return this._outputAreaModel;
   }
 
   get kernelSpecChanged(): ISignal<this, IKernelspec> {
