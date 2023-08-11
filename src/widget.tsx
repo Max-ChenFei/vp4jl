@@ -235,7 +235,6 @@ export class VPWidget extends DocumentWidget<VPMainAreaPanel, IVPModel> {
       context,
       content: new VPMainAreaPanel(id, context.model, context.sessionContext)
     });
-    this.isUntitled = true;
     this.title.iconClass = 'jp-VPIcon';
     this.title.caption = 'Visual Programming';
     this.addClass('jp-VPWidget');

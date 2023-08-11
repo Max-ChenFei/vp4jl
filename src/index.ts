@@ -38,6 +38,7 @@ import { getToolbarFactory } from './toolbar-factory';
 import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { LoadPackageToRegistry } from 'visual-programming-editor';
 import visualCodePlugins from './visual-code-cell';
+import { IDocumentWidget } from '@jupyterlab/docregistry';
 
 const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
   id: 'vp4jl:plugin',
@@ -187,10 +188,14 @@ function activateVp4jlCommands(
         ext: vp4jlIDs.fileExtension,
         type: 'file'
       });
-      return app.commands.execute('docmanager:open', {
-        path: model.path,
-        factory: vp4jlIDs.widgetFactory
-      });
+      if (model !== undefined) {
+        const widget = (await app.commands.execute('docmanager:open', {
+          path: model.path,
+          factory: vp4jlIDs.widgetFactory
+        })) as unknown as IDocumentWidget;
+        widget.isUntitled = true;
+        return widget;
+      }
     }
   });
 
