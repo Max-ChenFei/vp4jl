@@ -37,6 +37,7 @@ import { VPWidgetFactory } from './widget-factory';
 import { getToolbarFactory } from './toolbar-factory';
 import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
 import { LoadPackageToRegistry } from 'visual-programming-editor';
+import visualCodePlugins from './visual-code-cell';
 
 const vp4jl: JupyterFrontEndPlugin<IVPTracker> = {
   id: 'vp4jl:plugin',
@@ -96,7 +97,8 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   vp4jlAttachCommandsToGui,
   vp4jlRestorer,
   vp4jlNodeExtension,
-  vp4jlFixContextMenuClose
+  vp4jlFixContextMenuClose,
+  ...visualCodePlugins
 ];
 export default plugins;
 
@@ -596,9 +598,8 @@ function fetchNodeExtensions() {
       });
     })
     .catch(reason => {
-      console.error(
-        `The vp4jl server extension appears to be missing.\n${reason}`
-      );
+      console.error(`The vp4jl server error:\n${reason}`);
+      console.error(`The vp4jl server error:\n${reason}`);
     });
 }
 
