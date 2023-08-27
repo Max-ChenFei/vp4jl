@@ -1,61 +1,58 @@
-# vp4jl
+## vp4jl: Visual Programming for JupyterLab
 
 [![Github Actions Status](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/workflows/Build/badge.svg)](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/actions/workflows/build.yml)
-The JupyterLab extension providing node based visual programming environment
 
-This extension is composed of a Python package named `vp4jl`
-for the server extension and a NPM package named `vp4jl`
-for the frontend extension.
+**vp4jl** is an extension for JupyterLab that offers an interactive node-based visual programming (vp) environment. It allows users to build and execute visual workflows without the need for line-by-line textual coding. Seamlessly integrated within the JupyterLab interface, **vp4jl** enables you to enhance your JupyterLab environment with vp capabilities, all without modifying your existing setup.
+
+![vp4jl](./doc/screenshots/vp4jl.jpg)
+
+### Key Features:
+
+1. **(a) Interactive Node-Based Visual Programming Editor**: 
+    - **Rich Built-in Nodes**: Power your designs with our diverse suite of nodes, spanning control flow, mathematical operations, variables, function interactions, reroutes, and annotations.
+    - **Smooth User Interaction**: Engage with a user-friendly canvas that allows for effortless zoom, pan, and diverse node operations. Boost your workflow with intuitive menus and a streamlined toolbar. Enhance navigation with a detailed minimap and time-saving shortcut keys.
+    - **Smart Auto Layout**: Ensure elegance and clarity with automatic layout adjustments, guaranteeing optimal node alignment and perfect view fitting.
+2. **Computational Documents **:
+    * **(b) Enhanced Jupyter Notebook**: Revel in the renowned flexibility and power of Jupyter notebooks, now boosted with visual programming capabilities in the notebook.
+    * **(c) New Document Format**: Introduce a fresh visual programming-supported document format `vp4jl`, sitting comfortably alongside traditional computational notebook.
+3. **Extensible Node Library with JSON Specifications**: 
+    - **(d1), (d2) Robust Node Specification**: Introduce new nodes easily with a JSON-based specification, making library extensions a breeze.
+    - **(e) Intuitive Node-Library Panel**: Navigate through an advanced panel that showcases all your installed node libraries. Experience streamlined installation, uninstallation, activation, and deactivation processes.
+    - **Efficient Backend Library Management**: Handle all your node libraries with a dedicated management backend, ensuring smooth operations.
+4. **Automatic Image Data Transitions via Configurable State Machine**: Effortlessly transition image data using a user-driven state machine, eliminating the need for manual data conversion and ensuring semantic interoperability.
+5. **(f) Seamless Integration within the JupyterLab Interface**: Immerse yourself in integration so smooth it feels native to JupyterLab. Enjoy seamless file operations, efficient code execution, and immediate result displays, all within the familiar JupyterLab environment.
+6. **Effortless Visual Programming Integration**:  Easily equip your JupyterLab environment with visual programming capabilities using our extension, all without altering your existing setup.
 
 ## Requirements
 
-- JupyterLab >= 4.0.0b0
+- [jupyterlab](https://github.com/jupyterlab/jupyterlab) >= 4.0.0b0
 
-## Install
+## Installation
 
-To install the extension, execute:
+**Through the Command Line:** To install **vp4jl** via pip, execute the command below:
 
 ```bash
 pip install vp4jl
 ```
 
-## Uninstall
+Ensure you have the required version of JupyterLab.
 
-To remove the extension, execute:
+**Using the Extension Manager in JupyterLab:** For those inclined towards a GUI-based installation: after launching JupyterLab, look for the Extension Manager on the left sidebar. Punch in `vp4jl` into its search bar. Once **vp4jl** pops up in the results, hit the adjacent "Install" button. If the Extension Manager isn't visible, check to make sure it's enabled — it might be turned off in certain default setups.
 
-```bash
-pip uninstall vp4jl
-```
+## Documentation
 
-## Troubleshoot
+For in-depth documentation on using `vp4jl`, including basic view and navigation, node operations, JSON-based specification for Node Library, code generation, and so on, please visit [our documentation](doc/Document.pdf).
 
-If you are seeing the frontend extension, but it is not working, check
-that the server extension is enabled:
-
-```bash
-jupyter server extension list
-```
-
-If the server extension is installed and enabled, but you are not seeing
-the frontend extension, check the frontend extension is installed:
-
-```bash
-jupyter labextension list
-```
-
-## Contributing
+## For Developers
 
 ### Development install
 
 Note: You will need NodeJS to build the extension package.
 
-The `jlpm` command is JupyterLab's pinned version of
-[yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
-`yarn` or `npm` in lieu of `jlpm` below.
+The `jlpm` command is JupyterLab's pinned version of [yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use `yarn` or `npm` in lieu of `jlpm` below.
 
 ```bash
 # Clone the repo to your local environment
-# Change directory to the vp4jl directory
 # Install package in development mode
 pip install -e ".[test]"
 # Link your development version of the extension with JupyterLab
@@ -91,48 +88,33 @@ jupyter server extension disable vp4jl
 pip uninstall vp4jl
 ```
 
-In development mode, you will also need to remove the symlink created by `jupyter labextension develop`
-command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
-folder is located. Then you can remove the symlink named `vp4jl` within that folder.
-
-### Testing the extension
-
-#### Server tests
-
-This extension is using [Pytest](https://docs.pytest.org/) for Python code testing.
-
-Install test dependencies (needed only once):
-
-```sh
-pip install -e ".[test]"
-# Each time you install the Python package, you need to restore the front-end extension link
-jupyter labextension develop . --overwrite
-```
-
-To execute them, run:
-
-```sh
-pytest -vv -r ap --cov vp4jl
-```
-
-#### Frontend tests
-
-This extension is using [Jest](https://jestjs.io/) for JavaScript code testing.
-
-To execute them, execute:
-
-```sh
-jlpm
-jlpm test
-```
-
-#### Integration tests
-
-This extension uses [Playwright](https://playwright.dev) for the integration tests (aka user level tests).
-More precisely, the JupyterLab helper [Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) is used to handle testing the extension in JupyterLab.
-
-More information are provided within the [ui-tests](./ui-tests/README.md) README.
+In development mode, you will also need to remove the symlink created by `jupyter labextension develop` command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions` folder is located. Then you can remove the symlink named `vp4jl` within that folder.
 
 ### Packaging the extension
 
 See [RELEASE](RELEASE.md)
+
+### Troubleshoot
+
+If you are seeing the frontend extension, but it is not working, check
+that the server extension is enabled:
+
+```bash
+jupyter server extension list
+```
+
+If the server extension is installed and enabled, but you are not seeing
+the frontend extension, check the frontend extension is installed:
+
+```bash
+jupyter labextension list
+```
+
+## Support & Contribution
+
+- Issues: For bug reports and feature requests, please open the GitHub issue.
+- Contributing: Pull requests are welcome. For major changes, please open an issue first to discuss the proposed change.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 license.

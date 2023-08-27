@@ -15,8 +15,8 @@ import {
   closeIcon,
   clearIcon
 } from '@jupyterlab/ui-components';
-import { VPEditor } from 'visual-programming-editor';
-import 'visual-programming-editor/dist/style.css';
+import { VPEditor } from 'vprcs';
+import 'vprcs/dist/style.css';
 import { IVPContext } from './context';
 import { IVPModel, IKernelspec } from './model';
 

@@ -7,7 +7,7 @@ import {
   ISceneActions,
   SerializedGraph,
   SourceCodeExec
-} from 'visual-programming-editor';
+} from 'vprcs';
 
 type ISharedText = any;
 
