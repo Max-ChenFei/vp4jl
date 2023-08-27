@@ -12,7 +12,7 @@
    - **Rich Built-in Nodes**: Power your designs with our diverse suite of nodes, spanning control flow, mathematical operations, variables, function interactions, reroutes, and annotations.
    - **Smooth User Interaction**: Engage with a user-friendly canvas that allows for effortless zoom, pan, and diverse node operations. Boost your workflow with intuitive menus and a streamlined toolbar. Enhance navigation with a detailed minimap and time-saving shortcut keys.
    - **Smart Auto Layout**: Ensure elegance and clarity with automatic layout adjustments, guaranteeing optimal node alignment and perfect view fitting.
-2. **Computational Documents **:
+2. **Computational Documents**:
    - **(b) Enhanced Jupyter Notebook**: Revel in the renowned flexibility and power of Jupyter notebooks, now boosted with visual programming capabilities in the notebook.
    - **(c) New Document Format**: Introduce a fresh visual programming-supported document format `vp4jl`, sitting comfortably alongside traditional computational notebook.
 3. **Extensible Node Library with JSON Specifications**:
