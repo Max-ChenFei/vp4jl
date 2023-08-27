@@ -4,7 +4,7 @@ import { ISignal, Signal } from '@lumino/signaling';
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import { DocumentRegistry, DocumentModel } from '@jupyterlab/docregistry';
 import { isSameContent } from './utils';
-import { ISceneActions, SerializedGraph } from 'visual-programming-editor';
+import { ISceneActions, SerializedGraph } from 'vprcs';
 import { IOutputAreaModel, OutputAreaModel } from '@jupyterlab/outputarea';
 
 export type IToolbarItems = {

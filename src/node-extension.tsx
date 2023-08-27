@@ -9,7 +9,7 @@ import {
   nodeConfigRegistry,
   Progress,
   LoadPackageToRegistry
-} from 'visual-programming-editor';
+} from 'vprcs';
 import { vp4jlIDs } from './namepace';
 import { requestAPI } from './request';
 import { requestToken } from './request-token';
