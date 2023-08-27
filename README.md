@@ -8,20 +8,20 @@
 
 ### Key Features:
 
-1. **(a) Interactive Node-Based Visual Programming Editor**: 
-    - **Rich Built-in Nodes**: Power your designs with our diverse suite of nodes, spanning control flow, mathematical operations, variables, function interactions, reroutes, and annotations.
-    - **Smooth User Interaction**: Engage with a user-friendly canvas that allows for effortless zoom, pan, and diverse node operations. Boost your workflow with intuitive menus and a streamlined toolbar. Enhance navigation with a detailed minimap and time-saving shortcut keys.
-    - **Smart Auto Layout**: Ensure elegance and clarity with automatic layout adjustments, guaranteeing optimal node alignment and perfect view fitting.
+1. **(a) Interactive Node-Based Visual Programming Editor**:
+   - **Rich Built-in Nodes**: Power your designs with our diverse suite of nodes, spanning control flow, mathematical operations, variables, function interactions, reroutes, and annotations.
+   - **Smooth User Interaction**: Engage with a user-friendly canvas that allows for effortless zoom, pan, and diverse node operations. Boost your workflow with intuitive menus and a streamlined toolbar. Enhance navigation with a detailed minimap and time-saving shortcut keys.
+   - **Smart Auto Layout**: Ensure elegance and clarity with automatic layout adjustments, guaranteeing optimal node alignment and perfect view fitting.
 2. **Computational Documents **:
-    * **(b) Enhanced Jupyter Notebook**: Revel in the renowned flexibility and power of Jupyter notebooks, now boosted with visual programming capabilities in the notebook.
-    * **(c) New Document Format**: Introduce a fresh visual programming-supported document format `vp4jl`, sitting comfortably alongside traditional computational notebook.
-3. **Extensible Node Library with JSON Specifications**: 
-    - **(d1), (d2) Robust Node Specification**: Introduce new nodes easily with a JSON-based specification, making library extensions a breeze.
-    - **(e) Intuitive Node-Library Panel**: Navigate through an advanced panel that showcases all your installed node libraries. Experience streamlined installation, uninstallation, activation, and deactivation processes.
-    - **Efficient Backend Library Management**: Handle all your node libraries with a dedicated management backend, ensuring smooth operations.
+   - **(b) Enhanced Jupyter Notebook**: Revel in the renowned flexibility and power of Jupyter notebooks, now boosted with visual programming capabilities in the notebook.
+   - **(c) New Document Format**: Introduce a fresh visual programming-supported document format `vp4jl`, sitting comfortably alongside traditional computational notebook.
+3. **Extensible Node Library with JSON Specifications**:
+   - **(d1), (d2) Robust Node Specification**: Introduce new nodes easily with a JSON-based specification, making library extensions a breeze.
+   - **(e) Intuitive Node-Library Panel**: Navigate through an advanced panel that showcases all your installed node libraries. Experience streamlined installation, uninstallation, activation, and deactivation processes.
+   - **Efficient Backend Library Management**: Handle all your node libraries with a dedicated management backend, ensuring smooth operations.
 4. **Automatic Image Data Transitions via Configurable State Machine**: Effortlessly transition image data using a user-driven state machine, eliminating the need for manual data conversion and ensuring semantic interoperability.
 5. **(f) Seamless Integration within the JupyterLab Interface**: Immerse yourself in integration so smooth it feels native to JupyterLab. Enjoy seamless file operations, efficient code execution, and immediate result displays, all within the familiar JupyterLab environment.
-6. **Effortless Visual Programming Integration**:  Easily equip your JupyterLab environment with visual programming capabilities using our extension, all without altering your existing setup.
+6. **Effortless Visual Programming Integration**: Easily equip your JupyterLab environment with visual programming capabilities using our extension, all without altering your existing setup.
 
 ## Requirements
 
