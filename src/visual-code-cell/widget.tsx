@@ -41,7 +41,6 @@ export class VPWidget extends ReactWidget {
       }
     });
     this._model = model;
-    this.sharedModel.changed.connect(this.update, this);
   }
 
   get sharedModel(): ISharedText {
