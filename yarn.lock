@@ -7823,10 +7823,10 @@ validate.io-number@^1.0.3:
   resolved "https://registry.yarnpkg.com/validate.io-number/-/validate.io-number-1.0.3.tgz#f63ffeda248bf28a67a8d48e0e3b461a1665baf8"
   integrity sha512-kRAyotcbNaSYoDnXvb4MHg/0a1egJdLwS6oJ38TJY7aw9n93Fl/3blIXdyYvPOp55CNxywooG/3BcrwNrBpcSg==
 
-vprcs@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/vprcs/-/vprcs-0.0.1.tgz#f4d4de058f6d1fa25cc97b720d370ad20804c4b7"
-  integrity sha512-AG+TNrHNwZgti3i10exBYjLWFMn4M1TScRNTyC5ZNvBBD+AC5VVjPPYt91DWcs40O61sDKYBKXRp65JcFLPT1g==
+vprcs@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/vprcs/-/vprcs-0.0.2.tgz#af261ec5dd7f21f1418719f4845994fcca01fb30"
+  integrity sha512-OUGR58tXa37Q39J1paKeAuVMFcFa+uQ8tkcvVPcTHPtv4042JWx055I03pp2zhUYMlvluLi3lZY96lTllKzdHA==
   dependencies:
     "@emotion/react" "^11.10.6"
     "@emotion/styled" "^11.10.6"
