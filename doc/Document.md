@@ -27,86 +27,103 @@
 
     - **Action**: Insert a new node using the context menu.
     - **How-to**: Right-click on the canvas background to open the menu, then select the desired node type from the menu items to add.
+
   - **Port-to-Background**
 
     - **Action**: Extend from an existing port, add a new node, and connect them.
-    - **How-to**:  Left-click and drag from a node's port, and release on the canvas background. When the menu appears, select the desired node type. The new node's corresponding port will automatically connect to the initial node's port from which you dragged.
+    - **How-to**: Left-click and drag from a node's port, and release on the canvas background. When the menu appears, select the desired node type. The new node's corresponding port will automatically connect to the initial node's port from which you dragged.
+
 - **Comment Node**
 
   - **Add Comment**
 
     - **Action**: Add a comment on the canvas.
     - **How-to**: Press `C`.
+
   - **Comment on Selected Node(s)**
 
     - **Action**: Add a comment for a selected node or nodes.
     - **How-to**: Select the node or nodes you wish to comment on, then press `C`.
+
 - **Select Node(s)**
 
   - **Single Node Selection**
 
     - **Action**: Select an individual node.
     - **How-to**: Left-click the node or press `Enter`.
+
   - **Multiple Node Selection**
 
     - **Action**: Select several nodes.
     - **How-to**: Hold `Shift`, then left-click on each desired node.
+
   - **Marquee Selection**
 
     - **Action**: Select nodes within a defined area.
     - **How-to**: Left-click and drag to create a selection box around the nodes.
+
   - **Select All**
 
     - **Action**: Choose all nodes on the canvas.
     - **How-to**: Press `Ctrl` + `A`.
+
   - **Deselect All**
 
     - **Action**: Clear all node selections.
     - **How-to**: Click on the background or press `Escape`.
+
 - **Move Node(s)**
 
   - **Drag to Move**
 
     - **Action**: Reposition a node manually.
     - **How-to**: Select the node, then left-click and drag it to the desired location.
+
   - **Arrow Key Movement**
 
     - **Action**: Nudge a node in specific directions.
     - **How-to**: Select the node and use the arrow keys (`↑`, `↓`, `←`, `→`) to move it up, down, left, or right.
+
 - **Connect Nodes**
 
   - **Action**: Create a link between two nodes.
   - **How-to**: Left-click on a port of one node and drag the connection to a port on another node, then release.
+
 - **Copy Node**
 
   - **Action**: Create a duplicate reference of a selected node for pasting.
   - **How-to**:
     - **Context Menu**: Right-click the node and select "Copy".
     - **Shortcut**: Press `Ctrl` + `C`.
+
 - **Paste Node**
 
   - **Action**: Place the copied node onto the canvas.
   - **How-to**:
     - **Context Menu**: Right-click on the canvas background and select "Paste".
     - **Shortcut**: Press `Ctrl` + `V`.
+
 - **Duplicate Node**
 
   - **Action**: Instantly create an identical copy of a selected node on the canvas.
   - **How-to**:
     - **Context Menu**: Right-click the node and select "Duplicate".
     - **Shortcut**: Press `Ctrl` + `D.
+
 - **Delete Node**
 
   - **Action**: Remove a selected node from the canvas.
   - **How-to**:
     - **Context Menu**: Right-click the node and select "Delete".
     - **Shortcut**: Press the `Delete` key.
+
 - **Delete Elements**
 
   - **Node Deletion**
 
     - **Action**: Remove a selected node from the canvas.
     - **How-to**: Select the node and press the `Delete` key.
+
   - **Edge Deletion**
 
     - **Action**: Remove a connection or edge between two nodes.
@@ -114,11 +131,12 @@
 
 ## **Function**
 
-* **New Function via Context Menu**
+- **New Function via Context Menu**
 
   - **Action**: Create a new function on the canvas.
   - **How-to**: Right-click on the canvas background to open the context menu, then select the "Create Function" menu item.
-* **Call Function via Context Menu**
+
+- **Call Function via Context Menu**
 
   - **Action**: Invoke a previously created function on the canvas.
   - **How-to**: Right-click on the canvas background to open the context menu. Navigate to the "Functions" category and select the desired function to call it.
@@ -141,6 +159,7 @@ Employ automated layout adjustments for optimal node alignment and view fitting.
 
   - **Action**: Automatically organize the nodes on the canvas for a clearer view.
   - **How-to**: Click on the "Auto-Arrange" tool located in the bottom left panel.
+
 - **Auto-Arrange via Context Menu**
 
   - **Action**: Arrange nodes on the canvas via the context menu.
@@ -169,6 +188,7 @@ We've established a JSON-based configuration specifically crafted to define a no
       - **indent**: To maintain proper indentation, consistent with Python's code formatting, each new line is appropriately indented.
 
       If the **category** is 'function', the execution sequence of subsequent nodes is considered. This is typically appended to the end of the source code like `(\n{{{outputs.0}}})`.
+
     - **inputs** and **outputs**: Objects detailing the interactions of the node. Within these:
 
       - Each **key** is **unique** and corresponds to a handle object.
@@ -179,6 +199,7 @@ We've established a JSON-based configuration specifically crafted to define a no
         - **title**: The handle's label or name.
         - **showWidget**: Dictates the visibility of a related UI widget.
         - **showTitle**: Governs the display of the handle's title.
+
 - **types**: An object detailing the unique data types used within this library. For each type:
 
   - The **key** signifies the unique data type identifier.
@@ -221,7 +242,7 @@ With this structured approach, our goal is to foster a clear, transparent, and a
           "dataType": "torch.tensor"
         }
       },
-      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}/{{{inputs.1}}}",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}/{{{inputs.1}}}"
     },
     "unsqueeze": {
       "type": "unsqueeze",
@@ -258,7 +279,7 @@ With this structured approach, our goal is to foster a clear, transparent, and a
         }
       },
       "externalImports": "import torch",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = torch.unsqueeze({{{inputs.1}}}, {{{inputs.2}}})\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = torch.unsqueeze({{{inputs.1}}}, {{{inputs.2}}})\n{{{outputs.0}}}"
     }
   },
   "types": {
@@ -267,7 +288,7 @@ With this structured approach, our goal is to foster a clear, transparent, and a
       "widget": "TextInput",
       "shownInColor": "hsl(10, 50%, 60%)"
     }
-  },
+  }
 }
 ```
 
@@ -279,7 +300,7 @@ Different software libraries and tools (such as TensorFlow, PyTorch, and OpenCV)
 
 ### **Image Representation**
 
-``````typescript
+```typescript
 interface ImageMetadata {
   colorChannel: 'rgb' | 'gbr' | 'grayscale';
   channelOrder: 'none' | 'channelFirst' | 'channelLast';
@@ -301,7 +322,7 @@ export interface ITargetImage {
 }
 
 export type IImage = ISourceImage | ITargetImage;
-``````
+```
 
 ### **How-to**
 
@@ -309,13 +330,13 @@ In the output handle, define the default value for that specific handle and then
 
 ```json
 {
-    "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-	}
+  "image": {
+    "title": "image",
+    "dataType": "image",
+    "defaultValue": {
+      "dataType": "torch.tensor"
+    }
+  }
 }
 ```
 
@@ -329,7 +350,7 @@ In the output handle, define the default value for that specific handle and then
 In the output handle, define the default value for that specific handle.
 
 ```json
-{ 
+{
   "image": {
       "title": "image",
       "dataType": "image",
@@ -364,7 +385,7 @@ The conversion rule can be configured using a JSON file. For instance, here's ho
         "function_name": "tensor2ndarray"
       }
     }
-  }  
+  }
 }
 ```
 
