@@ -1,27 +1,30 @@
-## vp4jl: Visual Programming for JupyterLab
+## IPVPE: Image Processing through Visual Programming Environment
 
 [![Github Actions Status](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/workflows/Build/badge.svg)](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/actions/workflows/build.yml)
 
-**vp4jl** is an extension for JupyterLab that offers an interactive node-based visual programming (vp) environment. It allows users to build and execute visual workflows without the need for line-by-line textual coding. Seamlessly integrated within the JupyterLab interface, **vp4jl** enables you to enhance your JupyterLab environment with vp capabilities, all without modifying your existing setup.
+~~**vp4jl** is an extension for JupyterLab that offers an interactive node-based visual programming (vp) environment. It allows users to build and execute visual workflows without the need for line-by-line textual coding. Seamlessly integrated within the JupyterLab interface, **vp4jl** enables you to enhance your JupyterLab environment with vp capabilities, all without modifying your existing setup.\*\*\*\*~~
+
+We introduce a **visual programming environment used for image processing**. This environment is implemented by an extension named **vp4jl** that enables any JupyterLab environment with visual programming (vp) capabilities, all without modifying the existing setup. **vp4jl** allows users to build and execute visual workflows without the need for line-by-line textual coding.
 
 ![vp4jl](./doc/screenshots/vp4jl.jpg)
 
 ### Key Features:
 
-1. **(a) Interactive Node-Based Visual Programming Editor**:
+1. **(a) Interactive Visual Programming Editor**:
    - **Rich Built-in Nodes**: Power your designs with our diverse suite of nodes, spanning control flow, mathematical operations, variables, function interactions, reroutes, and annotations.
    - **Smooth User Interaction**: Engage with a user-friendly canvas that allows for effortless zoom, pan, and diverse node operations. Boost your workflow with intuitive menus and a streamlined toolbar. Enhance navigation with a detailed minimap and time-saving shortcut keys.
    - **Smart Auto Layout**: Ensure elegance and clarity with automatic layout adjustments, guaranteeing optimal node alignment and perfect view fitting.
-2. **Computational Documents**:
-   - **(b) Enhanced Jupyter Notebook**: Revel in the renowned flexibility and power of Jupyter notebooks, now boosted with visual programming capabilities in the notebook.
-   - **(c) New Document Format**: Introduce a fresh visual programming-supported document format `vp4jl`, sitting comfortably alongside traditional computational notebook.
-3. **Extensible Node Library with JSON Specifications**:
+2. **Extensible Node Library with JSON Specifications**:
    - **(d1), (d2) Robust Node Specification**: Introduce new nodes easily with a JSON-based specification, making library extensions a breeze.
    - **(e) Intuitive Node-Library Panel**: Navigate through an advanced panel that showcases all your installed node libraries. Experience streamlined installation, uninstallation, activation, and deactivation processes.
    - **Efficient Backend Library Management**: Handle all your node libraries with a dedicated management backend, ensuring smooth operations.
-4. **Automatic Image Data Transitions via Configurable State Machine**: Effortlessly transition image data using a user-driven state machine, eliminating the need for manual data conversion and ensuring semantic interoperability.
-5. **(f) Seamless Integration within the JupyterLab Interface**: Immerse yourself in integration so smooth it feels native to JupyterLab. Enjoy seamless file operations, efficient code execution, and immediate result displays, all within the familiar JupyterLab environment.
-6. **Effortless Visual Programming Integration**: Easily equip your JupyterLab environment with visual programming capabilities using our extension, all without altering your existing setup.
+3. **Automatic Image Data Transitions via Configurable Knowledge Graph**: Effortlessly transition image data using a user-driven knowledge graph, eliminating the need for manual data conversion and ensuring semantic interoperability.
+4. **Image processing package integrations**
+5. **Computational Documents**:
+   - **(b) Enhanced Jupyter Notebook**: Revel in the renowned flexibility and power of Jupyter notebooks, now boosted with visual programming capabilities in the notebook.
+   - **(c) New Document Format**: Introduce a fresh visual programming-supported document format `vp4jl`, sitting comfortably alongside a traditional computational notebook.
+6. **(f) Seamless Integration within the JupyterLab Interface**: Immerse yourself in integration so smooth it feels native to JupyterLab. Enjoy seamless file operations, efficient code execution, and immediate result displays, all within the familiar JupyterLab environment.
+7. **Effortless Visual Programming Integration**: Easily equip your JupyterLab environment with visual programming capabilities using our extension, all without altering your existing setup.
 
 ## Requirements
 
@@ -41,7 +44,7 @@ Ensure you have the required version of JupyterLab.
 
 ## Documentation
 
-For in-depth documentation on using `vp4jl`, including basic view and navigation, node operations, JSON-based specification for Node Library, code generation, and so on, please visit [our documentation](doc/Document.pdf).
+For in-depth documentation on using `vp4jl`, including basic view and navigation, node operations, JSON-based specification for Node Library, code generation, and so on, please visit [our documentation](doc/Document.md).
 
 ## For Developers
 
