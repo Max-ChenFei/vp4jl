@@ -20,10 +20,10 @@ We introduce a **visual programming environment used for image processing**. Thi
    - **Efficient Backend Library Management**: Handle all your node libraries with a dedicated management backend, ensuring smooth operations.
 3. **Automatic Image Data Transitions via Configurable Knowledge Graph**: Effortlessly transition image data using a user-driven knowledge graph, eliminating the need for manual data conversion and ensuring semantic interoperability.
 4. **Image processing package integrations**
-5. **Computational Documents**:
+5. **(f) Seamless Integration within the JupyterLab Interface**: Immerse yourself in integration so smooth it feels native to JupyterLab. Enjoy seamless file operations, efficient code execution, and immediate result displays, all within the familiar JupyterLab environment.
+6. **Computational Documents**:
    - **(b) Enhanced Jupyter Notebook**: Revel in the renowned flexibility and power of Jupyter notebooks, now boosted with visual programming capabilities in the notebook.
    - **(c) New Document Format**: Introduce a fresh visual programming-supported document format `vp4jl`, sitting comfortably alongside a traditional computational notebook.
-6. **(f) Seamless Integration within the JupyterLab Interface**: Immerse yourself in integration so smooth it feels native to JupyterLab. Enjoy seamless file operations, efficient code execution, and immediate result displays, all within the familiar JupyterLab environment.
 7. **Effortless Visual Programming Integration**: Easily equip your JupyterLab environment with visual programming capabilities using our extension, all without altering your existing setup.
 
 ## Requirements
