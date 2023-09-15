@@ -137,6 +137,54 @@
           "dataType": "integer"
           }
       }
+    },
+    "regionprops_table": {
+      "type": "regionprops_table",
+      "category": "function",
+      "title": "regionprops_table",
+      "tooltip": "Exact Euclidean distance transform.",
+      "externalImports": "from scipy.ndimage import distance_transform_edt",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  measure.label({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "label_image": {
+          "title": "label_image",
+          "dataType": "numpy.ndarray"
+        },
+        "intensity_image": {
+          "title": "sampling",
+          "dataType": "anyDataType",
+          "defaultValue": "None"
+        },
+        "properties": {
+          "title": "properties",
+          "dataType": "tuple",
+          "defaultValue": "('label', 'bbox')"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "labels": {
+          "title": "labels",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "Labeled array, where all connected regions are assigned the same integer value."
+        },
+        "connectivity": {
+          "title": "connectivity",
+          "dataType": "integer"
+          }
+      }
     }
   }
 }
