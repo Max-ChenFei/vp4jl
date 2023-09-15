@@ -1,9 +1,5 @@
 ## IPVPE: Image Processing through Visual Programming Environment
 
-[![Github Actions Status](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/workflows/Build/badge.svg)](https://github.com/Max-ChenFei/VisualProgramming4JupyterLab/actions/workflows/build.yml)
-
-~~**vp4jl** is an extension for JupyterLab that offers an interactive node-based visual programming (vp) environment. It allows users to build and execute visual workflows without the need for line-by-line textual coding. Seamlessly integrated within the JupyterLab interface, **vp4jl** enables you to enhance your JupyterLab environment with vp capabilities, all without modifying your existing setup.\*\*\*\*~~
-
 We introduce a **visual programming environment used for image processing**. This environment is implemented by an extension named **vp4jl** that enables any JupyterLab environment with visual programming (vp) capabilities, all without modifying the existing setup. **vp4jl** allows users to build and execute visual workflows without the need for line-by-line textual coding.
 
 ![vp4jl](./doc/screenshots/vp4jl.jpg)
