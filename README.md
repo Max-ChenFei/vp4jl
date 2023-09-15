@@ -1,4 +1,4 @@
-## IPVPE: Image Processing through Visual Programming Environment
+## Visual Programming in JupyterLab to Lower Barriers and Enhance Reproducibility in Scientific Image Processing
 
 We introduce a **visual programming environment used for image processing**. This environment is implemented by an extension that enables any JupyterLab environment with visual programming (vp) capabilities, all without modifying the existing setup. it allows users to build and execute visual workflows without the need for line-by-line textual coding.
 
@@ -25,18 +25,7 @@ We introduce a **visual programming environment used for image processing**. Thi
 ## Requirements
 
 - [jupyterlab](https://github.com/jupyterlab/jupyterlab) >= 4.0.0b0
-
-## Installation
-
-**Through the Command Line:** To install **vp4jl** via pip, execute the command below:
-
-```bash
-pip install vp4jl
-```
-
-Ensure you have the required version of JupyterLab.
-
-**Using the Extension Manager in JupyterLab:** For those inclined towards a GUI-based installation: after launching JupyterLab, look for the Extension Manager on the left sidebar. Punch in `vp4jl` into its search bar. Once **vp4jl** pops up in the results, hit the adjacent "Install" button. If the Extension Manager isn't visible, check to make sure it's enabled — it might be turned off in certain default setups.
+- python >= 3.10
 
 ## Documentation
 
