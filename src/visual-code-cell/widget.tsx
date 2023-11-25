@@ -2,12 +2,7 @@ import React from 'react';
 import { ReactWidget } from '@jupyterlab/apputils';
 import { Widget } from '@lumino/widgets';
 import { CodeEditor } from '@jupyterlab/codeeditor';
-import {
-  VPEditor,
-  ISceneActions,
-  SerializedGraph,
-  SourceCodeExec
-} from 'vprcs';
+import { VPEditor, ISceneActions, SerializedGraph, GenResult } from 'vprcs';
 
 type ISharedText = any;
 
@@ -91,9 +86,8 @@ export class VPWidget extends ReactWidget {
     }
   }
 
-  getCode(): SourceCodeExec {
-    const sourceCode = this._sceneActions?.sourceCode();
-    return sourceCode || { hasError: false, result: '' };
+  getCode(): GenResult {
+    return this._sceneActions?.sourceCode();
   }
 
   render(): JSX.Element {
