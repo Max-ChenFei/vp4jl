@@ -1,8 +1,8 @@
-import { CodeCell } from '@jupyterlab/cells';
 import { ISessionContext } from '@jupyterlab/apputils';
-import { JSONObject } from '@lumino/coreutils';
-import { Kernel, KernelMessage } from '@jupyterlab/services';
+import { CodeCell } from '@jupyterlab/cells';
 import { OutputArea } from '@jupyterlab/outputarea';
+import { Kernel, KernelMessage } from '@jupyterlab/services';
+import { JSONObject } from '@lumino/coreutils';
 
 /**
  * Execute a cell given a client session.
@@ -15,6 +15,25 @@ export async function execute(
   const model = cell.model;
   const isVisualCode = model.getMetadata('code type') === 'visual code';
   let code = '';
+  const currentKernel: any = sessionContext.session?.kernel;
+  currentKernel?.registerCommTarget('capture_image', (comm: any, msg: any) => {
+    comm.onMsg = (msg: any) => {
+      // Base64-encoded image data
+      const imageDomId: string = msg.content.data.image_dom_id;
+      const imageData = msg.content.data.image_data;
+      const imageElement = document.getElementById(
+        imageDomId
+      ) as HTMLImageElement;
+      if (imageElement) {
+        imageElement.src = `data:image/png;base64,${imageData}`;
+      } else {
+        console.error(
+          `image element ${imageDomId} not found, cannot set display intermediate image`
+        );
+      }
+    };
+  });
+
   if (isVisualCode && cell.editor) {
     const result = (cell.editor as any).editor.getCode();
     if (result.hasError) {
@@ -27,7 +46,7 @@ export async function execute(
       });
       return;
     } else {
-      code = result.result;
+      code = result.code;
     }
   } else {
     code = model.sharedModel.getSource();

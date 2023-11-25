@@ -1,24 +1,24 @@
-import React from 'react';
-import { SplitPanel } from '@lumino/widgets';
-import { Session } from '@jupyterlab/services';
-import { DocumentRegistry, DocumentWidget } from '@jupyterlab/docregistry';
 import {
   ISessionContext,
   MainAreaWidget,
   ReactWidget
 } from '@jupyterlab/apputils';
+import { DocumentRegistry, DocumentWidget } from '@jupyterlab/docregistry';
 import { OutputArea } from '@jupyterlab/outputarea';
+import { Session } from '@jupyterlab/services';
 import {
   LabIcon,
   Toolbar,
   ToolbarButtonComponent,
-  closeIcon,
-  clearIcon
+  clearIcon,
+  closeIcon
 } from '@jupyterlab/ui-components';
+import { SplitPanel } from '@lumino/widgets';
+import React from 'react';
 import { VPEditor } from 'vprcs';
 import 'vprcs/dist/style.css';
 import { IVPContext } from './context';
-import { IVPModel, IKernelspec } from './model';
+import { IKernelspec, IVPModel } from './model';
 
 export class VPEditorWidget extends ReactWidget {
   constructor(id: string, model: IVPModel) {
@@ -209,10 +209,10 @@ export class VPMainAreaPanel extends SplitPanel {
     if (!sourceCode) {
       return;
     }
-    if (sourceCode.hasError) {
-      this._outputArea.showErrorMsg(sourceCode.result);
+    if (sourceCode.messages.length > 0) {
+      this._outputArea.showErrorMsg(sourceCode.messages[0].message);
     } else {
-      this._outputArea.execute(sourceCode.result);
+      this._outputArea.execute(sourceCode.code);
     }
   }
 

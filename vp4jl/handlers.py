@@ -41,16 +41,17 @@ def loadNodeExtensions():
             insertToObj(register, os.path.join(
                 relativeFolder, dir).split(os.sep), {'isPackage': True, 'subpackages': {}})
 
+
 def loadNodeExtension(name):
     nodes_folder = NODE_TYPE_FOLDER
     register = NODE_TYPE_REGISTER
     target_path = os.path.join(nodes_folder, name)
-    if(os.path.isfile(target_path + ".json")):
+    if (os.path.isfile(target_path + ".json")):
         with open(target_path + ".json", "r") as f:
             content = json.load(f)
             if content is not None:
                 insertToObj(register, [name], content)
-    elif(os.path.isdir(target_path)):
+    elif (os.path.isdir(target_path)):
         insertToObj(register, [name], {'isPackage': True, 'subpackages': {}})
         for folder, dirs, files in os.walk(target_path):
             relativeFolder = folder[len(nodes_folder) + 1:]
@@ -96,7 +97,7 @@ class RouteHandler(APIHandler):
                 os.remove(os.path.join(NODE_TYPE_FOLDER, file['filename']))
             name = file['filename'].split('.')[0]
             loadNodeExtension(name)
-            if(NODE_TYPE_REGISTER[name]):
+            if (NODE_TYPE_REGISTER[name]):
                 pkgs[name] = NODE_TYPE_REGISTER[name]
         self.finish(json.dumps({
             "status": "ok",
