@@ -1,6 +1,12 @@
-## Visual Programming in JupyterLab to Lower Barriers and Enhance Reproducibility in Scientific Image Processing
+## Visual Programming Language in JupyterLab to Lower Barriers and Enhance Reproducibility in Scientific Image Processing
 
-We introduce a **visual programming environment used for image processing**. This environment is implemented by an extension that enables any JupyterLab environment with visual programming (vp) capabilities, all without modifying the existing setup. it allows users to build and execute visual workflows without the need for line-by-line textual coding.
+**More detail please check the doc foler** (Code Generaton for the node, Knowledge Graph, Image Type conversion and so on)
+
+**This repo is the source code of Extension using the VPL in JupyterLab.**
+
+[For the source code of the visual programmng language, please check ]()repo
+
+https://anonymous.4open.science/r/Visual-Programming-Language-54D7
 
 ![vp4jl](./doc/screenshots/vp4jl.jpg)
 
