@@ -4,7 +4,7 @@
 
 **This repo is the source code of Extension using the VPL in JupyterLab.**
 
-[For the source code of the visual programmng language, please check ]()repo
+For the source code of the visual programmng language, please check here:
 
 https://anonymous.4open.science/r/Visual-Programming-Language-54D7
 
