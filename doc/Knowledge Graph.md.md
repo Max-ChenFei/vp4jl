@@ -2,7 +2,7 @@
 
 [TOC]
 
-![Code Generation of Image Data Conversion in Visual Programming](.\screenshots\Automatic_Image_Data_Transitions_via_a_Configurable_Knowledge_Graph.jpg)
+![Code Generation of Image Data Conversion in Visual Programming](./screenshots/Automatic_Image_Data_Transitions_via_a_Configurable_Knowledge_Graph.jpg)
 
 
 
