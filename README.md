@@ -1,14 +1,4 @@
-## Visual Programming Language in JupyterLab to Lower Barriers and Enhance Reproducibility in Scientific Image Processing
-
-**More detail please check the doc foler** (Code Generaton for the node, Knowledge Graph, Image Type conversion and so on)
-
-**This repo is the source code of Extension using the VPL in JupyterLab.**
-
-For the source code of the visual programmng language, please check here:
-
-https://anonymous.4open.science/r/Visual-Programming-Language-54D7
-
-![vp4jl](doc/screenshots/vp4jl.jpg)
+## vp4jl
 
 ### Key Features:
 
@@ -20,8 +10,6 @@ https://anonymous.4open.science/r/Visual-Programming-Language-54D7
    - **(d1), (d2) Robust Node Specification**: Introduce new nodes easily with a JSON-based specification, making library extensions a breeze.
    - **(e) Intuitive Node-Library Panel**: Navigate through an advanced panel that showcases all your installed node libraries. Experience streamlined installation, uninstallation, activation, and deactivation processes.
    - **Efficient Backend Library Management**: Handle all your node libraries with a dedicated management backend, ensuring smooth operations.
-3. **Automatic Image Data Transitions via Configurable Knowledge Graph**: Effortlessly transition image data using a user-driven knowledge graph, eliminating the need for manual data conversion and ensuring semantic interoperability.
-4. **Image processing package integrations**
 5. **(f) Seamless Integration within the JupyterLab Interface**: Immerse yourself in integration so smooth it feels native to JupyterLab. Enjoy seamless file operations, efficient code execution, and immediate result displays, all within the familiar JupyterLab environment.
 6. **Computational Documents**:
    - **(b) Enhanced Jupyter Notebook**: Revel in the renowned flexibility and power of Jupyter notebooks, now boosted with visual programming capabilities in the notebook.
@@ -32,6 +20,10 @@ https://anonymous.4open.science/r/Visual-Programming-Language-54D7
 
 - [jupyterlab](https://github.com/jupyterlab/jupyterlab) >= 4.0.0b0
 - python >= 3.10
+
+## Usage
+
+install the `vp4jl` via jupyter lab extension manager.
 
 ## Documentation
 

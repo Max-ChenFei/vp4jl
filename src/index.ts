@@ -36,7 +36,7 @@ import { VPModelFactory } from './model-factory';
 import { VPWidgetFactory } from './widget-factory';
 import { getToolbarFactory } from './toolbar-factory';
 import { IVPTracker, VPTracker, IVPTrackerToken } from './tracker';
-import { LoadPackageToRegistry } from 'vprcs';
+import { LoadPackageToRegistry } from 'chaldene_vpe';
 import visualCodePlugins from './visual-code-cell';
 import { IDocumentWidget } from '@jupyterlab/docregistry';
 

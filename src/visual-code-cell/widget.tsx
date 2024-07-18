@@ -2,7 +2,12 @@ import React from 'react';
 import { ReactWidget } from '@jupyterlab/apputils';
 import { Widget } from '@lumino/widgets';
 import { CodeEditor } from '@jupyterlab/codeeditor';
-import { VPEditor, ISceneActions, SerializedGraph, GenResult } from 'vprcs';
+import {
+  VPEditor,
+  ISceneActions,
+  SerializedGraph,
+  GenResult
+} from 'chaldene_vpe';
 
 type ISharedText = any;
 

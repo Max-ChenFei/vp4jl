@@ -9,7 +9,7 @@ import {
   nodeConfigRegistry,
   Progress,
   LoadPackageToRegistry
-} from 'vprcs';
+} from 'chaldene_vpe';
 import { vp4jlIDs } from './namepace';
 import { requestAPI } from './request';
 import { requestToken } from './request-token';
